@@ -173,8 +173,9 @@ const DEFAULT_CONFIG={
   rent:40000,               // tiền mặt bằng mỗi ngày
   utilBase:20000,           // điện nước cơ bản mỗi ngày
   utilPerUpg:8000,          // điện nước tăng thêm cho mỗi trang bị
-  taxThreshold:500000000,  // ngưỡng doanh thu năm không chịu thuế (hộ kinh doanh, 2026)
-  vat:3, pit:1.5,           // % thuế GTGT và TNCN trên doanh thu, nhóm dịch vụ ăn uống
+  taxThreshold:1000000000, // ngưỡng doanh thu năm không chịu GTGT/TNCN (NĐ 141/2026, hiệu lực 01/01/2026)
+  vat:3, pit:1.5,           // dịch vụ ăn uống: GTGT 3% doanh thu; TNCN 1,5% phần doanh thu vượt ngưỡng nếu chọn phương pháp tỷ lệ
+  pitProfit15:15, pitProfit17:17, pitProfit20:20, // phương pháp TNCN theo thu nhập tính thuế khi áp dụng
   online:{minProfit:15000000,fromDay:60,minRating:4.0}, // cả 3 điều kiện để mở đơn online; phải giữ đủ sao để tiếp tục nhận đơn
   levels:{l2:6,l3:30,l4:60}, // ngày bắt đầu mỗi cấp độ
   cost:{},                  // giá nhập mỗi phần nguyên liệu
@@ -278,7 +279,7 @@ const rnd=a=>a[Math.floor(Math.random()*a.length)];
 const wpick=(arr,w)=>{let r=Math.random()*w.reduce((a,b)=>a+b,0);for(let i=0;i<arr.length;i++){r-=w[i];if(r<=0)return arr[i]}return arr[0]};
 const newRec=d=>({spoil:{n:0,v:0},day:d,sales:{},tips:0,onl:0,fee:0,equip:[],ing:{},waste:{},rent:0,util:0,tax:0,served:0,lost:0,starSum:0,starN:0});
 function fresh(){
-  const s={lifeV:2,off:{},badPlan:mkBadPlan(1),money:CFG.startMoney,day:1,stock:{},unlocked:{},upg:{},upgLv:{tra:0,huong:0,top:0,equip:0,staff:0,onl:0},sell:{...DEF_SELL},reviews:[],served:0,best:0,totalRev:0,totalProfit:0,online:false,shopName:'',history:[],cur:newRec(1),yearRev:0,taxYear:0,gambleWon:0,gambleLost:0,gambleNet:0,friends:[],myCard:null,redeemedCodes:[],giftsReceivedToday:0,giftsDay:1,friendBuff:null,activeChallenge:null,trophies:[],bestDayRev:0};
+  const s={lifeV:2,off:{},badPlan:mkBadPlan(1),money:CFG.startMoney,day:1,stock:{},unlocked:{},upg:{},upgLv:{tra:0,huong:0,top:0,equip:0,staff:0,onl:0},sell:{...DEF_SELL},reviews:[],served:0,best:0,totalRev:0,totalProfit:0,online:false,shopName:'',history:[],cur:newRec(1),yearRev:0,taxYear:0,yearVatPaid:0,yearPitPaid:0,yearTaxableProfit:0,taxMethod:'revenue',gambleWon:0,gambleLost:0,gambleNet:0,friends:[],myCard:null,redeemedCodes:[],giftsReceivedToday:0,giftsDay:1,friendBuff:null,activeChallenge:null,trophies:[],bestDayRev:0};
   Object.keys(ITEMS).forEach(k=>{s.stock[k]=[];s.unlocked[k]=ITEMS[k].unlock===0});
   return s;
 }
@@ -3137,16 +3138,37 @@ function endDay(){
   const waste=expireStock();syncFlav();waste.forEach(x=>r.waste[x.k]={q:x.q,v:x.v});S.used=T.used;
   r.rent=fc.rent;r.util=fc.util;r.served=T.served;r.lost=T.lost+T.priceLost;r.starSum=T.stars.reduce((a,b)=>a+b,0);r.starN=T.stars.length;
   r.gzStolen=T.gzStolen||0;
-  const yi=Math.floor((S.day-1)/360);if(S.taxYear!==yi){S.taxYear=yi;S.yearRev=0}
-  const rev=recRev(r)+r.onl*0,before=S.yearRev;S.yearRev+=rev;
+  const yi=Math.floor((S.day-1)/360);
+  if(S.taxYear!==yi){
+    const prevYearRev=Number(S.yearRev||0);
+    S.taxYear=yi;S.yearRev=0;S.yearVatPaid=0;S.yearPitPaid=0;S.yearTaxableProfit=0;
+    if(prevYearRev>3000000000)S.taxMethod='profit';
+    else if(!S.taxMethod)S.taxMethod='revenue';
+  }
+  const rev=recRev(r)+r.onl*0;S.yearRev+=rev;
   S.bestDayRev = Math.max(S.bestDayRev || 0, rev);
   if(window.BanBe && window.BanBe.checkChallengeEnd) window.BanBe.checkChallengeEnd(rev);
   S.giftsReceivedToday = 0;
   S.giftsDay = S.day;
   S.friendBuff = null;
-  const taxable=Math.max(0,S.yearRev-Math.max(CFG.taxThreshold,before));r.tax=Math.round(taxable*(CFG.vat+CFG.pit)/100);
   r.ev=ev()?{id:ev().id,k:ev().k}:null;{const otMin=R.otT<0?-R.otT/(dayLen()*60)*660:0;r.ot=S.upg.staff2&&otMin>0?Math.ceil(otMin/30-1e-9)*20000:0}r.wage=wageDay()+r.ot;
-  debts().forEach(L=>{const x=S[L.id];r.loanInt=(r.loanInt||0)+x.int;r.loanOut=(r.loanOut||0)+x.pay;S.money-=x.pay+x.int;x.left--;if(!x.left)S[L.id]=null});S.money-=r.rent+r.util+r.tax+r.wage;
+  debts().forEach(L=>{const x=S[L.id];r.loanInt=(r.loanInt||0)+x.int;r.loanOut=(r.loanOut||0)+x.pay;S.money-=x.pay+x.int;x.left--;if(!x.left)S[L.id]=null});
+  r.tax=0;r.taxVat=0;r.taxPit=0;
+  const threshold=Number(CFG.taxThreshold||1000000000);
+  const vatDue=S.yearRev>threshold?Math.round(S.yearRev*Number(CFG.vat||3)/100):0;
+  r.taxVat=Math.max(0,vatDue-Number(S.yearVatPaid||0));S.yearVatPaid=vatDue;
+  if(S.taxMethod==='profit'){
+    const profitBeforeTax=rev-recCost(r);
+    S.yearTaxableProfit=Number(S.yearTaxableProfit||0)+profitBeforeTax;
+    const pitRate=S.yearRev>50000000000?Number(CFG.pitProfit20||20):S.yearRev>3000000000?Number(CFG.pitProfit17||17):Number(CFG.pitProfit15||15);
+    const pitDue=Math.max(0,Math.round(Math.max(0,S.yearTaxableProfit)*pitRate/100));
+    r.taxPit=Math.max(0,pitDue-Number(S.yearPitPaid||0));S.yearPitPaid=pitDue;
+  }else{
+    const pitDue=Math.round(Math.max(0,S.yearRev-threshold)*Number(CFG.pit||1.5)/100);
+    r.taxPit=Math.max(0,pitDue-Number(S.yearPitPaid||0));S.yearPitPaid=pitDue;
+  }
+  r.tax=r.taxVat+r.taxPit;
+  S.money-=r.rent+r.util+r.tax+r.wage;
   /* bảo vệ thu lại tiền của khách trả giá / quỵt trước khi tổng kết */
   const gMac=T.gMac||0,gRun=T.gRun||0;r.guard=gMac+gRun;S.money+=r.guard;
   const cost=recCost(r),profit=rev-cost,avg=r.starN?r.starSum/r.starN:0,wv=waste.reduce((a,x)=>a+x.v,0);
@@ -3301,7 +3323,7 @@ function ownerPanel(){
   ${oRow('Mặt bằng mỗi ngày','rent',CFG.rent,5000,'đ')}
   ${oRow('Điện nước cơ bản mỗi ngày','utilBase',CFG.utilBase,5000,'đ')}
   ${oRow('Điện nước thêm mỗi trang bị','utilPerUpg',CFG.utilPerUpg,1000,'đ')}
-  ${oRow('Ngưỡng doanh thu năm không chịu thuế','taxThreshold',CFG.taxThreshold,1000000,'đ')}
+  ${oRow('Ngưỡng doanh thu năm không chịu GTGT/TNCN','taxThreshold',CFG.taxThreshold,1000000,'đ')}
   ${oRow('Thuế GTGT trên doanh thu','vat',CFG.vat,0.5,'%')}
   ${oRow('Thuế TNCN trên doanh thu','pit',CFG.pit,0.5,'%')}
   ${oRow('Trộm: két trên','thiefMoney',CFG.thiefMoney,1000000,'đ')}
