@@ -3910,26 +3910,32 @@ function showSettings(){
   $('card').onchange=null;
   const accountUser=window.TTNAccount&&typeof window.TTNAccount.me==='function'?window.TTNAccount.me():null;
   const accountLabel=accountUser?'Đã đăng nhập: '+(accountUser.displayName||accountUser.username):'Đăng nhập · tự động đồng bộ tiến trình';
-  $('card').innerHTML=`<h2>${ico('set')} Cài đặt</h2><div class="setl">
-    <button class="setb" id="sGuide"><span>${ico('book')}</span>Hướng dẫn</button>
-    <button class="setb" id="sNews"><span>${ico('gift')}</span>Có gì mới<small>v${GAME_VERSION}</small></button>
-    <button class="setb" id="sUpdate" style="background:linear-gradient(135deg,#e3f7ed,#d1f2e1);border-color:#5aae86"><span>🔄</span><b>Cập nhật bản mới</b><small>Tải lại web & Xoá cache</small></button>
-    <button class="setb" id="sAccount"><span>☁️</span><b>Tài khoản & Cloud Save</b><small>${esc(accountLabel)}</small></button>
-    <button class="setb" id="sInstall"><span>📲</span><b>Đưa game ra màn hình chính</b><small>Chơi như ứng dụng trên điện thoại và máy tính</small></button>
-    <button class="setb" id="sFull"><span>⛶</span><b>Toàn màn hình</b><small>${document.fullscreenElement?'Đang bật':'Mở game toàn màn hình'}</small></button>
-    <button class="setb" id="sTerms"><span>📜</span><b>Điều khoản chơi</b><small>Aunomay · tài khoản · dữ liệu · chơi công bằng</small></button>
-    <button class="setb" id="sAunomay"><span>Ⓐ</span><b>Thông tin Aunomay</b><small>Nhà phát hành · hỗ trợ</small></button>
-    <button class="setb" id="sZalo"><span>👥</span><b>Mã Bạn Bè Rút Gọn</b><small>Chia sẻ để cả hai cùng nhận +300k</small></button>
-    <button class="setb" id="sCoach"><span>${ico('book')}</span>Chỉ dẫn từng bước<small>${S.coach===true?'Luôn bật':S.coach===false?'Tắt':'Tự động'}</small></button>
-    <button class="setb" id="sLen"><span>${ico('clock')}</span>Thời gian bán mỗi ngày<small>${S.dayLen||CFG.dayMin} phút${R.running?' · áp dụng từ ngày sau':''}</small></button>
-    <button class="setb" id="sTheme"><span>${ico('pen')}</span>Màu giao diện<small>${(THEMES.find(x=>x.id===THEME)||THEMES[0]).n}</small></button>
-    <button class="setb" id="sMus"><span>${ico('moon')}</span>Nhạc Lofi Quán Cafe<small>${AU.mus?'Bật':'Tắt'}</small></button>
-    <button class="setb" id="sSnd"><span>${ico('pause')}</span>Âm thanh (rót, múc…)<small>${AU.on?'Bật':'Tắt'}</small></button>
-    <button class="setb" id="sBak"><span>${ico('box')}</span>Sao lưu tiến trình<small>${S.bakDay?'Lần cuối: ngày '+S.bakDay:'Chưa sao lưu'}</small></button>
-    <button class="setb" id="sAuto"><span>${ico('calendar')}</span>Khôi phục bản tự lưu<small>Game tự lưu 3 cuối ngày gần nhất</small></button>
-    <button class="setb" id="sRes"><span>${ico('reload')}</span>Khôi phục từ mã</button>
-    <button class="setb warnb" id="sReset"><span>${ico('reload')}</span>Chơi lại từ đầu</button></div>
-    <button class="big" id="sClose" style="margin-top:12px">Đóng</button>`;
+  $('card').innerHTML=`<h2>${ico('set')} Cài đặt</h2>
+    <div class="setsec"><div class="setsec-title">Tài khoản & chia sẻ</div><div class="setl">
+      <button class="setb" id="sAccount"><span>☁️</span><b>Tài khoản & Cloud Save</b><small>${esc(accountLabel)}</small></button>
+      <button class="setb" id="sZalo"><span>👥</span><b>Mã Bạn Bè & giới thiệu</b><small>Chia sẻ link/QR · cả hai nhận +300k</small></button>
+      <button class="setb" id="sBak"><span>${ico('box')}</span><b>Sao lưu tiến trình</b><small>${S.bakDay?'Lần cuối: ngày '+S.bakDay:'Chưa sao lưu'}</small></button>
+      <button class="setb" id="sAuto"><span>${ico('calendar')}</span><b>Khôi phục bản tự lưu</b><small>3 bản cuối ngày gần nhất</small></button>
+      <button class="setb" id="sRes"><span>${ico('reload')}</span><b>Khôi phục từ mã</b></button>
+    </div></div>
+    <div class="setsec"><div class="setsec-title">Trải nghiệm chơi</div><div class="setl">
+      <button class="setb" id="sCoach"><span>${ico('book')}</span><b>Chỉ dẫn từng bước</b><small>${S.coach===true?'Luôn bật':S.coach===false?'Tắt':'Tự động'}</small></button>
+      <button class="setb" id="sLen"><span>${ico('clock')}</span><b>Thời gian bán mỗi ngày</b><small>${S.dayLen||CFG.dayMin} phút${R.running?' · áp dụng từ ngày sau':''}</small></button>
+      <button class="setb" id="sTheme"><span>${ico('pen')}</span><b>Màu giao diện</b><small>${(THEMES.find(x=>x.id===THEME)||THEMES[0]).n}</small></button>
+      <button class="setb" id="sMus"><span>${ico('moon')}</span><b>Nhạc Lofi Quán Cafe</b><small>${AU.mus?'Bật':'Tắt'}</small></button>
+      <button class="setb" id="sSnd"><span>${ico('pause')}</span><b>Âm thanh</b><small>${AU.on?'Bật':'Tắt'}</small></button>
+      <button class="setb" id="sFull"><span>⛶</span><b>Toàn màn hình</b><small>${document.fullscreenElement?'Đang bật':'Mở game toàn màn hình'}</small></button>
+    </div></div>
+    <div class="setsec"><div class="setsec-title">Ứng dụng & trợ giúp</div><div class="setl">
+      <button class="setb" id="sInstall"><span>📲</span><b>Đưa game ra màn hình chính</b><small>Chơi như ứng dụng trên điện thoại và máy tính</small></button>
+      <button class="setb" id="sUpdate" style="background:linear-gradient(135deg,#e3f7ed,#d1f2e1);border-color:#5aae86"><span>🔄</span><b>Cập nhật bản mới</b><small>Tải lại web & xoá cache</small></button>
+      <button class="setb" id="sGuide"><span>${ico('book')}</span><b>Hướng dẫn</b></button>
+      <button class="setb" id="sNews"><span>${ico('gift')}</span><b>Có gì mới</b><small>v${GAME_VERSION}</small></button>
+      <button class="setb" id="sTerms"><span>📜</span><b>Điều khoản chơi</b><small>Aunomay · tài khoản · dữ liệu · chơi công bằng</small></button>
+      <button class="setb" id="sAunomay"><span>Ⓐ</span><b>Thông tin Aunomay</b><small>Nhà phát hành · hỗ trợ</small></button>
+    </div></div>
+    <div class="setsec setsec-danger"><div class="setl"><button class="setb warnb" id="sReset"><span>${ico('reload')}</span><b>Chơi lại từ đầu</b></button></div></div>
+    <button class="big" id="sClose" style="margin-top:8px">Đóng</button>`;
   $('modal').hidden=false;
   $('sClose').onclick=()=>{$('modal').hidden=true};
   $('sGuide').onclick=()=>{$('modal').hidden=true;showTour(false,true)};
