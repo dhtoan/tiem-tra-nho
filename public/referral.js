@@ -200,7 +200,7 @@ async function makeQrCard(linkOverride='',codeOverride=''){
     if(!blob)throw new Error('Không tạo được ảnh');
     const fileName='tiem-tra-nho-ref-'+String(shareCode||'share').replace(/[^A-Za-z0-9_-]/g,'')+'.png';
     const file=new File([blob],fileName,{type:'image/png'});
-    const shareData={files:[file],title:gameName()+' — QR +300k',text:'Quét QR để chơi cùng mình. Mỗi người cùng nhận +300k vốn 🎁'};
+    const shareData={files:[file],title:gameName()+' — QR +300k',text:'Quét QR để chơi cùng mình. Mỗi người cùng nhận +300k vốn 🎁\n'+shareUrl};
     let canFileShare=false;
     try{canFileShare=!!navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))}catch{}
     if(canFileShare){
@@ -244,7 +244,7 @@ try{
   if('BroadcastChannel'in window){bridge=new BroadcastChannel(BRIDGE);bridge.onmessage=e=>acceptBridge(e.data)}
 }catch{}
 navigator.serviceWorker?.addEventListener?.('message',e=>{if(e.data?.type==='AUNOMAY_REFERRAL')acceptBridge(e.data)});
-addEventListener('DOMContentLoaded',()=>{ensureDlg();setTimeout(async()=>{redeemPendingFriend();if(!(await showLandingInvite()))await claimPending({take:true})},900);setInterval(monitorMoney,1600);setInterval(()=>{if(!(landingRef&&!isStandalone()))claimPending({take:true})},20000)});
-addEventListener('visibilitychange',()=>{if(!document.hidden&&!(landingRef&&!isStandalone()))claimPending({take:true})});
+addEventListener('DOMContentLoaded',()=>{ensureDlg();setTimeout(async()=>{redeemPendingFriend();if(!(await showLandingInvite()))await claimPending({take:true})},900);setInterval(monitorMoney,1600);setInterval(()=>{if(landingRef&&!isStandalone())claimPending({take:false});else claimPending({take:true})},5000)});
+addEventListener('visibilitychange',()=>{if(!document.hidden){if(landingRef&&!isStandalone())claimPending({take:false});else claimPending({take:true})}});
 window.AunomayReferral={open,claimPending,takeRewards,shareFriendCode,downloadFriendQr,redeemPendingFriend,pendingCode};
 })();
