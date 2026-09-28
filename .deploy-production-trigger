@@ -1,1 +1,1 @@
-deploy production: rebind custom domain after D1 hotfix
+deploy production: persistent DB binding from wrangler.toml
