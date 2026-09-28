@@ -3736,12 +3736,45 @@ function restoreDlg(msg){$('card').onchange=null;
   $('rsGo').onclick=async()=>{const code=$('rsCode').value;if(isField(document.activeElement))document.activeElement.blur();let d;const c8=String(code||'').replace(/[\s.-]/g,'');try{if(/^\d{8}$/.test(c8)){$('rsGo').disabled=true;$('rsGo').textContent='Đang tải…';d=await cloudLoad(c8)}else d=await readBackup(code)}catch(e){restoreDlg(typeof e==='string'?e:'Mã không đọc được');return}
     ask(`<div class="pbig">${ico('reload')}</div><h2>Khôi phục tiến trình?</h2><p>Bản sao lưu: <b>${esc(d.shopName||'Tiệm Trà Mơ Ước')}</b> · Ngày ${d.day} · ${fmt(d.money||0)}</p><p>Tiến trình hiện tại (ngày ${S.day}) sẽ bị thay thế.</p>`,
       [['Huỷ',()=>restoreDlg()],['Khôi phục',()=>{closeSplash();applyRestore(d)},1]])}}
+let ttnInstallPrompt=null;
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();ttnInstallPrompt=e});
+function showInstallHelp(){
+  const installed=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+  if(installed){
+    ask('<h2>Đã đưa ra màn hình chính</h2><p>Tiệm Trà Nhỏ đang chạy như một ứng dụng độc lập trên thiết bị này.</p>',[['Đã hiểu',showSettings,1]]);
+    return;
+  }
+  const html=`<h2>Đưa game ra màn hình chính</h2>
+    <p>Thêm Tiệm Trà Nhỏ ra màn hình chính để mở nhanh như một app và có trải nghiệm toàn màn hình tốt hơn.</p>
+    <div style="text-align:left;display:grid;gap:10px;margin:12px 0">
+      <div><b>iPhone, iPad (Safari)</b><br><small>Bấm nút Chia sẻ → chọn <b>Thêm vào Màn hình chính</b> → bấm Thêm.</small></div>
+      <div><b>Android (Chrome)</b><br><small>Bấm menu ⋮ → chọn <b>Thêm vào màn hình chính</b> hoặc <b>Cài đặt ứng dụng</b>.</small></div>
+      <div><b>Máy tính (Chrome/Edge)</b><br><small>Nếu trình duyệt hỗ trợ, chọn <b>Cài ngay</b> bên dưới hoặc dùng biểu tượng cài đặt trên thanh địa chỉ.</small></div>
+    </div>`;
+  const btns=[];
+  if(ttnInstallPrompt)btns.push(['Cài ngay',async()=>{
+    try{
+      await ttnInstallPrompt.prompt();
+      await ttnInstallPrompt.userChoice.catch(()=>null);
+    }catch(e){}
+    ttnInstallPrompt=null;
+  },1]);
+  btns.push(['Quay lại Cài đặt',showSettings,ttnInstallPrompt?0:1]);
+  ask(html,btns);
+}
+function openAccountSettings(){
+  $('modal').hidden=true;
+  if(window.TTNAccount&&typeof window.TTNAccount.open==='function')window.TTNAccount.open();
+  else toast('Tài khoản đang khởi tạo, thử lại sau một chút.');
+}
 function showSettings(){
   $('card').onchange=null;
   $('card').innerHTML=`<h2>${ico('set')} Cài đặt</h2><div class="setl">
     <button class="setb" id="sGuide"><span>${ico('book')}</span>Hướng dẫn</button>
     <button class="setb" id="sNews"><span>${ico('gift')}</span>Có gì mới<small>v${GAME_VERSION}</small></button>
     <button class="setb" id="sUpdate" style="background:linear-gradient(135deg,#e3f7ed,#d1f2e1);border-color:#5aae86"><span>🔄</span><b>Cập nhật bản mới</b><small>Tải lại web & Xoá cache</small></button>
+    <button class="setb" id="sAccount"><span>☁️</span><b>Tài khoản & Cloud Save</b><small>Đăng nhập · tự động đồng bộ tiến trình</small></button>
+    <button class="setb" id="sInstall"><span>📲</span><b>Đưa ra màn hình chính</b><small>Chơi như ứng dụng trên điện thoại và máy tính</small></button>
     <button class="setb" id="sZalo"><span>💬</span>Nhóm Zalo trà thủ<small>Quét mã QR</small></button>
     <button class="setb" id="sCoach"><span>${ico('book')}</span>Chỉ dẫn từng bước<small>${S.coach===true?'Luôn bật':S.coach===false?'Tắt':'Tự động'}</small></button>
     <button class="setb" id="sLen"><span>${ico('clock')}</span>Thời gian bán mỗi ngày<small>${S.dayLen||CFG.dayMin} phút${R.running?' · áp dụng từ ngày sau':''}</small></button>
@@ -3776,6 +3809,8 @@ function showSettings(){
       window.location.href = url + '?v=' + Date.now();
     }, 400);
   };
+  $('sAccount').onclick=openAccountSettings;
+  $('sInstall').onclick=showInstallHelp;
   $('sZalo').onclick=()=>{if($('modal'))$('modal').hidden=true;showZaloBanner()};
   $('sTheme').onclick=themeDlg;
   $('sLen').onclick=()=>{const L=[4,5,6],c=S.dayLen||CFG.dayMin;S.dayLen=L[(L.indexOf(c)+1)%L.length];save();toast('Mỗi ngày bán '+S.dayLen+' phút, khách tới nhiều hơn theo thời gian');showSettings()};
