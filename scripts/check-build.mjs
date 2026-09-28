@@ -5,9 +5,9 @@ const root=new URL('../dist/',import.meta.url).pathname;
 const MAX_ASSET_BYTES=25*1024*1024;
 const required=[
   'index.html',
-  'css/style.css','css/baucua.css','css/xidach.css',
-  'js/game.js','js/baucua.js','js/xidach.js',
-  'account-sync.css','account-sync.js','bootstrap.js',
+  'css/style.css','css/baucua.css','css/xidach.css','css/banbe.css',
+  'js/game.js','js/baucua.js','js/xidach.js','js/banbe.js',
+  'account-sync.css','account-sync.js','referral.css','referral.js','vendor/qrcode.min.js','bootstrap.js',
   'manifest.webmanifest','sw.js','version.json',
   'Nhạc Chill Quán Cafe - Những Ca Khúc Lofi Nhẹ Nhàng Hay Nhất Dành Cho Quán Cafe - Nhạc Lofi 2026.mp3',
   'Pouring water-liquid into a glass sound effect [HQ].mp3',
@@ -20,7 +20,7 @@ for(const file of required){
 }
 
 const html=await readFile(join(root,'index.html'),'utf8');
-for(const ref of ['/css/style.css','/css/baucua.css','/css/xidach.css','/js/game.js','/js/baucua.js','/js/xidach.js','/account-sync.css','/account-sync.js','/bootstrap.js','/manifest.webmanifest']){
+for(const ref of ['/css/style.css','/css/baucua.css','/css/xidach.css','/css/banbe.css','/js/banbe.js','/js/game.js','/js/baucua.js','/js/xidach.js','/account-sync.css','/account-sync.js','/referral.css','/vendor/qrcode.min.js','/referral.js','/bootstrap.js','/manifest.webmanifest']){
   if(!html.includes(ref))throw new Error('index missing '+ref);
 }
 for(const marker of ['cloudAccountBtn','cloudAccountDlg','cloudSaveNudge']){
@@ -29,6 +29,9 @@ for(const marker of ['cloudAccountBtn','cloudAccountDlg','cloudSaveNudge']){
 const game=await readFile(join(root,'js/game.js'),'utf8');
 if(!game.includes("const GAME_VERSION='1.0.0'"))throw new Error('Aunomay runtime version 1.0.0 missing');
 if(!game.includes("const SAVE='tsShop2'"))throw new Error('expected tsShop2 save key missing');
+for(const [name,text] of [['index',html],['game',game]]){
+  if(text.includes('Tiệm Trà Mơ Ước'))throw new Error('legacy brand leaked into production '+name);
+}
 const bc=await readFile(join(root,'js/baucua.js'),'utf8');
 for(const img of ['bau.png','ca.png','cua.png','tom.png','nai.png','ga.png'])if(!bc.includes(img))throw new Error('baucua missing '+img);
 const account=await readFile(join(root,'account-sync.js'),'utf8');
