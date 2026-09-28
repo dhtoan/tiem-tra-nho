@@ -1,0 +1,111 @@
+name: Deploy Production
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tiem-tra-nho-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      D1_NAME: tiem-tra-nho
+      PROD_HOST: tiemtranho.aunomay.com
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify Cloudflare credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${CLOUDFLARE_API_TOKEN:-}" || { echo "Missing CLOUDFLARE_API_TOKEN GitHub secret"; exit 1; }
+          test -n "${CLOUDFLARE_ACCOUNT_ID:-}" || { echo "Missing CLOUDFLARE_ACCOUNT_ID GitHub secret"; exit 1; }
+
+      - name: Install
+        run: npm install
+
+      - name: Verify game, auth and PWA build
+        run: npm run check
+
+      - name: Find or create production D1
+        id: d1
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx wrangler d1 list --json > /tmp/d1-list.json
+          DB_ID="$(node -e "const a=JSON.parse(require('fs').readFileSync('/tmp/d1-list.json','utf8'));const d=a.find(x=>x.name===process.env.D1_NAME);if(d)process.stdout.write(String(d.uuid||d.id||''));")"
+          if [ -z "$DB_ID" ]; then
+            echo "D1 $D1_NAME not found; creating in APAC..."
+            npx wrangler d1 create "$D1_NAME" --location=apac
+            npx wrangler d1 list --json > /tmp/d1-list.json
+            DB_ID="$(node -e "const a=JSON.parse(require('fs').readFileSync('/tmp/d1-list.json','utf8'));const d=a.find(x=>x.name===process.env.D1_NAME);if(d)process.stdout.write(String(d.uuid||d.id||''));")"
+          fi
+          test -n "$DB_ID" || { echo "Could not resolve D1 database id"; exit 1; }
+          echo "database_id=$DB_ID" >> "$GITHUB_OUTPUT"
+          echo "Using D1: $D1_NAME ($DB_ID)"
+
+      - name: Generate production Wrangler config
+        shell: bash
+        run: |
+          cat > wrangler.production.toml <<EOF
+          name = "tiem-tra-nho"
+          main = "src/worker.js"
+          compatibility_date = "2026-09-28"
+          workers_dev = true
+          preview_urls = true
+
+          [observability]
+          enabled = true
+
+          [assets]
+          directory = "./dist"
+          binding = "ASSETS"
+          run_worker_first = true
+
+          [vars]
+          ALLOWED_HOSTS = "tiemtranho.aunomay.com"
+
+          [[d1_databases]]
+          binding = "DB"
+          database_name = "tiem-tra-nho"
+          database_id = "${{ steps.d1.outputs.database_id }}"
+          migrations_dir = "migrations"
+
+          [[routes]]
+          pattern = "tiemtranho.aunomay.com"
+          custom_domain = true
+          EOF
+          cat wrangler.production.toml
+
+      - name: Apply remote D1 migrations
+        run: npx wrangler d1 migrations apply DB --remote --config wrangler.production.toml
+
+      - name: Deploy Worker
+        run: npx wrangler deploy --config wrangler.production.toml
+
+      - name: Production health check
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in {1..20}; do
+            if curl -fsS "https://$PROD_HOST/api/health" | tee /tmp/health.json; then
+              node -e "const j=JSON.parse(require('fs').readFileSync('/tmp/health.json','utf8'));if(!j.ok||!j.database)process.exit(1)"
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Production health check failed"
+          exit 1
