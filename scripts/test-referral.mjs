@@ -3,9 +3,11 @@ for(const p of ['../public/referral.js','../public/referral.css','../public/vend
 const worker=await readFile(new URL('../src/worker.js',import.meta.url),'utf8');
 for(const p of ['/api/referral/me','/api/referral/claim','/api/referral/rewards/take']) if(!worker.includes(p)) throw new Error('missing referral API '+p);
 if(!worker.includes("DEFAULT_PUBLIC_ORIGIN='https://tiemtranho.aunomay.com'")) throw new Error('canonical referral origin missing');
+if(!worker.includes('selfReferral:true')) throw new Error('backend must explicitly reject self referrals');
 const referral=await readFile(new URL('../public/referral.js',import.meta.url),'utf8');
 for(const marker of ['navigator.share','QRCode','searchParams.get(\'ref\')','getMoney','setMoney','aunomay_pending_ref','downloadFriendQr','BroadcastChannel','AUNOMAY_REFERRAL','new File([blob]','ClipboardItem']) if(!referral.includes(marker)) throw new Error('referral client missing '+marker);
-if(/\.download\s*=/.test(referral)) throw new Error('QR flow must not force file downloads; use share sheet/clipboard instead');
+if(!/desktopLike/.test(referral)||!/\.download\s*=/.test(referral)) throw new Error('QR flow must support direct desktop PNG download');
+if(!referral.includes('navigator.share')||!referral.includes('ClipboardItem')) throw new Error('mobile QR flow must keep share-sheet/clipboard support');
 const build=await readFile(new URL('../scripts/build.mjs',import.meta.url),'utf8');
 if(!build.includes('/referral.css')||!build.includes('/vendor/qrcode.min.js')||!build.includes('/referral.js')) throw new Error('production build must load referral assets');
 console.log('referral reward + QR share checks passed');
