@@ -28,8 +28,10 @@
     (function(){
       if(window.location.search){
         try{
-          var cleanUrl = window.location.origin + window.location.pathname;
-          window.history.replaceState({}, document.title, cleanUrl);
+          var u = new URL(window.location.href);
+          u.searchParams.delete('v');
+          u.searchParams.delete('_t');
+          window.history.replaceState({}, document.title, u.pathname + (u.search||'') + u.hash);
         }catch(e){}
       }
       if(location.protocol.startsWith('http')){
@@ -46,8 +48,10 @@
                 navigator.serviceWorker.getRegistrations().then(function(rs){ rs.forEach(function(r){ r.unregister(); }); });
               }
               try{
-                var cleanUrl = window.location.origin + window.location.pathname;
-                window.history.replaceState({}, document.title, cleanUrl);
+                var u2 = new URL(window.location.href);
+                u2.searchParams.delete('v');
+                u2.searchParams.delete('_t');
+                window.history.replaceState({}, document.title, u2.pathname + (u2.search||'') + u2.hash);
               }catch(e){}
               window.location.reload(true);
             }
