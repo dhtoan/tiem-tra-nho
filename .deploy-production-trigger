@@ -1,1 +1,1 @@
-deploy latest production hotfix: auth fallback + runtime audio + version metadata
+deploy production: rebind custom domain after D1 hotfix
