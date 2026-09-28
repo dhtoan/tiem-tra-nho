@@ -208,7 +208,10 @@ body.dark .rcust-head{color:#93c5fd}
 .ti2.g-tc i{border-radius:50%}.ti2.g-thach i{border-radius:2px;height:7px}.ti2.g-pm i{border-radius:1px;transform:rotate(14deg);width:7px;height:7px}
 .ti2.g-foam i{width:20px;height:7px;border-radius:4px}
 .ti2.lg{height:20px}.ti2.lg i{width:11px;height:11px}.ti2.lg.g-thach i{height:10px}.ti2.lg.g-foam i{width:26px;height:9px}
-.tps{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;max-width:36px}
+.tps{display:flex;flex-wrap:wrap;gap:1.5px;justify-content:center;max-width:44px;max-height:36px;overflow:hidden;align-content:center}
+.tps .ti2{height:10px;gap:1px}
+.tps .ti2 i{width:5px;height:5px}
+.tps .ti2.g-foam svg{width:14px;height:10px}
 .tp.g-thach{border-radius:2px}.tp.g-pm{border-radius:1px;transform:rotate(15deg)}
 .flavband{position:absolute;left:0;right:0;bottom:44%;height:30%;opacity:.85}
 .board .chips2{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:.85rem}.board .chips2 b{opacity:.8;font-weight:600}
@@ -933,6 +936,22 @@ body:not(.selling)::before{content:'';position:fixed;inset:0;z-index:-1;backgrou
   margin-bottom: 6px;
   letter-spacing: 0.3px;
 }
+.police-report-title {
+  margin: 4px 0 8px;
+  font-size: 1.25rem;
+  color: #dc2626;
+  font-weight: 800;
+}
+body.dark .police-report-title {
+  color: #f87171;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+.police-report-desc {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
 .police-legal-warning {
   background: #fffbeb;
   border: 1.5px dashed #f59e0b;
@@ -942,6 +961,101 @@ body:not(.selling)::before{content:'';position:fixed;inset:0;z-index:-1;backgrou
   font-size: 0.84rem;
   line-height: 1.55;
   color: #78350f;
+}
+
+/* PHÁN QUYẾT ĐIỀU TRA TIỀN GIẢ (TỐ CÁO OAN / PHÁ ÁN) */
+.verdict-title {
+  margin: 4px 0 6px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+.verdict-title.fail {
+  color: #dc2626;
+}
+body.dark .verdict-title.fail {
+  color: #f87171;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+.verdict-title.success {
+  color: #059669;
+}
+body.dark .verdict-title.success {
+  color: #34d399;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.verdict-desc {
+  font-size: 0.95rem;
+  color: var(--ink);
+  line-height: 1.55;
+  margin: 6px 0 12px;
+}
+.verdict-desc .highlight-fail {
+  color: #dc2626;
+  font-weight: 800;
+}
+body.dark .verdict-desc .highlight-fail {
+  color: #fca5a5;
+}
+.verdict-desc .highlight-success {
+  color: #059669;
+  font-weight: 800;
+}
+body.dark .verdict-desc .highlight-success {
+  color: #6ee7b7;
+}
+
+.verdict-box {
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin: 10px 0;
+  line-height: 1.6;
+  font-size: 0.92rem;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+.verdict-box.fail {
+  background: #fef2f2;
+  border: 1.5px solid #fecaca;
+  color: #991b1b;
+}
+.verdict-box.fail .act-name {
+  color: #991b1b;
+}
+.verdict-box.fail .amt-penalty {
+  color: #dc2626;
+  font-size: 1.12rem;
+}
+.verdict-box.fail .star-penalty {
+  color: #dc2626;
+  font-size: 1rem;
+}
+.verdict-box.fail .verdict-box-note {
+  font-size: 0.82rem;
+  color: #7f1d1d;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed #fca5a5;
+}
+
+.verdict-box.success {
+  background: #ecfdf5;
+  border: 1.5px solid #a7f3d0;
+  color: #065f46;
+}
+.verdict-box.success .amt-gain {
+  color: #059669;
+  font-size: 1.05rem;
+}
+.verdict-box.success .verdict-box-footer {
+  border-top: 1px dashed #6ee7b7;
+  margin-top: 6px;
+  padding-top: 6px;
+}
+.verdict-box.success .amt-total {
+  color: #047857;
+  font-size: 1.15rem;
 }
 .suspect-list {
   display: flex;
@@ -1161,6 +1275,111 @@ body:not(.selling)::before{content:'';position:fixed;inset:0;z-index:-1;backgrou
 .police-fine-confirm-btn:hover {
   background: #b91c1c !important;
 }
+
+/* ===== BANNER NÂNG CẤP CẤP ĐỘ (LEVEL UPGRADES) ===== */
+.upg-lv-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: linear-gradient(135deg, #fffcf6, #fff7eb);
+  border: 1.5px solid #fed7aa;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.08);
+}
+.ulv-info {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+.ulv-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #7c2d12;
+  background: #ffedd5;
+  border-radius: 999px;
+  padding: 2px 8px;
+  margin-bottom: 4px;
+  letter-spacing: 0.3px;
+}
+.ulv-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ulv-desc {
+  font-size: 0.8rem;
+  color: #475569;
+  margin-top: 2px;
+  line-height: 1.35;
+}
+.ulv-current {
+  font-size: 0.78rem;
+  color: #15803d;
+  margin-top: 3px;
+  font-weight: 600;
+}
+.ulv-current b {
+  color: #166534;
+  font-weight: 800;
+}
+.ulv-btn {
+  flex-shrink: 0;
+  min-width: 96px;
+  padding: 6px 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: var(--pink) !important;
+  border: 2px solid var(--pink-d) !important;
+  border-radius: 12px !important;
+  color: #1c1917 !important;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(239, 111, 142, 0.25) !important;
+  transition: all 0.15s ease;
+}
+.ulv-btn:hover:not(:disabled) {
+  filter: brightness(0.96);
+  transform: translateY(-1px);
+}
+.ulv-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.ulv-btn .ulv-next {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #1c1917 !important; /* Khi nền sáng, chữ màu tối rõ nét */
+  line-height: 1.15;
+}
+.ulv-btn .ulv-cost {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #1c1917 !important; /* Khi nền sáng, chữ màu tối rõ nét */
+  line-height: 1.15;
+  margin-top: 1px;
+}
+.ulv-btn:disabled {
+  background: #f5f5f4 !important;
+  border-color: #d6d3d1 !important;
+  opacity: 0.6 !important;
+  cursor: not-allowed;
+}
+.ulv-btn:disabled .ulv-next,
+.ulv-btn:disabled .ulv-cost {
+  color: #78716c !important;
+}
+
+
+
 
 
 
