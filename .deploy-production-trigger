@@ -1,1 +1,2 @@
-deploy production: Aunomay 1.0.0 + Friends + Full Topping + referral QR rewards
+deploy: 2026-09-28T15:12:00Z
+reason: fix referral take 500, UTF-8 headers/cache, friend referral +300k, account settings UI
