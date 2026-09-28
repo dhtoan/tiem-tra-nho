@@ -115,6 +115,10 @@ jobs:
           database_name = "tiem-tra-nho"
           database_id = "${{ steps.d1.outputs.database_id }}"
           migrations_dir = "migrations"
+
+          [[routes]]
+          pattern = "tiemtranho.aunomay.com"
+          custom_domain = true
           EOF2
 
       - name: Apply remote D1 migrations
