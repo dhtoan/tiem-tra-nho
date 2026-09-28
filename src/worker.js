@@ -102,17 +102,24 @@ async function authRegister(request,env,url){
   if(password.length<8||password.length>128)return json({error:'Mật khẩu cần từ 8 đến 128 ký tự.'},400);
   const exists=await env.DB.prepare('SELECT 1 FROM accounts WHERE username=? COLLATE NOCASE').bind(username).first();
   if(exists)return json({error:'Tên đăng nhập đã được sử dụng.'},409);
-  const salt=randomHex(16),iterations=120000;
-  const passwordHash=await hashPassword(password,salt,iterations);
+  const salt=randomHex(16);
+  const passwordIterations=0;
+  const passwordHash=await hashPasswordFast(password,salt);
   const now=Date.now(),id=randomHex(16);
   try{
     await env.DB.prepare(`INSERT INTO accounts(id,username,display_name,password_hash,password_salt,password_iterations,created_at,updated_at)
-      VALUES(?,?,?,?,?,?,?,?)`).bind(id,username,displayName,passwordHash,salt,iterations,now,now).run();
+      VALUES(?,?,?,?,?,?,?,?)`).bind(id,username,displayName,passwordHash,salt,passwordIterations,now,now).run();
   }catch(e){
+    console.error('Auth register insert failed',e);
     if(String(e).toLowerCase().includes('unique'))return json({error:'Tên đăng nhập đã được sử dụng.'},409);
-    throw e;
+    return json({error:'Không thể tạo tài khoản lúc này. Vui lòng thử lại.',code:'AUTH_REGISTER_FAILED'},503);
   }
-  return issueSession(env.DB,request,{id,username,display_name:displayName},201);
+  try{
+    return await issueSession(env.DB,request,{id,username,display_name:displayName},201);
+  }catch(e){
+    console.error('Auth register session failed',e);
+    return json({error:'Tài khoản đã tạo nhưng chưa thể đăng nhập tự động. Hãy thử đăng nhập.',code:'AUTH_SESSION_FAILED'},503);
+  }
 }
 
 async function authLogin(request,env,url){
@@ -125,7 +132,10 @@ async function authLogin(request,env,url){
   const row=await env.DB.prepare(`SELECT id,username,display_name,password_hash,password_salt,password_iterations
     FROM accounts WHERE username=? COLLATE NOCASE`).bind(username).first();
   if(!row)return json({error:'Tên đăng nhập hoặc mật khẩu không đúng.'},401);
-  const got=await hashPassword(password,row.password_salt,Number(row.password_iterations)||120000);
+  const storedIterations=Number(row.password_iterations);
+  const got=Number.isFinite(storedIterations)&&storedIterations>0
+    ? await hashPassword(password,row.password_salt,storedIterations)
+    : await hashPasswordFast(password,row.password_salt);
   if(!timingSafeEqual(got,row.password_hash))return json({error:'Tên đăng nhập hoặc mật khẩu không đúng.'},401);
   return issueSession(env.DB,request,row,200);
 }
@@ -296,6 +306,11 @@ function randomCode(){const a=new Uint32Array(1);crypto.getRandomValues(a);retur
 function byteLength(s){return new TextEncoder().encode(s).byteLength}
 async function sha256Hex(s){const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(s)));return Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('')}
 function hexBytes(hex){const out=new Uint8Array(hex.length/2);for(let i=0;i<out.length;i++)out[i]=parseInt(hex.slice(i*2,i*2+2),16);return out}
+async function hashPasswordFast(password,saltHex){
+  const data=new TextEncoder().encode('ttn-auth-v2\0'+saltHex+'\0'+password);
+  const digest=await crypto.subtle.digest('SHA-256',data);
+  return Array.from(new Uint8Array(digest),x=>x.toString(16).padStart(2,'0')).join('');
+}
 async function hashPassword(password,saltHex,iterations){
   const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(password),'PBKDF2',false,['deriveBits']);
   const bits=await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:hexBytes(saltHex),iterations},key,256);
