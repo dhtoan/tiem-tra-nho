@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 const worker=await readFile(new URL('../src/worker.js',import.meta.url),'utf8');
 if(!worker.includes('async function hashPasswordFast'))throw new Error('new account hash must avoid PBKDF2 CPU spike');
 if(!worker.includes('const passwordIterations=0')&&!worker.includes('const passwordIterations = 0'))throw new Error('new accounts must mark fast hash with iterations=0');
-if(!worker.includes('storedIterations > 0'))throw new Error('login must preserve PBKDF2 compatibility for old accounts');
+if(!/storedIterations\s*>\s*0/.test(worker))throw new Error('login must preserve PBKDF2 compatibility for old accounts');
 if(!worker.includes('hashPasswordFast(password'))throw new Error('register/login must use fast salted hash');
 
 const account=await readFile(new URL('../public/account-sync.js',import.meta.url),'utf8');
