@@ -9,7 +9,8 @@ const files={
   build:await readFile(new URL('../scripts/build.mjs',import.meta.url),'utf8'),
   manifest:await readFile(new URL('../public/manifest.webmanifest',import.meta.url),'utf8'),
   version:await readFile(new URL('../public/version.json',import.meta.url),'utf8'),
-  pkg:await readFile(new URL('../package.json',import.meta.url),'utf8')
+  pkg:await readFile(new URL('../package.json',import.meta.url),'utf8'),
+  sw:await readFile(new URL('../public/sw.js',import.meta.url),'utf8')
 };
 
 if(!files.game.includes("const GAME_VERSION='1.0.0'"))throw new Error('Aunomay Tiệm Trà Nhỏ must restart at version 1.0.0');
@@ -31,4 +32,10 @@ if(!files.build.includes("banbe.css"))throw new Error('production build must loa
 if(!files.build.includes("banbe.js"))throw new Error('production build must load banbe.js');
 if(JSON.parse(files.version).version!=='1.0.0')throw new Error('version.json must be 1.0.0');
 if(JSON.parse(files.pkg).version!=='1.0.0')throw new Error('package.json must be 1.0.0');
+const manifest=JSON.parse(files.manifest);
+if(manifest.id!=='/'||manifest.launch_handler?.client_mode!=='navigate-existing')throw new Error('installed PWA launch identity/handler missing');
+for(const marker of ['taxThreshold:1000000000','vat:2.4','function taxSnapshot()','Thuế đã phát sinh','Doanh thu lũy kế năm']){
+  if(!files.game.includes(marker))throw new Error('2026 tax UX missing '+marker);
+}
+if(!files.sw.includes('AUNOMAY_REFERRAL'))throw new Error('service worker referral bridge missing');
 console.log('Tiệm Trà Nhỏ Aunomay 1.0.0 feature import checks passed');
