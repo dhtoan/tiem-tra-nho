@@ -1,4 +1,4 @@
-const CACHE='tiem-tra-nho-v100-utf8-ref2';
+const CACHE='tiem-tra-nho-v101-ref-pwa-tax';
 const CORE=[
   '/','/index.html',
   '/css/style.css','/css/baucua.css','/css/xidach.css','/css/banbe.css',
@@ -28,4 +28,13 @@ self.addEventListener('fetch',event=>{
     return;
   }
   event.respondWith(caches.match(req).then(hit=>hit||fetch(req).then(r=>{if(r.ok&&r.status!==206){const copy=r.clone();caches.open(CACHE).then(c=>c.put(req,copy))}return r})));
+});
+
+self.addEventListener('message',event=>{
+  const data=event.data||{};
+  if(data.type!=='AUNOMAY_REFERRAL')return;
+  event.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(clients=>Promise.all(clients.map(client=>{
+    if(event.source&&client.id===event.source.id)return null;
+    return client.postMessage({type:'AUNOMAY_REFERRAL',code:data.code||'',friend:data.friend||''});
+  }))));
 });
