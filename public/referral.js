@@ -41,7 +41,7 @@ function ensureDlg(){
   document.body.appendChild(d);
   $('arClose').onclick=()=>d.close();$('arLater').onclick=()=>d.close();
   $('arLogin').onclick=()=>{d.close();document.getElementById('cloudAccountBtn')?.click()};
-  $('arCopy').onclick=()=>shareLink(false);$('arShare').onclick=()=>shareLink(true);$('arQr').onclick=makeQrCard;
+  $('arCopy').onclick=()=>shareLink(false);$('arShare').onclick=()=>shareLink(true);$('arQr').onclick=()=>makeQrCard();
   return d;
 }
 function status(t){const e=$('arStatus');if(e)e.textContent=t||''}
