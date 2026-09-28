@@ -97,13 +97,27 @@ async function auth(){
 async function referralInfo(){
   const r=await api('/api/referral/me',{method:'GET'});if(!r.ok)return null;info=r.j;return info
 }
+async function isOwnReferralCode(code){
+  code=cleanCode(code);if(!code)return false;
+  if(!info)await referralInfo();
+  return !!(info&&cleanCode(info.code)===code);
+}
 async function claimPending({take=true}={}){
   const code=pendingCode();
   const user=await auth();if(!user)return false;
   if(code){
+    if(await isOwnReferralCode(code)){
+      clearPending();
+      status('Bạn không thể dùng link giới thiệu của chính mình. Không có thưởng nào được cộng.');
+      return false;
+    }
     const r=await api('/api/referral/claim',{method:'POST',body:JSON.stringify({code})});
-    if(r.ok||r.status===409)clearPending();
-    else return false;
+    if(r.ok||r.status===409){clearPending()}
+    else if(r.j?.selfReferral){
+      clearPending();
+      status('Bạn không thể tự giới thiệu chính mình. Không có thưởng nào được cộng.');
+      return false;
+    }else return false;
   }
   if(take)await takeRewards();
   return true;
@@ -116,7 +130,7 @@ async function showLandingInvite(){
   $('arInviteBtns').hidden=!user;
   $('arGuest').hidden=!!user;$('arGuestBtns').hidden=!!user;
   $('arSigned').hidden=true;
-  if(user){await claimPending({take:false});status('Lời mời đã gắn vào tài khoản. Mở app trên màn hình chính để nhận +300k, hoặc nhận ngay tại trình duyệt này.')}
+  if(user){const ok=await claimPending({take:false});if(ok)status('Lời mời đã gắn vào tài khoản. Mở app trên màn hình chính để nhận +300k, hoặc nhận ngay tại trình duyệt này.');}
   else status('Đăng nhập / tạo tài khoản để giữ lời mời khi chuyển từ trình duyệt sang app màn hình chính.');
   if(!d.open)d.showModal();
   return true;
@@ -199,6 +213,14 @@ async function makeQrCard(linkOverride='',codeOverride=''){
     const blob=await new Promise(r=>c.toBlob(r,'image/png',.95));
     if(!blob)throw new Error('Không tạo được ảnh');
     const fileName='tiem-tra-nho-ref-'+String(shareCode||'share').replace(/[^A-Za-z0-9_-]/g,'')+'.png';
+    const desktopLike=!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent||'')&&!(navigator.maxTouchPoints>1);
+    if(desktopLike){
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');a.href=url;a.download=fileName;a.rel='noopener';document.body.appendChild(a);a.click();a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),30000);
+      status('Đã tải ảnh QR PNG về máy tính.');
+      return true;
+    }
     const file=new File([blob],fileName,{type:'image/png'});
     const shareData={files:[file],title:gameName()+' — QR +300k',text:'Quét QR để chơi cùng mình. Mỗi người cùng nhận +300k vốn 🎁\n'+shareUrl};
     let canFileShare=false;
