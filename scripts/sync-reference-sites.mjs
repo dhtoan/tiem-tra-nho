@@ -93,17 +93,17 @@ async function captureSite(browser, source){
 
   const clickLog=[];
   const blocked=/delete|remove|reset|clear data|xoá dữ liệu|xóa dữ liệu|factory|sign out|đăng xuất/i;
-  for(let round=0; round<4; round++){
+  for(let round=0; round<2; round++){
     const count=await page.locator('button,[role="button"],a[href="#"],input[type="button"],input[type="submit"]').count();
-    for(let i=0;i<Math.min(count,90);i++){
+    for(let i=0;i<Math.min(count,50);i++){
       const loc=page.locator('button,[role="button"],a[href="#"],input[type="button"],input[type="submit"]').nth(i);
       try{
         if(!(await loc.isVisible())) continue;
         const label=((await loc.innerText().catch(()=>''))||await loc.getAttribute('aria-label')||'').trim().slice(0,120);
         if(blocked.test(label)) continue;
-        await loc.click({timeout:1200});
+        await loc.click({timeout:450});
         clickLog.push(label||('#'+i));
-        await page.waitForTimeout(180);
+        await page.waitForTimeout(90);
         await page.keyboard.press('Escape').catch(()=>{});
       }catch{}
     }
