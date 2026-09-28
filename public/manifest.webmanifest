@@ -1,0 +1,15 @@
+{
+  "name": "Tiệm Trà Nhỏ",
+  "short_name": "Tiệm Trà",
+  "description": "Game quản lý tiệm trà Việt Nam — pha chế, bán hàng, nâng cấp quán và xây thương hiệu.",
+  "lang": "vi",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fdf3e4",
+  "theme_color": "#ef6f8e",
+  "icons": [
+    {"src":"/img/app-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
