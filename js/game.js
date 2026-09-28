@@ -3222,7 +3222,7 @@ function endDay(){
     </div>` : '';
   })()}
   ${broke?`<p>${ico('trophy')} ${S.best||0} ngày</p><button class="big" id="go">Mở quán mới</button>`
-  :`${!broke&&S.ev?`<p class="lvup">${ico(EVS[S.ev.id].ic)} Ngày mai: <b>${EVS[S.ev.id].n}</b>. ${evText(S.ev)}</p>`:''}${nextLv?`<p class="lvup">${ico('warn')} Từ ngày ${S.day}: ${LV_TXT[nextLv].toLowerCase()}. Đầu ngày sẽ có hướng dẫn.</p>`:''}${justOnline?`<p class="lvup">${ico('phone')} Mở đơn online Soppi! ${(S.tablets||0)?'':'Mua tablet ở Nâng cấp > Trang bị để đơn đổ về.'}</p>`:''}
+  :`${!broke&&S.ev?`<p class="lvup">${ico(EVS[S.ev.id].ic)} Ngày mai: <b>${EVS[S.ev.id].n}</b>. ${evText(S.ev)}</p>`:''}${nextLv?`<p class="lvup">${ico('warn')} Từ ngày ${S.day}: ${LV_TXT[nextLv].toLowerCase()}. Đã mở thêm màu giao diện: <b>${THEMES.filter(t=>t.lv===nextLv).map(t=>t.n).join(', ')}</b> và thiết kế trang trí Cấp ${nextLv}.</p>`:''}${justOnline?`<p class="lvup">${ico('phone')} Mở đơn online Soppi! ${(S.tablets||0)?'':'Mua tablet ở Nâng cấp > Trang bị để đơn đổ về.'}</p>`:''}
   <button class="sbtn" id="seeSum" style="width:100%;padding:10px;margin-top:6px">${ico('chart')} Tổng kết</button><button class="big" id="go" style="margin-top:8px">Ngày ${S.day} ➜</button>`}`;
   $('modal').hidden=false;$('go').focus();
   const close=tab=>{$('modal').hidden=true;if(broke){const n=S.shopName;S=fresh();S.shopName=n;save()}R.tab=tab;R.sumMode='day';R.sumIdx=null;renderPrep();window.scrollTo(0,0)};
