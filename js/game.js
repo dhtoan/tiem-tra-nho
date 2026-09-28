@@ -174,7 +174,7 @@ const DEFAULT_CONFIG={
   utilBase:20000,           // điện nước cơ bản mỗi ngày
   utilPerUpg:8000,          // điện nước tăng thêm cho mỗi trang bị
   taxThreshold:1000000000, // ngưỡng doanh thu năm không chịu GTGT/TNCN (NĐ 141/2026, hiệu lực 01/01/2026)
-  vat:3, pit:1.5,           // dịch vụ ăn uống: GTGT 3% doanh thu; TNCN 1,5% phần doanh thu vượt ngưỡng nếu chọn phương pháp tỷ lệ
+  vat:2.4, pit:1.5,         // 2026: GTGT trực tiếp dịch vụ ăn uống 3% được giảm 20% còn 2,4%; TNCN 1,5% phần vượt ngưỡng
   pitProfit15:15, pitProfit17:17, pitProfit20:20, // phương pháp TNCN theo thu nhập tính thuế khi áp dụng
   online:{minProfit:15000000,fromDay:60,minRating:4.0}, // cả 3 điều kiện để mở đơn online; phải giữ đủ sao để tiếp tục nhận đơn
   levels:{l2:6,l3:30,l4:60}, // ngày bắt đầu mỗi cấp độ
@@ -3185,6 +3185,7 @@ function endDay(){
     <div><span>${ico('receipt')} Chi phí</span><span class="neg">−${fmt(cost)}</span></div>
     ${r.wage-(r.ot||0)?`<div><span class="wl">${ico('people')} Lương nhân viên</span><span class="wl">${fmt(r.wage-(r.ot||0))}</span></div>`:''}${r.ot?`<div><span class="wl">${ico('clock')} Tăng ca nhân viên pha chế</span><span class="wl">${fmt(r.ot)}</span></div>`:''}${r.bad?`<div><span class="wl">${ico('warn')} Sự cố mất tiền</span><span class="wl">${fmt(r.bad)}</span></div>`:''}
     ${r.loanInt?`<div><span class="wl">${ico('money')} Trả nợ (lãi ${fmt(r.loanInt)})</span><span class="wl">${fmt(r.loanOut+r.loanInt)}</span></div>`:''}
+    ${r.tax?`<div><span class="wl">${ico('receipt')} Thuế GTGT 2026 (${CFG.vat}%)</span><span class="wl">${fmt(r.taxVat||0)}</span></div><div><span class="wl">${ico('receipt')} Thuế TNCN</span><span class="wl">${fmt(r.taxPit||0)}</span></div>`:''}
     ${r.guard?`<div><span class="wl">${ico('people')} Bảo vệ thu lại</span><span class="wl">+${fmt(r.guard)}</span></div>`:''}
     ${r.staffTip?`<div><span class="wl">${ico('people')} Tip nhân viên giữ (quán không nhận)</span><span class="wl">${fmt(r.staffTip)}</span></div>`:''}
     ${r.gzStolen?`<div><span class="wl">🤫 Gen Z đá bill (thiếu giám sát)</span><span class="neg">−${fmt(r.gzStolen)}</span></div>`:''}
