@@ -47,6 +47,7 @@ async function handleApi(request,env,url){
   if(p==='/api/auth/logout')return authLogout(request,env,url);
   if(p==='/api/auth/me')return authMe(request,env);
   if(p==='/api/account/save')return accountSave(request,env,url);
+  if(p==='/api/import/legacy')return importLegacySave(request,env,url);
 
   // Legacy 8-digit backup API kept for backwards compatibility.
   if(p==='/api/save'&&request.method==='POST')return saveCloudCode(request,env);
@@ -206,6 +207,36 @@ async function sessionUser(db,request){
 }
 
 // Legacy cloud-code backup.
+async function importLegacySave(request,env,url){
+  if(request.method!=='POST')return methodNotAllowed('POST');
+  if(!sameOrigin(request,url))return json({error:'Yêu cầu không hợp lệ.'},403);
+  const b=await bodyJson(request); if(!b)return json({error:'Dữ liệu không hợp lệ.'},400);
+  const provider=String(b.provider||'').toLowerCase();
+  const code=String(b.code||'').replace(/\s+/g,'');
+  const key=String(b.key||'');
+  if(provider!=='trongnhi')return json({error:'Nguồn nhập chưa được hỗ trợ.'},400);
+  if(!/^\d{8}$/.test(code))return json({error:'Mã nguồn phải có 8 số.'},400);
+  if(!/^[a-z0-9]{16,64}$/i.test(key))return json({error:'Khóa sao lưu không hợp lệ.'},400);
+
+  const src='https://tiemtranho-api.trongnhi110266.workers.dev/load?code='+encodeURIComponent(code);
+  const r=await fetch(src,{headers:{accept:'application/json'}});
+  let j={}; try{j=await r.json()}catch{}
+  if(!r.ok||typeof j.data!=='string')return json({error:j.error||'Không đọc được bản lưu từ nguồn cũ.'},502);
+  const data=j.data;
+  if(!data.startsWith('TTN1.')||byteLength(data)>MAX_CODE_SAVE_BYTES)return json({error:'Bản lưu nguồn không hợp lệ.'},422);
+
+  const ownerHash=await sha256Hex(key),now=Math.floor(Date.now()/1000);
+  for(let i=0;i<20;i++){
+    const newCode=randomCode();
+    try{
+      await env.DB.prepare('INSERT INTO cloud_saves(code,owner_hash,data,created_at,updated_at) VALUES(?,?,?,?,?)')
+        .bind(newCode,ownerHash,data,now,now).run();
+      return json({ok:true,code:newCode,data,importedFrom:provider,sourceCode:code},201);
+    }catch(e){if(!String(e).toLowerCase().includes('unique'))throw e}
+  }
+  return json({error:'Chưa tạo được mã mới, vui lòng thử lại.'},503);
+}
+
 async function saveCloudCode(request,env){
   if(!sameOrigin(request,new URL(request.url)))return json({error:'Origin không hợp lệ'},403);
   if(!(await allowRate(env,request,'save',120)))return json({error:'Thao tác quá nhanh, thử lại sau.'},429);
