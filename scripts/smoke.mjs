@@ -44,7 +44,7 @@ if(stale.r.status!==409||stale.j.revision!==1)fail('revision conflict was not en
 const legacy=await req('/api/save',{
   method:'POST',
   headers:{'content-type':'application/json'},
-  body:JSON.stringify({key:'ci-smoke-owner-key-1234',data:'TTN1.ci-smoke'})
+  body:JSON.stringify({key:'cismokeownerkey123456789',data:'TTN1.ci-smoke'})
 });
 if(legacy.r.status!==201||!/^[0-9]{8}$/.test(String(legacy.j.code||'')))fail('legacy backup create failed');
 const legacyLoad=await req('/api/load?code='+legacy.j.code);
