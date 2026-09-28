@@ -1,9 +1,9 @@
-const CACHE='tiem-tra-nho-v124711-sync1';
+const CACHE='tiem-tra-nho-v100-utf8-ref2';
 const CORE=[
   '/','/index.html',
-  '/css/style.css','/css/baucua.css','/css/xidach.css',
-  '/js/game.js','/js/baucua.js','/js/xidach.js',
-  '/account-sync.css','/account-sync.js','/bootstrap.js',
+  '/css/style.css','/css/baucua.css','/css/xidach.css','/css/banbe.css',
+  '/js/banbe.js','/js/game.js','/js/baucua.js','/js/xidach.js',
+  '/account-sync.css','/account-sync.js','/referral.css','/referral.js','/vendor/qrcode.min.js','/bootstrap.js',
   '/manifest.webmanifest',
   '/img/ga.png','/img/bau.png','/img/ca.png','/img/cua.png','/img/tom.png','/img/nai.png','/img/xocdia.png',
   '/img/cup.png','/img/bg.jpg','/img/bg2.jpg','/img/kho.jpg','/img/splash2.jpg','/img/faces.webp','/img/ship.webp','/img/star.webp'
