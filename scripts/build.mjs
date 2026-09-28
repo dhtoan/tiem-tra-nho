@@ -1,27 +1,30 @@
-import { cp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
-import { brotliDecompressSync } from 'node:zlib';
-const brotilDecompress = brotliDecompressSync;
-import { createHash } from 'node:crypto';
+import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const root=new URL('../',import.meta.url).pathname;
 const out=join(root,'dist');
 await rm(out,{recursive:true,force:true});
 await mkdir(out,{recursive:true});
+
+// Keep production helpers/PWA files.
 await cp(join(root,'public'),out,{recursive:true});
-const srcDir=join(root,'src');
-const indexCompressed=Buffer.from((await readFile(join(srcDir,'index.br.b64'),'utf8')).trim(),'base64');
-const index=brotilDecompress(indexCompressed);
-const indexExpected=(await readFile(join(srcDir,'index.expected.sha256'),'utf8')).trim();
-const indexActual=createHash('sha256').update(index).digest('hex');
-if(indexActual!==indexExpected)throw new Error(`index checksum mismatch: ${indexActual}`);
-await writeFile(join(out,'index.html'),index);
-const chunks=(await readdir(srcDir)).filter(x=>x.startsWith('game.br.b64.')).sort();
-if(!chunks.length)throw new Error('missing compressed game source');
-let b64='';for(const f of chunks)b64+=await readFile(join(srcDir,f),'utf8');
-const game=brotliDecompressSync(Buffer.from(b64,'base64'));
-const expected=(await readFile(join(srcDir,'game.expected.sha256'),'utf8')).trim();
-const actual=createHash('sha256').update(game).digest('hex');
-if(actual!==expected)throw new Error(`game source checksum mismatch: ${actual}`);
-await writeFile(join(out,'game.js'),game);
-console.log(`build complete: ${out} (${game.length} byte game bundle)`);
+
+// Runtime from Tiệm Trà Mơ Ước 12.47.11.
+for(const dir of ['css','js','img']){
+  await cp(join(root,dir),join(out,dir),{recursive:true});
+}
+
+let html=await readFile(join(root,'reference/tiemtramouoc/index.html'),'utf8');
+html=html
+  .replace(/https:\/\/tiemtramouoc\.tensorship\.tech\//g,'/')
+  .replace(/(?:css\/style\.css|\/css\/style\.css)\?v=12\.47\.11/g,'/css/style.css')
+  .replace(/(?:css\/baucua\.css|\/css\/baucua\.css)\?v=12\.47\.11/g,'/css/baucua.css')
+  .replace(/(?:css\/xidach\.css|\/css\/xidach\.css)\?v=12\.47\.11/g,'/css/xidach.css')
+  .replace(/(?:js\/game\.js|\/js\/game\.js)\?v=12\.47\.11/g,'/js/game.js')
+  .replace(/(?:js\/baucua\.js|\/js\/baucua\.js)\?v=12\.47\.11/g,'/js/baucua.js')
+  .replace(/(?:js\/xidach\.js|\/js\/xidach\.js)\?v=12\.47\.11/g,'/js/xidach.js')
+  .replace(/<script[^>]+static\.cloudflareinsights\.com[^>]*><\/script>/gi,'')
+  .replace(/<\/body>/i,'<script src="/bootstrap.js"></script></body>');
+
+await writeFile(join(out,'index.html'),html);
+console.log('build complete: Tiệm Trà Mơ Ước 12.47.11 runtime + Aunomay Worker/PWA');
