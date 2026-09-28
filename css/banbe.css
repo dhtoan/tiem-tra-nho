@@ -1,0 +1,447 @@
+/* ===== BANBE.CSS - TÍNH NĂNG BẠN BÈ TIỆM TRÀ NHỎ ===== */
+
+.bb-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+/* Sub-tabs trong tab Bạn bè */
+.bb-subtabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  border-bottom: 2px solid var(--line);
+  margin-bottom: 8px;
+}
+.bb-subtab {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--soft);
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+}
+.bb-subtab.on {
+  background: var(--pink);
+  border-color: var(--pink-d);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(239, 111, 142, 0.25);
+}
+
+/* Thẻ Trà Thủ của tôi */
+.bb-my-card {
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border: 2px solid #fed7aa;
+  border-radius: 16px;
+  padding: 14px;
+  position: relative;
+  box-shadow: 0 3px 10px rgba(249, 115, 22, 0.1);
+}
+.bb-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.bb-avatar-wrap {
+  width: 58px;
+  height: 58px;
+  background: #fff;
+  border: 2.5px solid #fb923c;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+  cursor: pointer;
+  position: relative;
+}
+.bb-avatar-edit-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  background: #ea580c;
+  color: #fff;
+  font-size: 0.65rem;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #fff;
+}
+.bb-card-info {
+  flex: 1;
+  min-width: 0;
+}
+.bb-card-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #9a3412;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bb-card-shop {
+  font-size: 0.8rem;
+  color: #7c2d12;
+  font-weight: 600;
+}
+.bb-card-quote {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: #c2410c;
+  background: #fff;
+  border: 1px dashed #f97316;
+  border-radius: 8px;
+  padding: 4px 8px;
+  margin-top: 6px;
+  display: inline-block;
+}
+
+.bb-fav-order {
+  margin-top: 10px;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 0.82rem;
+  color: #475569;
+}
+.bb-fav-title {
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.bb-fav-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+.bb-fav-tag {
+  background: #f1f5f9;
+  color: #334155;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+/* Nút hành động thẻ */
+.bb-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.bb-btn {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 0.84rem;
+  font-weight: 800;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+.bb-btn.primary {
+  background: #ea580c;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.3);
+}
+.bb-btn.secondary {
+  background: #fff;
+  border: 1.5px solid #fdba74;
+  color: #9a3412;
+}
+.bb-btn:hover {
+  filter: brightness(0.95);
+  transform: translateY(-1px);
+}
+.bb-btn:active {
+  transform: translateY(1px);
+}
+
+/* Hộp nhập mã vạn năng */
+.bb-redeem-box {
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 12px;
+}
+.bb-redeem-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bb-redeem-input-row {
+  display: flex;
+  gap: 8px;
+}
+.bb-redeem-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1.5px solid #94a3b8;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+.bb-redeem-input:focus {
+  border-color: var(--pink);
+  outline: none;
+}
+
+/* Danh sách bạn quen */
+.bb-friends-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bb-friend-item {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+}
+.bb-friend-face {
+  width: 44px;
+  height: 44px;
+  background: #fef08a;
+  border: 2px solid #eab308;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+.bb-friend-details {
+  flex: 1;
+  min-width: 0;
+}
+.bb-friend-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bb-friend-name {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+.bb-friend-vip-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #ca8a04;
+  background: #fef9c3;
+  border: 1px solid #fde047;
+  border-radius: 6px;
+  padding: 1px 5px;
+}
+.bb-friend-sub {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+.bb-friend-quote {
+  font-size: 0.76rem;
+  color: #d97706;
+  font-style: italic;
+  margin-top: 1px;
+}
+.bb-friend-ops {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.bb-sm-btn {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #334155;
+}
+.bb-sm-btn:hover {
+  background: #e2e8f0;
+}
+.bb-sm-btn.del {
+  color: #ef4444;
+}
+
+/* Quà tặng Trà Hữu */
+.bb-gift-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.bb-gift-card {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.bb-gift-card.on {
+  border-color: #ea580c;
+  background: #fff7ed;
+}
+.bb-gift-icon {
+  font-size: 1.8rem;
+}
+.bb-gift-name {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+.bb-gift-val {
+  font-size: 0.75rem;
+  color: #ea580c;
+  font-weight: 700;
+}
+
+/* Thách đấu doanh thu */
+.bb-chal-banner {
+  background: linear-gradient(135deg, #1e1b4b, #312e81);
+  color: #fff;
+  border-radius: 16px;
+  padding: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.bb-chal-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fde047;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bb-chal-rec {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #fff;
+  margin: 6px 0;
+}
+.bb-chal-desc {
+  font-size: 0.8rem;
+  color: #c7d2fe;
+  line-height: 1.35;
+}
+
+/* Hào quang VIP Bạn Bè trên hàng đợi lane */
+.lane-btn.friend-vip {
+  box-shadow: 0 0 14px #eab308, inset 0 0 6px #fde047 !important;
+  border: 2px solid #ca8a04 !important;
+  animation: haloPulse 1.4s ease-in-out infinite alternate;
+}
+.q3friend-vip {
+  position: absolute;
+  top: -8px;
+  right: -6px;
+  font-size: 1rem;
+  background: #fef08a;
+  border: 1px solid #ca8a04;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  animation: crownBounce 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes haloPulse {
+  from {
+    box-shadow: 0 0 10px #f59e0b, inset 0 0 4px #fde047;
+  }
+  to {
+    box-shadow: 0 0 20px #eab308, 0 0 30px rgba(250, 204, 21, 0.4), inset 0 0 8px #fef08a;
+  }
+}
+
+@keyframes crownBounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-3px); }
+}
+
+/* Dialog Ghé thăm quán */
+.bb-visit-shop {
+  text-align: center;
+}
+.bb-visit-header {
+  background: #fdf3e4;
+  border: 2px solid #ead7bd;
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+.bb-visit-tem-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
+}
+.bb-visit-bests {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 10px 0;
+  flex-wrap: wrap;
+}
+.bb-visit-best-item {
+  background: #fff;
+  border: 1.5px solid #fed7aa;
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #7c2d12;
+}
+
+/* Danh hiệu / Trophy */
+.bb-trophy-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #fef08a, #fde047);
+  color: #854d0e;
+  border: 1.5px solid #ca8a04;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  box-shadow: 0 2px 5px rgba(202, 138, 4, 0.2);
+}
