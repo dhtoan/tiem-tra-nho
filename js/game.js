@@ -191,6 +191,7 @@ if(!(CFG.cfgVer>=36)){CFG.teaCap=CFG.teaCap||40000;CFG.teaCapMatcha=CFG.teaCapMa
 if(!(CFG.cfgVer>=37)){CFG.cfgVer=37;try{localStorage.setItem(OWNER_SAVE,JSON.stringify(CFG))}catch(e){}}
 const LIFE_OLD={f_vai:3,f_dao:3,f_dau:3,f_nho:3,f_xoai:1,f_tao:3,f_me:3,f_dua:1,f_choco:3,cheese:1,fmatcha:1,fsalt:1,fube:1,pmtuoi:1};
 if(!(CFG.cfgVer>=38)){Object.keys(LIFE_OLD).forEach(k=>CFG.life[k]=ITEMS[k].life);CFG.wage2=200000;CFG.cfgVer=38;try{localStorage.setItem(OWNER_SAVE,JSON.stringify(CFG))}catch(e){}}
+if(!(CFG.cfgVer>=39)){CFG.taxThreshold=1000000000;CFG.vat=2.4;CFG.pit=1.5;CFG.pitProfit15=15;CFG.pitProfit17=17;CFG.pitProfit20=20;CFG.cfgVer=39;try{localStorage.setItem(OWNER_SAVE,JSON.stringify(CFG))}catch(e){}}
 if(!CFG.wageGz){CFG.wageGz=275000;saveCfg()}
 /* hương: mua theo chai, giá mỗi ly = giá chai / số ly, hạn dùng theo chai */
 FLAV_KEYS.forEach(k=>{CFG.cost[k]=Math.round(CFG.bottle/CFG.bottleN);CFG.life[k]=CFG.bottleLife});
