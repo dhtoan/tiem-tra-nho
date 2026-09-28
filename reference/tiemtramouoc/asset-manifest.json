@@ -3,28 +3,36 @@
     "id": "tiemtramouoc",
     "url": "https://tiemtramouoc.tensorship.tech/"
   },
-  "generatedAt": "2026-09-28T10:38:14.671Z",
-  "count": 48,
+  "generatedAt": "2026-09-28T13:55:01.327Z",
+  "count": 51,
   "assets": [
     {
-      "url": "https://tiemtramouoc.tensorship.tech/css/baucua.css?v=12.47.11",
-      "localPath": "css/baucua__q_bae1f1c89c.css",
+      "url": "https://tiemtramouoc.tensorship.tech/css/banbe.css?v=12.47.19",
+      "localPath": "css/banbe__q_61670275c2.css",
+      "contentType": "text/css; charset=utf-8",
+      "status": 200,
+      "bytes": 8321,
+      "sha256": "3e2733bbc47ab704cd2a11694efd0cd94820b6cb6e32d26856b650bf2a9e23ae"
+    },
+    {
+      "url": "https://tiemtramouoc.tensorship.tech/css/baucua.css?v=12.47.19",
+      "localPath": "css/baucua__q_61670275c2.css",
       "contentType": "text/css; charset=utf-8",
       "status": 200,
       "bytes": 12957,
       "sha256": "6982015244c9a49b3d258c6186e94fa53d3d031b802c1013e71cf1d4a5e9490e"
     },
     {
-      "url": "https://tiemtramouoc.tensorship.tech/css/style.css?v=12.47.11",
-      "localPath": "css/style__q_bae1f1c89c.css",
+      "url": "https://tiemtramouoc.tensorship.tech/css/style.css?v=12.47.19",
+      "localPath": "css/style__q_61670275c2.css",
       "contentType": "text/css; charset=utf-8",
       "status": 200,
-      "bytes": 77054,
-      "sha256": "12a75c32e471da509b1f164b878b9fc3dbefdebc82bc4fc8080c8d1c16e82ff7"
+      "bytes": 81650,
+      "sha256": "d3cb988bd483d8b08b5fccdfef6ba1aef51fcb6de6cc60952afe982b5c43a3e2"
     },
     {
-      "url": "https://tiemtramouoc.tensorship.tech/css/xidach.css?v=12.47.11",
-      "localPath": "css/xidach__q_bae1f1c89c.css",
+      "url": "https://tiemtramouoc.tensorship.tech/css/xidach.css?v=12.47.19",
+      "localPath": "css/xidach__q_61670275c2.css",
       "contentType": "text/css; charset=utf-8",
       "status": 200,
       "bytes": 15931,
@@ -93,6 +101,14 @@
       "status": 200,
       "bytes": 22048,
       "sha256": "aad0da40e03657a7d27e6fad94d5c984e45894f9f949b1b700f789f6f0d85e6b"
+    },
+    {
+      "url": "https://tiemtramouoc.tensorship.tech/img/ic_chartup.png",
+      "localPath": "img/ic_chartup.png",
+      "contentType": "image/png",
+      "status": 200,
+      "bytes": 21502,
+      "sha256": "c59f1e88ddbb3353249eef13e5759e017045dce1313d390abfb8ffd69facdde1"
     },
     {
       "url": "https://tiemtramouoc.tensorship.tech/img/ic_cupempty.png",
@@ -339,28 +355,36 @@
       "localPath": "index.html",
       "contentType": "text/html; charset=utf-8",
       "status": 200,
-      "bytes": 4597,
-      "sha256": "e2e16a6e2f5dd6c31cfa3471d6cb153fbadd66aa1e61d2288a3f4e73db5d6d04"
+      "bytes": 5103,
+      "sha256": "29990c1dd6c2b7f65c64f386e48a2177634549d958b26c59e299fe74fb5f2817"
     },
     {
-      "url": "https://tiemtramouoc.tensorship.tech/js/baucua.js?v=12.47.11",
-      "localPath": "js/baucua__q_bae1f1c89c.js",
+      "url": "https://tiemtramouoc.tensorship.tech/js/banbe.js?v=12.47.19",
+      "localPath": "js/banbe__q_61670275c2.js",
+      "contentType": "text/javascript; charset=utf-8",
+      "status": 200,
+      "bytes": 64746,
+      "sha256": "40c4d089eb9a10fa76b115e0f6c270084d4e9ffda9c7a2f379ec284fce493c91"
+    },
+    {
+      "url": "https://tiemtramouoc.tensorship.tech/js/baucua.js?v=12.47.19",
+      "localPath": "js/baucua__q_61670275c2.js",
       "contentType": "text/javascript; charset=utf-8",
       "status": 200,
       "bytes": 21799,
       "sha256": "319447f85d021b3c4c3afe85606c272abb8294988e7625fa9a2e5620ad417dcb"
     },
     {
-      "url": "https://tiemtramouoc.tensorship.tech/js/game.js?v=12.47.11",
-      "localPath": "js/game__q_bae1f1c89c.js",
+      "url": "https://tiemtramouoc.tensorship.tech/js/game.js?v=12.47.19",
+      "localPath": "js/game__q_61670275c2.js",
       "contentType": "text/javascript; charset=utf-8",
       "status": 200,
-      "bytes": 354323,
-      "sha256": "54a4a9d2364a89b4e62744195694cdcf2b0fe5b8aa4b74940528464792354cf5"
+      "bytes": 375755,
+      "sha256": "0cf04444dea8b15405006dd82c63edf97af13b7dda2a75aa68c628e628a174fb"
     },
     {
-      "url": "https://tiemtramouoc.tensorship.tech/js/xidach.js?v=12.47.11",
-      "localPath": "js/xidach__q_bae1f1c89c.js",
+      "url": "https://tiemtramouoc.tensorship.tech/js/xidach.js?v=12.47.19",
+      "localPath": "js/xidach__q_61670275c2.js",
       "contentType": "text/javascript; charset=utf-8",
       "status": 200,
       "bytes": 40545,
@@ -375,20 +399,20 @@
       "sha256": "a79c448ca383a3ae8fe7df32e261ac34f79c6d459263f4070dd11412d1bcaff1"
     },
     {
-      "url": "https://tiemtramouoc.tensorship.tech/version.json?_t=1790591890347",
-      "localPath": "version__q_1640b8d7ed.json",
+      "url": "https://tiemtramouoc.tensorship.tech/version.json?_t=1790603695501",
+      "localPath": "version__q_496acd49d3.json",
       "contentType": "application/json",
       "status": 200,
-      "bytes": 222,
-      "sha256": "21d8e464153b0a0d4c311029bc135245cc18a3a4253812fd1034ea0f5aed01d9"
+      "bytes": 247,
+      "sha256": "7449ad12e096043305a48c611aa5772012fe45089479459bf102221f45e62414"
     },
     {
-      "url": "https://tiemtramouoc.tensorship.tech/version.json?_t=1790591890240",
-      "localPath": "version__q_42679d1d9d.json",
+      "url": "https://tiemtramouoc.tensorship.tech/version.json?_t=1790603695599",
+      "localPath": "version__q_562f650833.json",
       "contentType": "application/json",
       "status": 200,
-      "bytes": 222,
-      "sha256": "21d8e464153b0a0d4c311029bc135245cc18a3a4253812fd1034ea0f5aed01d9"
+      "bytes": 247,
+      "sha256": "7449ad12e096043305a48c611aa5772012fe45089479459bf102221f45e62414"
     }
   ]
 }

@@ -26,11 +26,17 @@
   <!-- Tự động phát hiện phiên bản mới và làm mới cache ngay lập tức -->
   <script>
     (function(){
+      if(window.location.search){
+        try{
+          var cleanUrl = window.location.origin + window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl);
+        }catch(e){}
+      }
       if(location.protocol.startsWith('http')){
         fetch('version.json?_t=' + Date.now(), { cache: 'no-store' })
           .then(function(r){ return r.json(); })
           .then(function(d){
-            var myVer = '12.47.11';
+            var myVer = '12.47.19';
             if(d && d.version && d.version !== myVer){
               console.log('🔄 Đang đồng bộ phiên bản mới:', d.version);
               if('caches' in window){
@@ -39,8 +45,11 @@
               if('serviceWorker' in navigator){
                 navigator.serviceWorker.getRegistrations().then(function(rs){ rs.forEach(function(r){ r.unregister(); }); });
               }
-              var base = location.protocol + '//' + location.host + location.pathname;
-              location.replace(base + '?v=' + encodeURIComponent(d.version) + '&_t=' + Date.now());
+              try{
+                var cleanUrl = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, document.title, cleanUrl);
+              }catch(e){}
+              window.location.reload(true);
             }
           })
           .catch(function(){});
@@ -49,9 +58,10 @@
   </script>
 
   <!-- Stylesheet (Cache Busting) -->
-  <link rel="stylesheet" href="css/style.css?v=12.47.11">
-  <link rel="stylesheet" href="css/baucua.css?v=12.47.11">
-  <link rel="stylesheet" href="css/xidach.css?v=12.47.11">
+  <link rel="stylesheet" href="css/style.css?v=12.47.19">
+  <link rel="stylesheet" href="css/baucua.css?v=12.47.19">
+  <link rel="stylesheet" href="css/xidach.css?v=12.47.19">
+  <link rel="stylesheet" href="css/banbe.css?v=12.47.19">
 </head>
 <body>
   <div class="app">
@@ -61,6 +71,7 @@
         <button id="setBtn" class="pbtn gear" aria-label="Cài đặt"><img class="ico" src="img/ic_set.png" alt=""></button>
         <button id="bcBtn" class="pbtn pearl-btn" aria-label="Bầu Cua" title="Gieo Trân Châu May Mắn"><img class="ico" src="img/stk_pearl.png" alt="Trân Châu"></button>
         <button id="xdBtn" class="pbtn xidach-btn" aria-label="Xì Dách" title="Thử Tài Xì Dách Trân Châu">🧋</button>
+        <button id="frBtn" class="pbtn friend-btn" aria-label="Bạn Bè" title="Bạn Bè & Quà Tặng">👥</button>
         <div>Ngày <span id="hDay">1</span><small id="hSub">Chuẩn bị</small></div>
       </div>
       <div class="h-m"><small id="hName">Tiệm Trà Mơ Ước</small><span id="hMoney">0đ</span></div>
@@ -81,9 +92,10 @@
   <div class="xidach-modal" id="xidach-modal" hidden><div class="xidach-card" id="xidach-card"></div></div>
 
   <!-- Game Engine Script (Cache Busting) -->
-  <script src="js/game.js?v=12.47.11"></script>
-  <script src="js/baucua.js?v=12.47.11"></script>
-  <script src="js/xidach.js?v=12.47.11"></script>
+  <script src="js/banbe.js?v=12.47.19"></script>
+  <script src="js/game.js?v=12.47.19"></script>
+  <script src="js/baucua.js?v=12.47.19"></script>
+  <script src="js/xidach.js?v=12.47.19"></script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"cd69fc6d64a64cc28b702bcb82573e5d","r":1,"spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
