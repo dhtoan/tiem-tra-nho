@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="color-scheme" content="only light">
+  <title>🧋 Tiệm Trà Mơ Ước</title>
+  <meta name="theme-color" content="#fdf3e4">
+  <link rel="icon" href="img/icon-192.png">
+  <link rel="apple-touch-icon" href="img/icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Tiệm Trà Mơ Ước">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <!-- Google Fonts: Baloo 2 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Anti-cache Meta Tags for HTML -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <!-- Tự động phát hiện phiên bản mới và làm mới cache ngay lập tức -->
+  <script>
+    (function(){
+      if(location.protocol.startsWith('http')){
+        fetch('version.json?_t=' + Date.now(), { cache: 'no-store' })
+          .then(function(r){ return r.json(); })
+          .then(function(d){
+            var myVer = '12.47.11';
+            if(d && d.version && d.version !== myVer){
+              console.log('🔄 Đang đồng bộ phiên bản mới:', d.version);
+              if('caches' in window){
+                caches.keys().then(function(ks){ ks.forEach(function(k){ caches.delete(k); }); });
+              }
+              if('serviceWorker' in navigator){
+                navigator.serviceWorker.getRegistrations().then(function(rs){ rs.forEach(function(r){ r.unregister(); }); });
+              }
+              var base = location.protocol + '//' + location.host + location.pathname;
+              location.replace(base + '?v=' + encodeURIComponent(d.version) + '&_t=' + Date.now());
+            }
+          })
+          .catch(function(){});
+      }
+    })();
+  </script>
+
+  <!-- Stylesheet (Cache Busting) -->
+  <link rel="stylesheet" href="css/style.css?v=12.47.11">
+  <link rel="stylesheet" href="css/baucua.css?v=12.47.11">
+  <link rel="stylesheet" href="css/xidach.css?v=12.47.11">
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="h-l">
+        <button id="pauseBtn" class="pbtn" aria-label="Tạm dừng"><img class="ico" src="img/ic_pause.png" alt=""></button>
+        <button id="setBtn" class="pbtn gear" aria-label="Cài đặt"><img class="ico" src="img/ic_set.png" alt=""></button>
+        <button id="bcBtn" class="pbtn pearl-btn" aria-label="Bầu Cua" title="Gieo Trân Châu May Mắn"><img class="ico" src="img/stk_pearl.png" alt="Trân Châu"></button>
+        <button id="xdBtn" class="pbtn xidach-btn" aria-label="Xì Dách" title="Thử Tài Xì Dách Trân Châu">🧋</button>
+        <div>Ngày <span id="hDay">1</span><small id="hSub">Chuẩn bị</small></div>
+      </div>
+      <div class="h-m"><small id="hName">Tiệm Trà Mơ Ước</small><span id="hMoney">0đ</span></div>
+      <div class="h-r"><span class="stars" id="hStars">★★★★☆</span><small id="hRate">4,0</small></div>
+    </header>
+    <div class="awning"></div>
+    <main id="view"></main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div class="modal" id="modal" hidden><div class="card" id="card"></div></div>
+  <div class="splash" id="splash" hidden></div>
+
+  <!-- Bầu Cua Minigame Modal -->
+  <div class="baucua-modal" id="baucua-modal" hidden><div class="baucua-card" id="baucua-card"></div></div>
+
+  <!-- Xì Dách Trân Châu Minigame Modal -->
+  <div class="xidach-modal" id="xidach-modal" hidden><div class="xidach-card" id="xidach-card"></div></div>
+
+  <!-- Game Engine Script (Cache Busting) -->
+  <script src="js/game.js?v=12.47.11"></script>
+  <script src="js/baucua.js?v=12.47.11"></script>
+  <script src="js/xidach.js?v=12.47.11"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"cd69fc6d64a64cc28b702bcb82573e5d","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

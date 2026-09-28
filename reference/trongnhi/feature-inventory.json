@@ -1,0 +1,306 @@
+{
+  "source": {
+    "id": "trongnhi",
+    "url": "https://trongnhi.trongnhi110266.workers.dev/"
+  },
+  "generatedAt": "2026-09-28T10:38:09.669Z",
+  "inventory": {
+    "title": "Tiệm Trà Nhỏ",
+    "bodyText": "Ngày 1\nChuẩn bị\nTiệm Trà Nhỏ\n400k\n★★★★☆\n4,0 · 0 đánh giá\nTiệm Trà Nhỏ\n Menu hôm nay\nTrà sữa\n25k\nMatcha\n30k\nTopping\nTrân châu đen\n+6k\nTrân châu trắng\n+5k\nSize L +7k\nKho\nNâng cấp\nGiá bán\nĐánh giá\nTổng kết\n ~18\n Trà\n Topping\n Ly\nTrà sữa  3 ngày\n 0 · 4,5k\n−\n+\nMatcha  3 ngày\n 0 · 6k\n−\n+\n Trân châu\nTrân châu đen  1 ngày\n 0 · 2k\n−\n+\nTrân châu trắng  3 ngày\n 0 · 1,5k\n−\n+\n🥤\nLy + ống hút ♾\n 0 · 1,5k\n−\n+\n đang có ·  hôm qua dùng ·  hết hạn hôm nay\n Chưa nấu  Trà ·  Topping ·  Ly\nz\nz\nz\nTiệm Trà Nhỏ\n\nPha trà, đón khách, mở tiệm nhỏ của riêng bạn\n\nBắt đầu\nCó mã sao lưu? Khôi phục\n3.11",
+    "interactive": [
+      {
+        "tag": "BUTTON",
+        "id": "setBtn",
+        "className": "pbtn gear",
+        "text": "",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "rename",
+        "className": "",
+        "text": "Tiệm Trà Nhỏ",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "DIV",
+        "id": "",
+        "className": "tabs",
+        "text": "Kho Nâng cấp Giá bán Đánh giá Tổng kết",
+        "type": "",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "className": "tab on",
+        "text": "Kho",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "className": "tab",
+        "text": "Nâng cấp",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "className": "tab",
+        "text": "Giá bán",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "className": "tab",
+        "text": "Đánh giá",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "className": "tab",
+        "text": "Tổng kết",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "DIV",
+        "id": "",
+        "className": "stabs",
+        "text": "Trà Topping Ly",
+        "type": "",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "className": "stab on",
+        "text": "Trà",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "className": "stab",
+        "text": "Topping",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "className": "stab",
+        "text": "Ly",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "className": "sbtn",
+        "text": "−",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "INPUT",
+        "id": "",
+        "className": "",
+        "text": "",
+        "type": "number",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "className": "sbtn",
+        "text": "+",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "className": "sbtn",
+        "text": "−",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "INPUT",
+        "id": "",
+        "className": "",
+        "text": "",
+        "type": "number",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "className": "sbtn",
+        "text": "+",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "className": "sbtn",
+        "text": "−",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "INPUT",
+        "id": "",
+        "className": "",
+        "text": "",
+        "type": "number",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "className": "sbtn",
+        "text": "+",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "className": "sbtn",
+        "text": "−",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "INPUT",
+        "id": "",
+        "className": "",
+        "text": "",
+        "type": "number",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "className": "sbtn",
+        "text": "+",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "className": "sbtn",
+        "text": "−",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "INPUT",
+        "id": "",
+        "className": "",
+        "text": "",
+        "type": "number",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "className": "sbtn",
+        "text": "+",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "open",
+        "className": "big blocked",
+        "text": "Chưa nấu Trà · Topping · Ly",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "spGo",
+        "className": "sp4-go",
+        "text": "Bắt đầu",
+        "type": "submit",
+        "href": ""
+      },
+      {
+        "tag": "BUTTON",
+        "id": "spHelp",
+        "className": "sp4-help",
+        "text": "Có mã sao lưu? Khôi phục",
+        "type": "submit",
+        "href": ""
+      }
+    ],
+    "headings": [
+      "Menu hôm nay",
+      "Tiệm Trà Nhỏ"
+    ],
+    "dialogs": [],
+    "media": [
+      "https://trongnhi.trongnhi110266.workers.dev/manifest.webmanifest",
+      "https://trongnhi.trongnhi110266.workers.dev/icon-192.png",
+      "https://trongnhi.trongnhi110266.workers.dev/icon-180.png",
+      "https://fonts.googleapis.com/",
+      "https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap",
+      "https://trongnhi.trongnhi110266.workers.dev/img/ic_pause.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/ic_set.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/ic_pen.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/ic_cupfull.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/ic_box.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/ic_tools.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/ic_price.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/ic_star.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/ic_chart.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/ic_people.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/ic_teapot.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/ic_pearlbowl.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/ic_cupempty.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/ic_hourglass.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/ic_chartdown.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/ic_warn.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/stk_cloud.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/lanL.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/lanR.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/stk_pearl.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/stk_star.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/stk_cup.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/stk_heart.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/stk_berry.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/stk_leaf.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/cathead.png",
+      "https://trongnhi.trongnhi110266.workers.dev/img/splash2.jpg"
+    ],
+    "localStorage": {
+      "tsOwner": "{\"ownerPin\":\"2468\",\"dayMin\":4,\"startMoney\":400000,\"commission\":20,\"wage1\":90000,\"wage2\":200000,\"wage3\":150000,\"wageG1\":200000,\"wageG2\":300000,\"wageOn\":250000,\"bottle\":200000,\"bottleN\":45,\"bottleLife\":7,\"tablet\":7000000,\"bankMax\":1000000,\"bankRate\":25,\"hotMax\":3000000,\"hotRate\":45,\"priceCap\":120000,\"teaCap\":40000,\"teaCapMatcha\":50000,\"itemCap\":50000,\"sizeCap\":50000,\"sizeWarn\":20000,\"thiefMoney\":100000000,\"thiefDay\":30,\"thiefLeft\":500000,\"loanLow\":200000,\"rent\":40000,\"utilBase\":20000,\"utilPerUpg\":8000,\"taxThreshold\":1000000000,\"vat\":3,\"pit\":1.5,\"online\":{\"minProfit\":15000000,\"fromDay\":60,\"minRating\":4},\"levels\":{\"l2\":6,\"l3\":30,\"l4\":60},\"cost\":{\"tra\":4500,\"matcha\":6000,\"hong\":1500,\"luc\":1500,\"olong\":2500,\"thai\":5000,\"f_vai\":3000,\"f_dao\":3000,\"f_dau\":3000,\"f_nho\":3500,\"f_oi\":3000,\"f_xoai\":3500,\"f_mang\":4000,\"f_tao\":3000,\"f_chanh\":1500,\"f_me\":2500,\"f_dua\":4000,\"f_choco\":4000,\"tcden\":2000,\"tcvang\":2500,\"tcsoi\":2500,\"popping\":3500,\"thach\":1500,\"cunang\":2000,\"thachtc\":2000,\"suongsao\":1500,\"thachcf\":2000,\"cheese\":3500,\"fmatcha\":4000,\"fsalt\":3000,\"fube\":4500,\"pmvien\":4000,\"pmtuoi\":5000,\"thachpm\":3000,\"cup\":1500},\"life\":{\"tra\":3,\"matcha\":3,\"hong\":3,\"luc\":3,\"olong\":3,\"thai\":3,\"f_vai\":7,\"f_dao\":7,\"f_dau\":7,\"f_nho\":7,\"f_oi\":1,\"f_xoai\":7,\"f_mang\":1,\"f_tao\":7,\"f_chanh\":1,\"f_me\":7,\"f_dua\":7,\"f_choco\":7,\"tcden\":1,\"tcvang\":1,\"tcsoi\":1,\"popping\":3,\"thach\":3,\"cunang\":3,\"thachtc\":3,\"suongsao\":3,\"thachcf\":3,\"cheese\":2,\"fmatcha\":2,\"fsalt\":2,\"fube\":2,\"pmvien\":3,\"pmtuoi\":3,\"thachpm\":3,\"cup\":0},\"cfgVer\":38}",
+      "tsVer": "3.11",
+      "tsTheme": "kem"
+    },
+    "sessionStorageKeys": []
+  },
+  "sourceClues": [
+    "></button><div>Ngày <span id=",
+    "><title>Tiệm Trà Nhỏ</title><body style=",
+    ">Chơi bản chính thức</a></p><p style=",
+    "Hết",
+    "Tiệm Trà Nhỏ",
+    "Tạm dừng"
+  ]
+}
