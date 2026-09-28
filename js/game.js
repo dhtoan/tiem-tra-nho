@@ -28,7 +28,7 @@ const TC=mk('top','tc'),TH=mk('top','thach'),FO=mk('top','foam'),PM=mk('top','pm
 TC('tcden','Trân châu đen','TC đen','#2b1d14',1,2000,6000,0);
 TC('tcvang','Trân châu hoàng kim','TC h.kim','#e0a526',1,2500,8000,200000);
 TC('tcsoi','Trân châu sợi','TC sợi','#6b4a38',1,2500,8000,250000);
-TC('popping','Trân châu popping','Popping','#f28fb0',3,3500,9000,300000);
+TC('popping','Trân châu nổ','TC nổ','#f28fb0',3,3500,9000,300000);
 TC('thach','Trân châu trắng','TC trắng','#f4efe4',3,1500,5000,0);
 TH('cunang','Thạch củ năng','Củ năng','#9fd49a',3,2000,7000,200000);
 TH('thachtc','Thạch trái cây','Trái cây','#f5a0b8',3,2000,6000,200000);
@@ -51,6 +51,7 @@ const slowN=o=>o.tops.filter(t=>ITEMS[t]&&SLOW_G.includes(ITEMS[t].g)).length;
 const DEF_SELL={L:7000};[...BASE_KEYS,...FLAV_KEYS,...TOP_KEYS].forEach(k=>DEF_SELL[k]=ITEMS[k].sell);
 const OLD_NAMES={khoaimon:'Khoai môn',dau:'Sữa dâu',dao:'Trà đào',tctrang:'Trân châu trắng',pudding:'Pudding',kemtrung:'Kem trứng',L:'Phụ thu size L'};
 const iname=k=>ITEMS[k]?ITEMS[k].n:(OLD_NAMES[k]||k);
+window.ITEMS=ITEMS;window.BASE_KEYS=BASE_KEYS;window.FLAV_KEYS=FLAV_KEYS;window.TOP_KEYS=TOP_KEYS;window.iname=iname;window.TGROUPS=TGROUPS;
 const low=n=>n.toLowerCase().replace('3q','3Q').replace('thái','Thái');
 const dname=o=>ITEMS[o.base].n+(o.flav&&ITEMS[o.flav]?' '+low(ITEMS[o.flav].n):'');
 const PIECE={thachtc:['#ffffff','#e34b4b','#f39a3a'],thachpm:['radial-gradient(circle,#fffaf0 0 34%,#8a5a3b 40%)']};
@@ -140,92 +141,15 @@ const N_NICK=['Bé Na','Bơ','Mít','Sữa','Su Su','Bin','Tôm','Cún','Mèo Mu
 function genName(){return uniqName(()=>Math.random()<.5?rnd(NM_HO)+' '+rnd(NM_NU):rnd(NM_HO)+' '+rnd(NM_NAM))}
 const SAVE='tsShop2', OWNER_SAVE='tsOwner';
 /* ===== PHIÊN BẢN GAME: mỗi lần cập nhật, tăng số và thêm một mục lên ĐẦU danh sách ===== */
-const GAME_VERSION='12.47.11';
+const GAME_VERSION='1.0.0';
 const CHANGELOG=[
-  {v:'12.47.11',d:'28/09/2026',items:[
-    '🔔 Thông báo đóng thuế ngày thứ 3: Tự động bật thông báo nhắc nhở đóng thuế khi chuẩn bị mở bán vào ngày thứ 3 trong chu kỳ nộp (cứ 3 ngày đóng 1 lần, ân hạn 1 ngày)',
-    '🧋 Xì Dách Trân Châu mốc cược chuẩn: Thêm thanh mốc cược 10k, 50k, 100k, 500k, 1tr, Hết két giống Bầu Cua, nhà con có thể cược nhiều hơn theo mốc',
-    '👥 Bàn Xì Dách 1-6 người: Mở rộng tối đa 6 khách ngồi chơi, mỗi ván có ngẫu nhiên 1 đến 6 người tham gia',
-    '👮‍♂️ Đoàn kiểm tra ATTP & Đố toán né bắt: Tỉ lệ 28% ở cả Bầu Cua và Xì Dách; đố toán 2 chữ số 1-99 với 3 đáp án trắc nghiệm trong 5 giây để dọn quầy cất thẻ/bát',
-    '💸 Phạt 7 triệu + toàn bộ tiền cược trên bàn: Bị bắt khi làm sai toán hoặc hết 5 giây, khấu trừ tiền két và giảm số sao uy tín của quán'
-  ]},
-  {v:'12.47.10',d:'28/09/2026',items:[
-    '🚨 Nguy cơ khi két trên 500 triệu: Tăng mạnh nguy cơ trộm cạy két đêm, lừa đảo công nghệ cao, thanh tra thuế và khách đưa tiền giả/bùng tiền để hạn chế tích trữ tiền tồn',
-    '🏛️ Đóng thuế định kỳ: Bỏ mục Gen Z riêng ở nâng cấp (gộp chung vào tab Nhân viên), thay bằng mục Đóng thuế 15% số tiền hiện có mỗi 3 ngày (quên hạn 1 ngày sẽ bị tịch thu tài sản)',
-    '⚖️ Kiểm soát doanh thu phi pháp: Kiểm tra tiền bầu cua & xì dách so với doanh thu bán nước; nếu tiền cờ bạc > tiền bán nước sẽ bị cơ quan thuế tịch thu toàn bộ tài sản'
-  ]},
-  {v:'12.47.9',d:'28/09/2026',items:[
-    '🎧 Gợi ý đặt hàng Gen Z: Tắt hoàn toàn khi cho Gen Z nghỉ việc, chỉ mở khi đang thuê',
-    '🚨 Nguy cơ khi két trên 500 triệu: Tăng mạnh nguy cơ trộm cạy két đêm, lừa đảo công nghệ cao và khách đưa tiền giả/bùng tiền',
-    '⭐ Chuẩn hóa Best Seller menu: Chỉ vinh danh các sản phẩm món nước/trà chính, loại bỏ trân châu topping phụ kèm',
-    '🔄 Hệ thống tự động đồng bộ phiên bản mới chống lưu cache trình duyệt'
-  ]},
-  {v:'12.47.8',d:'28/09/2026',items:[
-    '⭐ Chuẩn hóa Best Seller menu: Chỉ vinh danh các sản phẩm món nước/trà chính, loại bỏ trân châu topping phụ kèm',
-    '🎲 Cân bằng minigame Bầu Cua & Xì Dách: Tinh chỉnh giảm ngầm tỉ lệ thắng giúp giữ két tiệm bền vững hơn',
-    '🚨 Cân bằng Báo Công An: Thưởng 1tr & Tăng điểm sao quán khi tố cáo đúng, phạt 7tr & trừ sao khi tố cáo sai',
-    '💬 Khách hàng phản hồi lại chủ quán: Khách tự động rep theo tính cách và số sao',
-    '🔄 Hệ thống tự động đồng bộ phiên bản mới chống lưu cache trình duyệt'
-  ]},
-  {v:'12.47.7',d:'28/09/2026',items:[
-    '🎲 Cân bằng minigame Bầu Cua & Xì Dách: Tinh chỉnh giảm ngầm tỉ lệ thắng giúp giữ két tiệm bền vững hơn',
-    '🚨 Cân bằng Báo Công An: Thưởng 1tr & Tăng điểm sao quán khi tố cáo đúng, phạt 7tr & trừ sao khi tố cáo sai',
-    '💬 Khách hàng phản hồi lại chủ quán: Khách tự động rep theo tính cách và số sao',
-    '📦 Thanh lý nguyên liệu tồn kho thu hồi 30% giá gốc',
-    '🔄 Hệ thống tự động đồng bộ phiên bản mới chống lưu cache trình duyệt'
-  ]},
-  {v:'12.47.6',d:'28/09/2026',items:[
-    '🚨 Cân bằng Báo Công An: Thưởng 1tr (thay vì 10tr) & Tăng điểm sao của quán khi tố cáo đúng',
-    '⚖️ Xử lý thiếu minh bạch: Phạt 7tr & Giảm điểm sao uy tín của quán khi khởi tố/tố cáo sai người vô tội',
-    '💬 Khách hàng phản hồi lại chủ quán: Khách tự động rep lại phản hồi cực mặn mòi theo tính cách và số sao',
-    '📦 Thanh lý nguyên liệu tồn kho thu hồi 30% giá gốc',
-    '🔄 Hệ thống tự động đồng bộ phiên bản mới chống lưu cache trình duyệt'
-  ]},
-  {v:'12.47.5',d:'28/09/2026',items:[
-    '💬 Khách hàng phản hồi lại chủ quán: Khách tự động rep lại phản hồi cực mặn mòi, chuẩn theo tính cách, số sao và thái độ của chủ quán (cà khịa khi bị thách thức, tăng sao khi được xin lỗi/tặng quà).',
-    '🚨 Tính năng Báo Công An: Tố cáo khách dùng tiền giả (nhận thưởng +10tr hoặc phạt -7tr nếu vu khống)',
-    '📦 Thanh lý nguyên liệu tồn kho thu hồi 30% giá gốc',
-    '✨ Giao diện menu Best Seller trong suốt hòa hợp với bảng phấn xanh',
-    '🔄 Hệ thống tự động đồng bộ phiên bản mới chống lưu cache trình duyệt'
-  ]},
-  {v:'12.47.4',d:'28/09/2026',items:[
-    '🚨 Tính năng Báo Công An: Tố cáo khách dùng tiền giả (nhận thưởng +10tr hoặc phạt -7tr nếu vu khống)',
-    '📦 Thanh lý nguyên liệu tồn kho thu hồi 30% giá gốc',
-    '✨ Giao diện menu Best Seller trong suốt hòa hợp với bảng phấn xanh',
-    '🔄 Hệ thống tự động đồng bộ phiên bản mới chống lưu cache trình duyệt'
-  ]},
-  {v:'1.2',d:'28/09/2026',items:[
-    '📢 BẢN CẬP NHẬT SIÊU TO KHỔNG LỒ V1.2 - TIỆM TRÀ MƠ ƯỚC (VÀO CÀI ĐẶT ĐỂ CẬP NHẬT)',
-    '🎧 Nhân viên Gen Z: Tăng 50% khách ghé quán & tự động gợi ý đặt hàng hôm sau theo doanh thu. Tự động pha chế A-Z trực quan trên quầy. Khi áp lực sẽ đình công đi chữa lành (chạm 5 lần để dỗ dành). Đôi khi "đá bill" nếu chủ không giám sát (trong vòng 1 lượt pha chế, không bắt quả tang kịp là mất luôn). Thỉnh thoảng làm sai món phải đổ pha lại.',
-    '💬 Khách hàng phản hồi lại chủ quán: Khách hàng tự động phản hồi lại cực mặn mòi, dí dỏm khi chủ quán trả lời đánh giá (cà khịa khi bị thách thức, tăng sao khi được xin lỗi/tặng quà).',
-    '🌦️ Thời tiết đa dạng & Tính cách khách hàng: Thêm thời tiết Nắng đẹp, se lạnh, bão lớn, sương mù, nồm ẩm; khách gọi nhiều topping; khách trả giá sau khi nhận nước; tắt nhập hàng trong giờ bán.',
-  ]},
-  {v:'1.0',d:'27/09/2026',items:['Bản độc lập chuẩn gốc Tiệm Trà Nhỏ V1.0','Tích hợp minigame Bầu Cua Trân Châu thử tài giải trí sau ca bán']},
-  {v:'3.11',d:'24/09/2026',items:['Hương mua theo chai ở Nâng cấp > Hương: 200k một chai dùng cho 45 ly, hạn 7 ngày kể từ ngày mua. Mua bao nhiêu chai thì 45 ly nhân lên. Hết chai phải mua chai mới, chai quá hạn bị đổ bỏ. Kho không còn nấu hương theo phần','Đơn online Soppi: cần mua tablet (7 triệu, ở Trang bị) thì đơn mới đổ về. Quán đã mở online được tặng sẵn 1 tablet','Đơn online nhận thêm tối đa bằng số chỗ ở quầy: 3 khách, mở rộng quầy thì 4 (tổng 6 hoặc 8 khách). Đơn online khoảng 20% tổng khách. Tài xế chờ tối đa 1 phút 30 giây, có tài xế nam và nữ','Mỗi 30 ngày có 1 đơn lớn Soppi 5–10 ly vào ngày ngẫu nhiên','Nhân viên đơn online (thuê 2 triệu, lương 250k/ngày): chỉ làm đơn online, mỗi ly khoảng 1 giây','Vay ngân hàng tối đa 1 triệu, lãi 25%/năm','Máy dán nắp tự động dán nhanh hơn','Hướng dẫn thêm trang Đường và đá (Cài đặt > Hướng dẫn)','Khách ngôi sao: cứ 30 ngày có 1 idol Kpop hoặc diễn viên Thái, Trung ghé quán vào ngày ngẫu nhiên. Nói tiếng nước mình kèm [Tự động dịch], trả gấp 3 tiền và luôn để 5 sao','Mã sao lưu còn 8 số, mỗi quán một mã riêng không trùng ai. Sao lưu lại vẫn giữ nguyên mã. Khôi phục bằng 8 số cần có mạng, mã dài cũ vẫn dùng được','Tem thương hiệu hiện đủ tên quán. Chọn được kiểu chữ thẳng hàng, cong phía trên hoặc cong phía dưới']},
-  {v:'3.10',d:'24/09/2026',items:['Thêm Nhân viên phụ quầy 2 (thuê 750k, lương 150k/ngày): làm như nhân viên phụ quầy, thêm múc topping. Không thuê cùng lúc với nhân viên phụ quầy, thuê người này thì người kia tự nghỉ (gọi đi làm lại không tốn tiền)','Sửa lỗi trên iPhone: sau khi bật bàn phím (trả lời đánh giá, đặt tên quán…) rồi tắt, quầy pha bị thu nhỏ còn nửa màn hình và nút Mở cửa nhảy lên giữa màn hình. Game giờ tự nhận ra và trả về đủ màn hình','Sửa lỗi đánh giá đầy 2.500 thì như đứng yên: bộ nhớ lưu game bị đầy nên đánh giá và tiến trình mới có thể không được lưu. Bản lưu nay gọn hơn và tự dọn bản dự phòng cũ khi thiếu chỗ','Số đánh giá trên đầu màn hình giờ là tổng số đánh giá từ trước tới nay, vẫn tăng khi đã quá 2.500 (tab Đánh giá vẫn giữ 2.500 đánh giá mới nhất)']},
-  {v:'3.9',d:'23/09/2026',items:['Nhân viên phụ quầy: bạn lấy ly, bỏ topping và dán nắp (có máy dán nắp tự động thì máy tự dán). Nhân viên rót trà, cho hương, đường và đá. Bỏ topping được ngay trong lúc nhân viên đang pha']},
-  {v:'3.8',d:'23/09/2026',items:['Nhân viên pha chế làm nhanh như nhân viên phụ quầy, mỗi ly khoảng 3 giây. Đơn nhân viên đang làm không còn chặn khách mới, bạn luôn có khách để làm','Thông báo lúc bán hiện lâu hơn. Nhân viên làm sai thì báo rõ sai gì (chữ nền đỏ, hiện 5 giây)','Quầy pha chừa khoảng trống ở mép dưới, đỡ bị vuốt nhầm sang app khác trên iPhone','Game tự lưu 3 cuối ngày gần nhất, lấy lại trong Cài đặt > Khôi phục bản tự lưu','Máy chặn lưu tiến trình (ví dụ iPhone bật Chặn tất cả cookie) thì game báo ngay, kèm cách sửa','Mở game trên máy mới: màn hình chào có nút khôi phục bằng mã sao lưu. Cứ 7 ngày game nhắc tạo mã sao lưu một lần']},
-  {v:'3.7',d:'23/09/2026',items:['Tới 22:00 quán đóng cửa: không nhận khách mới, nhân viên phụ quầy nghỉ, bạn làm nốt cho khách đang trong quán rồi mới tổng kết. Đơn online ngưng nhận từ 21:30, đơn đang có vẫn phải làm nốt','Nhân viên pha chế nhận trọn đơn của một khách (có ký hiệu trên mặt khách) và làm hết các ly, bạn không cần đụng vào khách đó. Không còn bị trùng ly phải đổ bỏ. Ly nào hết món thì khách nhận các ly còn lại rồi về','Lương nhân viên pha chế 200k/ngày. Làm quá 22:00 thì trả tăng ca 40k/giờ, tính tròn mỗi 30 phút là 20k','Bỏ món khỏi menu trong Nâng cấp: khách không gọi món đó nữa, thêm lại lúc nào cũng được, không mất tiền. Hàng trong kho vẫn giữ, hết hạn thì tự đổ bỏ','Hạn dùng mới: hương ổi, mãng cầu, chanh 1 ngày, các hương khác 7 ngày; foam 2 ngày; phô mai tươi 3 ngày','Hương và topping: để giá trên 20k thì 80% khách không gọi món đó, trên 30k thì không khách nào gọi (xem cảnh báo trong Giá bán)','Lọc đánh giá theo số sao, hoặc chỉ xem đánh giá chưa trả lời','Chọn thời gian bán mỗi ngày 4, 5 hoặc 6 phút trong Cài đặt','Khách tăng đều theo số sao, không còn tăng vọt khi quán lên 4 sao. 10 ngày đầu khách tăng từ từ cho quen tay','Vừa chơi vừa nghe nhạc YouTube, Spotify được','Bộ nhận diện thương hiệu: hình logo sắc nét, không bị cắt, nằm giữa; ô chọn hình chỉ cuộn dọc; tem không còn bị méo, logo hiện rõ trên ly','Giao diện Đêm dịu sáng hơn, dễ nhìn quầy pha','Sửa lỗi tên quán ở trên cùng bị mờ trên iPhone','Bản cài vào máy: sửa lỗi mất hình khách và ly']},
-  {v:'3.6',d:'22/09/2026',items:['Sửa lỗi còn dư một vệt kệ nhỏ phía dưới khay đá viên, nước đường khi chưa mở hết foam/phô mai','Đơn từ 3 ly trở lên: chỉ chặn khách mới ghé khi đơn đó còn từ 3 ly chưa giao (trước đây tính cả những ly đã giao xong)','Khách đặt nhiều ly mà quán hết món giữa chừng: nếu đã được giao một số ly trước đó thì đánh giá nhẹ nhàng hơn, có nhắc tới việc đã uống được vài ly','Bộ nhận diện thương hiệu (Nâng cấp > Trang bị, 5 triệu): tự thiết kế tem in lên mọi ly — chọn màu nền, kiểu khung (tròn, bo góc, ruy băng), 1 trong 50 hình dễ thương và khẩu hiệu; tên quán tự hiện lên tem']},
-  {v:'3.5',d:'22/09/2026',items:['Sao lưu tiến trình bằng mã (Cài đặt > Sao lưu tiến trình), bị mất thì khôi phục lại từ mã hoặc file','Từ ngày 30, một khách mua được tối đa 5 ly, mỗi ly tới 4 topping','Ly trên 120k (trước là 100k) thì 60% khách bỏ đi','Món nào (trà, hương, topping) để giá trên 50k thì khách chê mắc, quán vắng 80% khách','Thạch 3Q đổi thành trân châu trắng cho đúng hình khay','Máy dán nắp tự động: khi chưa dán được thì báo rõ lý do (dư topping, dư đường, dư đá, sai siro, trà còn ít…)','Sửa lỗi bảng QUẦY TRÀ bị một vệt màu che, số trên khay đang khoá bị lộ ra','Trà để giá từ 40k là đắt, riêng matcha từ 50k','Giá nhập trà mới: matcha 6k, trà sữa 4,5k, trà sữa Thái 5k, trà olong 2,5k, hồng trà và lục trà 1,5k','Không còn đánh giá chê ly đổ, rỉ ra ngoài khi ly không bị tràn; ly không topping hoặc không đá thì khách không nhắc tới topping, đá','Đánh giá khớp với đơn thật: chỉ chê đắt khi quán đang để giá đắt, chỉ chê chờ lâu khi khách thật sự chờ lâu, chỉ chê sai món khi làm sai (đúng chỗ sai)','Quầy pha đổi màu theo màu giao diện chọn trong Cài đặt','Đơn từ 3 ly: khách khác chờ quán làm xong đơn đó mới ghé, không phải đứng chờ lâu','Ngày 1–5 có khách chỉ gọi trà, không topping']},
-  {v:'3.4',d:'22/09/2026',items:['Có ngày khách khó ở (dễ rớt sao, nhiều khách hãm), có ngày khách vui vẻ, không báo trước','Sửa lỗi quầy pha bị lệch lên trên, che mất hàng khách và hũ trà','Sửa lỗi trang bị đẩy lên sau khi gõ phím trên iPhone (mở từ màn hình chính)','Sửa lỗi game bị thu nhỏ khi Chrome Android bật chế độ trang web cho máy tính','Sửa lỗi quầy pha bị đen khi mở trong ứng dụng khác (Threads, Instagram…) ở chế độ tối']},
-  {v:'3.3',d:'22/09/2026',items:['Khách chờ lâu hơn (khoảng 1 phút), không giảm dần theo ngày','Đánh giá dễ thở hơn: pha đúng và nhanh gần như chắc 5 sao','Hướng dẫn chi tiết từng bước, có hình quầy pha','Chỉ dẫn từng bước cho khách đầu tiên của ngày có cách chơi mới (ngày 1, 6, 30, 60), chỉnh trong Cài đặt','Báo trước và hướng dẫn khi mở đường đá (ngày 6), ly 2 topping, đơn nhiều ly','Máy dán nắp tự động: mua rồi thì pha đúng món là tự dán nắp và giao','Sửa lỗi chữ bị cắt trong Kho','Thuê nhân viên (Nâng cấp > Nhân viên): phụ quầy tự rót trà, bỏ topping, đường và đá, pha chế tự làm cho khách chờ lâu nhất','Tổng kết có thêm lương nhân viên','Máy dán nắp tự động giá 3 triệu, theo giá thực tế','Có thuê nhân viên thì tiền tip là của nhân viên, quán không nhận','Sự kiện mỗi ngày: trời nóng, trời mưa, cuối tuần, học sinh tan học, food reviewer, món hot, nhà cung cấp giảm giá, ngày lễ','Sự kiện tặng tiền: lì xì, trả ví cho khách, giải quán đẹp, nhãn hàng tài trợ…','Nhạc nền và âm thanh: rót trà, múc topping, dán nắp, tiền vào két… (bật tắt trong Cài đặt)','Nhạc nền đổi theo mùa ngoài đời: thu, đông, xuân, hạ (chọn mùa trong Cài đặt)','Tắt nhạc, tắt âm thanh trong Cài đặt hoặc ngay trong bảng Tạm dừng','Nút × trên mặt khách bị hết món để mời khách về','Hơn 500 tên khách và hơn 500 câu đánh giá, không lặp lại','Chọn màu giao diện trong Cài đặt: 12 màu, có nâu cà phê như trước','Khách bước vào quán, khách tới theo giờ cao điểm, có lúc vắng để nghỉ tay','Thông báo lúc bán hiện ở dưới, không che đơn của khách','Giảm lag khi bán và khi rót trà','Vay ngân hàng khi két sắp cạn (dưới 200k), trả góp 10 ngày','Ly trên 100k (gồm hương, topping, size) thì 60% khách bỏ đi','Topping trong ly xếp dày như ly thật','Âm thanh thật: tiếng rót trà, chuông cửa, máy tính tiền, nhạc lên cấp','Nhạc nền mới cho 4 mùa và nhạc riêng cho ngày mưa','Ngày mưa có mưa rơi trên mái hiên quán','Thỉnh thoảng có khách hãm: khách hối, khách đổi ý, khách trả giá, khách khó tính, và hiếm hơn là khách bùng tiền','Nhân viên cho nghỉ thì gọi đi làm lại không tốn tiền thuê','Đơn nhiều ly tự chuyển sang ly kế tiếp']},
-  {v:'3.2',d:'21/09/2026',items:['Sửa lỗi ly biến mất khi đang rót trà','Sửa lỗi đồng hồ và hình trên màn hình nhấp nháy','Game chạy mượt hơn, bớt giật khi bán','Màn hình chuẩn bị không còn giật khi bấm thêm bớt món, đổi tab, nấu hàng hay mua món mới']},
-  {v:'3.1',d:'21/09/2026',items:['Sửa lỗi hình mèo ở màn hình chào','Hướng dẫn dùng hình khách chibi thay biểu tượng','Đặt tên quán: tiêu đề nằm trên ô nhập','Quầy pha chỉ hiện chai hương và thùng foam đã mua','Tạm dừng có thêm nút Đóng cửa hôm nay (cùng cỡ nút Chơi tiếp) để tổng kết sớm','Mèo ở màn hình chào ngọ nguậy đầu','Trả lời đánh giá của khách ngay trong mục Đánh giá']},
-  {v:'3.0',d:'21/09/2026',items:['Quầy pha mới vẽ tay kiểu chibi: hũ trà, khay topping, thùng foam, kệ siro','Nhấn giữ hũ trà để rót, thả tay đúng vạch xanh','Chạm khay, chai, thùng để bỏ vào ly, chạm máy dán nắp để giao','9 khách chibi, vui hay giận tùy ly pha','Giữ lại tất cả đánh giá từ ngày đầu, chia trang 15 đánh giá','Quán mở cửa từ 11:00 đến 22:00, một ngày bán khoảng 4 phút, đủ cho 20–30 đơn','Khay thạch trái cây dùng hình mới']},
-  {v:'2.7',d:'21/09/2026',items:['Pha xong ly tự đưa cho khách, không cần chạm vào khách','Ly pha xong mà sai món vẫn bị tính sai và đổ bỏ','Hương vị hiện bằng hình trái cây, foam hiện bằng hình đám mây','Foam cheese màu vàng']},
-  {v:'2.6',d:'21/09/2026',items:['Hình topping mới: trân châu sợi, thạch củ năng xanh lá, thạch trái cây 3 màu, thạch phô mai có nhân','Trà hiện bằng hình ly đúng màu','Đánh giá không còn lặp câu, kể cả khi nhiều khách bỏ về liên tiếp','Thêm nhận xét dài, chi tiết như review thật']},
-  {v:'2.5',d:'21/09/2026',items:['Đánh giá phong phú hơn, không lặp câu','Bàn pha tự bỏ qua bước Hương hoặc Topping khi khách không gọi','Tổng kết gọn hơn, hướng dẫn nói rõ hạn dùng']},
-  {v:'2.4',d:'21/09/2026',items:['Dưới 4 sao: mất 40% khách (ghi trong hướng dẫn)','Chưa nấu trà, topping hoặc chưa có ly thì không mở cửa được','Món hết hàng tự báo hết: khách mới đổi món hoặc bỏ về, không chấm 1 sao','Đánh giá đa dạng hơn: có thêm 2, 3, 4 sao']},
-  {v:'2.3',d:'21/09/2026',items:['Nút ⚙️ Cài đặt: hướng dẫn, có gì mới, chơi lại từ đầu','Thanh bước pha gọn hơn','Đưa sai món hoặc đổ ly thì ly bị bỏ, mất luôn nguyên liệu','Tổng kết có thêm số ly làm hỏng']},
-  {v:'2.2',d:'21/09/2026',items:['Menu ghi đủ tên món, chia 2 cột','Sửa lỗi game tự phóng to khi chạm nhanh 2 lần hoặc khi gõ số']},
-  {v:'2.1',d:'21/09/2026',items:['Màn hình chào khi mở game','Hướng dẫn bằng hình cho người mới, xem lại bất cứ lúc nào ở nút 📖 Hướng dẫn']},
-  {v:'2.0',d:'21/09/2026',items:['Thêm trà: hồng trà, lục trà, trà olong, trà sữa Thái','Thêm 12 hương vị pha cùng trà (hồng trà dâu, lục trà vải...)','Topping mới chia 4 nhóm: trân châu, thạch, foam, phô mai','Thạch dừa đổi tên thành thạch 3Q','Bàn pha theo từng bước: Trà + Size, Hương, Topping, Đường, Đá','Đơn có foam, thạch, phô mai được chờ lâu hơn','Kho, Nâng cấp, Giá bán có thêm tab Hương','Món cũ đã bỏ (khoai môn, trân châu trắng, pudding, kem trứng) được hoàn tiền mua']},
-  {v:'1.4',d:'21/09/2026',items:['Nâng cấp chia tab Trà, Topping, Trang bị, Online, vuốt trái phải để chuyển','Giá bán chia tab Trà, Topping, Tăng size','Mục mở đơn online chuyển vào Nâng cấp','Bỏ hiển thị cấp độ trên màn hình chính']},
-  {v:'1.3',d:'21/09/2026',items:['Chọn loại trà trước, size sau','Bàn pha dùng hình thay chữ','Đánh giá sinh động hơn, có hình ly khách đã uống','Tên khách đa dạng hơn','Bớt chữ ở kho, cấp độ, tạm dừng, cuối ngày','Sửa lỗi nội dung chạy lên thanh trạng thái điện thoại']},
-  {v:'1.2',d:'21/09/2026',items:['Hiện số phiên bản trong game','Thêm mục "Có gì mới" để xem lịch sử cập nhật']},
-  {v:'1.1',d:'21/09/2026',items:['Chia 4 cấp độ theo ngày: ngày 1–5 đơn giản, ngày 6 thêm đường đá, ngày 30 ly 2 topping, ngày 60 đơn 2–3 ly','Đơn nhiều ly có thời gian chờ dài hơn','Đơn online mở từ ngày 60, cần lời từ 15 triệu và giữ từ 4,0 sao','Tiền hiển thị theo đơn vị k (1k = 1.000đ)']},
-  {v:'1.0',d:'21/09/2026',items:['Bản đầu tiên cho bạn bè chơi thử','Tự nấu nguyên liệu, có hạn dùng và đổ bỏ','Tổng kết theo ngày, tuần, tháng kèm thuế hộ kinh doanh','Đặt tên quán, nút tạm dừng, giá riêng từng topping']}
+  {v:'1.0.0',d:'28/09/2026',items:[
+    '🚀 Bản phát hành Aunomay đầu tiên của Tiệm Trà Nhỏ',
+    '👥 Thêm hệ thống Bạn Bè: Thẻ Trà Thủ, khách VIP, quà tặng, ghé quán, check-in và thách đấu doanh thu',
+    '🧋 Nâng cấp topping đa tầng và đơn Full Topping',
+    '☁️ Tài khoản Aunomay, Cloud Save D1, khôi phục mã TTN1 và mã 8 số',
+    '📲 PWA: đưa game ra màn hình chính trên iPhone, Android và máy tính'
+  ]}
 ];
 /* ===== CẤU HÌNH CỦA CHỦ GAME (người chơi không chỉnh được) ===== */
 const DEFAULT_CONFIG={
@@ -354,7 +278,7 @@ const rnd=a=>a[Math.floor(Math.random()*a.length)];
 const wpick=(arr,w)=>{let r=Math.random()*w.reduce((a,b)=>a+b,0);for(let i=0;i<arr.length;i++){r-=w[i];if(r<=0)return arr[i]}return arr[0]};
 const newRec=d=>({spoil:{n:0,v:0},day:d,sales:{},tips:0,onl:0,fee:0,equip:[],ing:{},waste:{},rent:0,util:0,tax:0,served:0,lost:0,starSum:0,starN:0});
 function fresh(){
-  const s={lifeV:2,off:{},badPlan:mkBadPlan(1),money:CFG.startMoney,day:1,stock:{},unlocked:{},upg:{},sell:{...DEF_SELL},reviews:[],served:0,best:0,totalRev:0,totalProfit:0,online:false,shopName:'',history:[],cur:newRec(1),yearRev:0,taxYear:0,taxCycle:1,taxDueDay:3,taxGraceDay:4,taxPaidInCycle:0,taxLastPaidDay:0,gambleWon:0,gambleLost:0,gambleNet:0};
+  const s={lifeV:2,off:{},badPlan:mkBadPlan(1),money:CFG.startMoney,day:1,stock:{},unlocked:{},upg:{},upgLv:{tra:0,huong:0,top:0,equip:0,staff:0,onl:0},sell:{...DEF_SELL},reviews:[],served:0,best:0,totalRev:0,totalProfit:0,online:false,shopName:'',history:[],cur:newRec(1),yearRev:0,taxYear:0,gambleWon:0,gambleLost:0,gambleNet:0,friends:[],myCard:null,redeemedCodes:[],giftsReceivedToday:0,giftsDay:1,friendBuff:null,activeChallenge:null,trophies:[],bestDayRev:0};
   Object.keys(ITEMS).forEach(k=>{s.stock[k]=[];s.unlocked[k]=ITEMS[k].unlock===0});
   return s;
 }
@@ -380,7 +304,7 @@ function migrate(d){const u=d.unlocked||{};
   Object.keys(refund).forEach(k=>{if(u[k])S.money+=refund[k]});
   ['khoaimon','dau','dao','tctrang','pudding','kemtrung','tradao','travai','chomchom','hatdac','hatchia','chanmeo','S'].forEach(k=>{delete S.stock[k];delete S.unlocked[k];delete S.sell[k]});
 }
-function loadFrom(d){const f=fresh();Object.keys(d.stock).forEach(k=>{if(typeof d.stock[k]==='number'){const q=d.stock[k];d.stock[k]=[];addStock(k,q,{day:d.day||1,stock:d.stock})}});S={...f,...d,stock:{...f.stock,...d.stock},sell:{...f.sell,...d.sell},unlocked:{...f.unlocked,...d.unlocked}};migrate(d);if(!d.cur)S.cur=newRec(S.day);if(S.seenLv==null)S.seenLv=levelOf(Math.max(1,S.day-1));if(S.evDay!==S.day)rollDay(S.day);S.hired=S.hired||{};STAFF.forEach(x=>{if(S.upg[x.id])S.hired[x.id]=true});if(S.upg.staff1&&S.upg.staff3)S.upg.staff1=false;if(S.upg.guard1&&S.upg.guard2)S.upg.guard1=false;if(S.online&&S.tablets==null)S.tablets=1;S.apps=S.apps||{};syncFlav();if(d.totalProfit==null)S.totalProfit=(S.history||[]).reduce((a,r)=>a+recRev(r)-recCost(r),0);if(!(d.lifeV>=2)){Object.keys(LIFE_OLD).forEach(k=>{const d=ITEMS[k].life-LIFE_OLD[k];(S.stock[k]||[]).forEach(b=>{if(b.exp<99999)b.exp+=d})});S.lifeV=2;save()}try{sanitize()}catch(e){}(S.reviews||[]).forEach(r=>{if(!r.k)r.k=(r.t||'').replace(/\p{Extended_Pictographic}|\uFE0F/gu,'').trim()});if(!d.badPlan){S.badPlan=mkBadPlan(S.day);save()}}
+function loadFrom(d){const f=fresh();Object.keys(d.stock).forEach(k=>{if(typeof d.stock[k]==='number'){const q=d.stock[k];d.stock[k]=[];addStock(k,q,{day:d.day||1,stock:d.stock})}});S={...f,...d,stock:{...f.stock,...d.stock},sell:{...f.sell,...d.sell},unlocked:{...f.unlocked,...d.unlocked}};migrate(d);if(!d.cur)S.cur=newRec(S.day);if(S.seenLv==null)S.seenLv=levelOf(Math.max(1,S.day-1));if(S.evDay!==S.day)rollDay(S.day);S.hired=S.hired||{};STAFF.forEach(x=>{if(S.upg[x.id])S.hired[x.id]=true});if(S.upg.staff1&&S.upg.staff3)S.upg.staff1=false;if(S.upg.guard1&&S.upg.guard2)S.upg.guard1=false;if(S.online&&S.tablets==null)S.tablets=1;S.apps=S.apps||{};syncFlav();if(d.totalProfit==null)S.totalProfit=(S.history||[]).reduce((a,r)=>a+recRev(r)-recCost(r),0);if(!(d.lifeV>=2)){Object.keys(LIFE_OLD).forEach(k=>{const d=ITEMS[k].life-LIFE_OLD[k];(S.stock[k]||[]).forEach(b=>{if(b.exp<99999)b.exp+=d})});S.lifeV=2;save()}try{sanitize()}catch(e){}(S.reviews||[]).forEach(r=>{if(!r.k)r.k=(r.t||'').replace(/\p{Extended_Pictographic}|\uFE0F/gu,'').trim()});if(!d.badPlan){S.badPlan=mkBadPlan(S.day);save()};S.friends=S.friends||[];S.myCard=S.myCard||null;S.redeemedCodes=S.redeemedCodes||[];S.trophies=S.trophies||[];S.giftsReceivedToday=S.giftsReceivedToday||0;S.giftsDay=S.giftsDay||S.day;if(window.BanBe)window.BanBe.init();}
 function load(){let raw=null;try{raw=localStorage.getItem(SAVE)}catch(e){}
   if(raw){try{const d=JSON.parse(raw);if(d&&d.stock){loadFrom(d);return true}}catch(e){}
     /* đọc lỗi: cất bản cũ riêng, không ghi đè */try{localStorage.setItem(SAVE+'_rescue',raw)}catch(e){}R.loadErr=true}
@@ -428,20 +352,15 @@ function sanitize(){
     if(!isFinite(S.money))S.money=cap+1;if(S.money>cap||bad)cheatHit();
     if(!isFinite(S.cur.tips)||S.cur.tips>cap)S.cur.tips=0;
     save()}
-  S.taxCycle = S.taxCycle || 1;
-  if (!S.taxDueDay) {
-    S.taxDueDay = S.day + 2;
-    S.taxGraceDay = S.taxDueDay + 1;
-  }
-  S.taxPaidInCycle = S.taxPaidInCycle || 0;
-  S.taxLastPaidDay = S.taxLastPaidDay || 0;
   S.gambleWon = S.gambleWon || 0;
   S.gambleLost = S.gambleLost || 0;
   S.gambleNet = S.gambleNet || 0;
+  S.upgLv = S.upgLv || {tra:0, huong:0, top:0, equip:0, staff:0, onl:0};
+  ['tra','huong','top','equip','staff','onl'].forEach(k=>{if(typeof S.upgLv[k]!=='number') S.upgLv[k]=0});
 }
 const unitCost=o=>CFG.cost[o.base]+(o.flav&&ITEMS[o.flav]?CFG.cost[o.flav]:0)+o.tops.reduce((a,t)=>a+CFG.cost[t],0)+(o.cheese?CFG.cost.cheese:0)+CFG.cost.cup;
 const priceIdx=o=>price(o)/price(o,DEF_SELL);
-const overCap=o=>price(o)>CFG.priceCap;
+const overCap=o=>price(o)>(CFG.priceCap + Math.max(0, o.tops.length - 4) * 15000);
 const pricyItems=()=>[...BASE_KEYS.filter(k=>S.unlocked[k]&&S.sell[k]>CFG.itemCap),...(S.sell.L>=CFG.sizeCap?['L']:[])];
 const lPricey=()=>S.sell.L>CFG.sizeWarn;
 const lChance=()=>S.sell.L>=CFG.sizeCap?0:lPricey()?.035:.35;
@@ -515,27 +434,7 @@ const ecost=k=>CFG.cost[k]*(evIs('sale')&&ev().k===k?.7:1);
 function evCard(){const e=ev();
   let h = !e ? '' : `<div class="evc"><span>${ico(EVS[e.id].ic)}</span><div><b>Hôm nay: ${EVS[e.id].n}</b><small>${evText(e)}</small></div></div>`;
   if(S.money >= 500000000){
-    h += `<div class="evc" style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:12px;margin-top:6px;display:flex;align-items:center;gap:10px;"><span style="font-size:24px;">🚨</span><div><b style="color:#b91c1c;">Cảnh báo an ninh: Két tiền đang giữ hơn 500 triệu!</b><small style="color:#7f1d1d;display:block;margin-top:2px;">Két quá nhiều tiền thu hút trộm cắp chuyên nghiệp, lừa đảo công nghệ cao, thanh tra tài chính & thuế và khách đưa tiền giả tăng vọt!</small></div></div>`;
-  }
-  const cycle = S.taxCycle || 1;
-  const dueDay = S.taxDueDay || (cycle * 3);
-  const graceDay = S.taxGraceDay || (dueDay + 1);
-  const isPaidThisCycle = (S.taxPaidInCycle === cycle);
-  if (!isPaidThisCycle && (S.day === dueDay || S.day % 3 === 0 || S.day === graceDay)) {
-    const isGrace = (S.day === graceDay);
-    const taxAmt = Math.max(0, Math.round((S.money || 0) * 0.15));
-    h += `
-      <div class="evc" style="background:${isGrace ? '#fef2f2' : '#fff7ed'};border:2px solid ${isGrace ? '#fca5a5' : '#fdba74'};border-radius:12px;margin-top:6px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:26px;">🏛️</span>
-          <div>
-            <b style="color:${isGrace ? '#b91c1c' : '#c2410c'};">${isGrace ? '🚨 Đang ân hạn 1 ngày cuối để nộp thuế!' : `Hôm nay là Ngày ${S.day} - Đến hạn nộp thuế định kỳ (Ngày thứ 3)!`}</b>
-            <small style="color:${isGrace ? '#7f1d1d' : '#9a3412'};display:block;margin-top:2px;">Số tiền thuế cần nộp (15%): <b style="color:#dc2626;">${fmt(taxAmt)}</b>. Nộp trước khi mở bán để tránh bị cưỡng chế tịch thu!</small>
-          </div>
-        </div>
-        <button type="button" class="sbtn pri" onclick="goToTaxTab()" style="background:${isGrace ? '#dc2626' : '#ea580c'};color:#fff;border:none;border-radius:8px;padding:6px 12px;font-weight:800;white-space:nowrap;cursor:pointer;">Nộp thuế</button>
-      </div>
-    `;
+    h += `<div class="evc" style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:12px;margin-top:6px;display:flex;align-items:center;gap:10px;"><span style="font-size:24px;">🚨</span><div><b style="color:#b91c1c;">Cảnh báo an ninh: Két tiền đang giữ hơn 500 triệu!</b><small style="color:#7f1d1d;display:block;margin-top:2px;">Két quá nhiều tiền thu hút trộm cắp chuyên nghiệp, lừa đảo công nghệ cao, thanh tra tài chính và khách đưa tiền giả tăng vọt!</small></div></div>`;
   }
   return h;
 }
@@ -550,111 +449,49 @@ function mkBadPlan(start){const r=Math.random(),n=r<.3?0:r<.7?1:2,ids=BAD.map(b=
   while(days.length<n){const d=start+10+Math.floor(Math.random()*80);if(!days.includes(d))days.push(d)}
   days.sort((a,b)=>a-b);return {start,ev:days.map((d,i)=>({d,id:ids[i],done:false}))}}
 /* két gian lận: gọi từ sanitize() lúc mở game hoặc luật "trước ngày X két trên Y" */
-function cheatHit(){const keep=(1+Math.floor(Math.random()*9))*100000,lost=Math.max(0,S.money-keep);S.money=keep;S.cur.stolen=(S.cur.stolen||0)+lost;S.badNow={id:rnd(BAD).id,all:1,v:lost,keep};save()}
-
-function confiscateIllegalAssets(reason){
-  const lost = S.money || 0;
-  S.money = 0;
-  S.cur.bad = (S.cur.bad || 0) + lost;
-  sfx('bad');
-
-  if(reason === 'gamble'){
-    const teaRev = S.totalRev || 0;
-    const gWon = S.gambleWon || 0;
-    S.gambleWon = 0;
-    S.gambleLost = 0;
-    S.gambleNet = 0;
-    S.taxCycle = (S.taxCycle || 1) + 1;
-    S.taxDueDay = S.day + 3;
-    S.taxGraceDay = S.taxDueDay + 1;
-    save();
-
-    ask(`
-      <div class="pbig">⚖️</div>
-      <h2 style="color:#b91c1c;">TỊCH THU TÀI SẢN: TIỀN PHI PHÁP!</h2>
-      <p>Cơ quan điều tra & Chi Cục Thuế tiến hành thanh tra đối chiếu sổ sách kinh doanh:</p>
-      <div class="ledger" style="margin:8px 0;background:#fef2f2;border:1.5px solid #fca5a5;border-radius:12px;padding:10px;">
-        <div><span>🧋 Doanh thu bán trà (hợp pháp):</span><span class="pos">${fmt(teaRev)}</span></div>
-        <div><span>🎲 Tiền cờ bạc (Bầu Cua, Xì Dách):</span><span class="neg" style="font-weight:800;">${fmt(gWon)}</span></div>
-        <div class="tot"><span>Đánh giá dòng tiền</span><span class="neg">Bất hợp pháp!</span></div>
-      </div>
-      <p style="color:#7f1d1d;font-size:0.9rem;">
-        Tiền thắng từ cờ bạc lớn hơn tổng doanh thu bán nước của quán. Toàn bộ tiền trong két bị quy kết là <b>TIỀN PHI PHÁP & RỬA TIỀN</b>!
-      </p>
-      <p class="warnline" style="font-weight:800;color:#dc2626;">
-        Cơ quan chức năng ra quyết định TỊCH THU TOÀN BỘ ${fmt(lost)} trong két xung công quỹ!
-      </p>
-    `, [
-      ['Chấp hành quyết định', () => {
-        head();
-        if (R.mode === 'prep') refreshPrep();
-      }, 1]
-    ]);
-  } else if(reason === 'evasion'){
-    S.taxCycle = (S.taxCycle || 1) + 1;
-    S.taxDueDay = S.day + 3;
-    S.taxGraceDay = S.taxDueDay + 1;
-    save();
-
-    ask(`
-      <div class="pbig">🏛️</div>
-      <h2 style="color:#b91c1c;">CƯỠNG CHẾ TỊCH THU TÀI SẢN DO TRỐN THUẾ!</h2>
-      <p>Theo luật định: Cứ mỗi <b>3 ngày</b> chủ quán phải tự giác kê khai và nộp <b>15% thuế</b>, nếu quên được ân hạn tối đa <b>1 ngày</b>.</p>
-      <p style="color:#7f1d1d;">Quán đã <b>quá thời hạn nộp thuế</b> (vượt quá 1 ngày ân hạn) mà chủ quán không tự giác vào mục Đóng thuế thực hiện nghĩa vụ.</p>
-      <p class="warnline" style="font-weight:800;color:#dc2626;">
-        Chi Cục Thuế ra lệnh CƯỠNG CHẾ TỊCH THU TOÀN BỘ ${fmt(lost)} trong két của quán!
-      </p>
-    `, [
-      ['Chấp hành quyết định', () => {
-        head();
-        if (R.mode === 'prep') refreshPrep();
-      }, 1]
-    ]);
-  }
+function cheatHit(){
+  const keep=(1+Math.floor(Math.random()*9))*100000;
+  let lost=Math.max(0,S.money-keep);
+  const equipRed=Math.min(0.9,((S.upgLv&&S.upgLv.equip)||0)*0.001);
+  if(equipRed>0)lost=Math.round(lost*(1-equipRed));
+  S.money=Math.max(keep,S.money-lost);
+  S.cur.stolen=(S.cur.stolen||0)+lost;
+  S.badNow={id:rnd(BAD).id,all:1,v:lost,keep:S.money};
+  save();
 }
 
 function badCheck(){
   if(S.day<CFG.thiefDay&&S.money>CFG.thiefMoney)cheatHit();
 
-  // 1. Kiểm tra quá hạn nộp thuế (mỗi 3 ngày 1 lần, quên hạn 1 ngày)
-  if(S.taxDueDay && S.day > S.taxGraceDay && S.taxPaidInCycle !== S.taxCycle){
-    confiscateIllegalAssets('evasion');
-    return true;
-  }
-
-  // 2. Kiểm tra doanh thu bán nước vs tiền cờ bạc (bầu cua, xì dách)
-  const teaRev = S.totalRev || 0;
-  const gWon = S.gambleWon || 0;
-  if(gWon > teaRev && gWon > 0){
-    confiscateIllegalAssets('gamble');
-    return true;
-  }
-
-  // 3. Nguy cơ trộm cắp, thuế, lừa đảo tăng mạnh khi két tiền quá nhiều (> 500 triệu)
+  // 2. Nguy cơ trộm cắp, lừa đảo tăng mạnh khi két tiền quá nhiều (> 500 triệu)
+  const equipRed = Math.min(0.9, ((S.upgLv && S.upgLv.equip) || 0) * 0.001);
   if(!S.badNow && S.money >= 500000000 && Math.random() < 0.45){
     const richScams = [
       { id: 'trom', n: 'Trộm cắp cạy két đêm khuya!', ic: 'sad', t: 'Quán để lượng tiền mặt quá lớn (> 500 triệu) thu hút băng trộm chuyên nghiệp cạy két lấy mất %!' },
       { id: 'lua', n: 'Bị lừa đảo công nghệ cao!', ic: 'phone', t: 'Kẻ lừa đảo giả danh cơ quan cấp cao nhắm vào tiệm trà nhiều tiền, thao túng chuyển mất %!' },
-      { id: 'qltt', n: 'Thanh tra tài chính & Thuế đột xuất!', ic: 'warn', t: 'Lượng tiền mặt lưu trữ tại quán trên 500 triệu bất thường, bị thanh tra tạm giữ xử phạt %!' }
+      { id: 'qltt', n: 'Thanh tra tài chính đột xuất!', ic: 'warn', t: 'Lượng tiền mặt lưu trữ tại quán trên 500 triệu bất thường, bị thanh tra tạm giữ xử phạt %!' }
     ];
     const sc = rnd(richScams);
     const pct = 0.10 + Math.random() * 0.15;
-    const v = Math.round((S.money * pct) / 1000000) * 1000000;
+    let v = Math.round((S.money * pct) / 1000000) * 1000000;
+    if(equipRed > 0) v = Math.round((v * (1 - equipRed)) / 100000) * 100000;
     if(v >= 10000000){
       S.money -= v;
       S.cur.bad = (S.cur.bad || 0) + v;
+      const equipNote = equipRed > 0 ? `<br><small style="color:#059669;font-weight:700;">(Đã được trang bị quán giảm ${(equipRed*100).toFixed(1)}% thiệt hại)</small>` : '';
       S.badNow = {
         id: sc.id,
         n: sc.n,
         ic: sc.ic,
-        msg: sc.t.replace('%', `<b style="color:#dc2626;">−${fmt(v)} (${Math.round(pct * 100)}% két)</b>`),
+        msg: sc.t.replace('%', `<b style="color:#dc2626;">−${fmt(v)} (${Math.round(pct * 100)}% két)</b>`) + equipNote,
         v
       };
       save();
     }
   }
   if(!S.badNow&&S.badPlan){const e=S.badPlan.ev.find(x=>!x.done&&x.d<=S.day);
-    if(e){e.done=true;if(S.day-e.d<=1){const v=Math.min(Math.round((200000+Math.random()*700000)/50000)*50000,Math.floor(S.money/3/1000)*1000);
+    if(e){e.done=true;if(S.day-e.d<=1){let v=Math.min(Math.round((200000+Math.random()*700000)/50000)*50000,Math.floor(S.money/3/1000)*1000);
+      if(equipRed>0)v=Math.round(v*(1-equipRed));
       if(v>=10000){S.money-=v;S.cur.bad=(S.cur.bad||0)+v;S.badNow={id:e.id,v}}}save()}}
   const b=S.badNow;if(!b)return false;S.badNow=null;save();sfx('bad');const t=BAD.find(x=>x.id===b.id)||BAD[0];
   const title = b.n || t.n;
@@ -662,63 +499,12 @@ function badCheck(){
   const body = b.msg || (b.all?t.all:t.some.replace('%','<b>'+fmt(b.v)+'</b>'));
   ask(`<div class="pbig">${ico(icon)}</div><h2>${title}</h2><p>${body}</p>${b.all?`<p class="warnline">Trong két chỉ còn ${fmt(b.keep)}.</p>`:''}`,[['Buồn ghê',()=>{head();if(R.mode==='prep')refreshPrep()},1]]);return true}
 
-function goToTaxTab(){
-  if($('modal')) $('modal').hidden = true;
-  R.tab = 'nangcap';
-  R.sub = R.sub || {};
-  R.sub.upg = 5;
-  renderPrep();
-  setTimeout(() => {
-    const sw = $('sw-upg');
-    if (sw) sw.scrollTo({ left: 5 * sw.clientWidth, behavior: 'smooth' });
-  }, 100);
-}
-window.goToTaxTab = goToTaxTab;
-
-function taxCheck(){
-  const cycle = S.taxCycle || 1;
-  const dueDay = S.taxDueDay || (cycle * 3);
-  const graceDay = S.taxGraceDay || (dueDay + 1);
-  const isPaidThisCycle = (S.taxPaidInCycle === cycle);
-  if (isPaidThisCycle) return false;
-
-  const isDueDay = (S.day === dueDay) || (S.day % 3 === 0);
-  const isGraceDay = (S.day === graceDay);
-
-  if ((isDueDay || isGraceDay) && S.taxNotifiedDay !== S.day) {
-    S.taxNotifiedDay = S.day;
-    save();
-    sfx('warn');
-    const taxAmt = Math.max(0, Math.round((S.money || 0) * 0.15));
-    ask(`
-      <div class="pbig">🏛️</div>
-      <h2 style="color:${isGraceDay ? '#dc2626' : '#c2410c'};">
-        ${isGraceDay ? '🚨 CẢNH BÁO ÂN HẠN ĐÓNG THUẾ!' : '🔔 THÔNG BÁO ĐẾN HẠN ĐÓNG THUẾ!'}
-      </h2>
-      <p>Hôm nay là <b>Ngày ${S.day}</b> ${isGraceDay ? '(Hạn ân hạn 1 ngày cuối cùng)' : '(Ngày thứ 3 trong chu kỳ nộp thuế định kỳ)'}.</p>
-      <div class="note" style="background:#fff7ed;border-left:4px solid #ea580c;color:#7c2d12;text-align:left;line-height:1.5;margin:8px 0;">
-        • <b>Quy định:</b> Cứ <b>3 ngày</b> phải đóng thuế 1 lần.<br>
-        • <b>Thuế suất:</b> 15% số tiền két hiện tại.<br>
-        • <b>Số tiền thuế cần nộp:</b> <b style="color:#dc2626;font-size:1.05rem;">${fmt(taxAmt)}</b>.<br>
-        • <b>Hạn chót:</b> ${isGraceDay ? 'Hôm nay là ngày ân hạn duy nhất! Hết hôm nay nếu không nộp sẽ bị tịch thu tài sản!' : 'Hôm nay là hạn chính thức. Quên nộp chỉ được ân hạn tối đa 1 ngày (Ngày ' + graceDay + ').'}
-      </div>
-      <p style="font-size:0.9rem;color:#475569;">Vui lòng vào mục <b>Nâng cấp > 🏛️ Đóng thuế</b> để thực hiện nghĩa vụ trước khi mở bán.</p>
-    `, [
-      ['Để lát nữa đóng', () => { head(); refreshPrep(); }],
-      ['🏛️ Đến mục Đóng thuế ngay', () => goToTaxTab(), 1]
-    ]);
-    return true;
-  }
-  return false;
-}
-
-/* chờ hết màn hình chào và hộp thoại khác rồi mới báo trộm / thuế / quà */
+/* chờ hết màn hình chào và hộp thoại khác rồi mới báo trộm / quà */
 function prepChecks(){
   if(R.mode!=='prep'||!$('splash').hidden)return;
   if(!$('modal').hidden){clearTimeout(R.pcT);R.pcT=setTimeout(prepChecks,500);return}
   if(storeCheck())return;
   if(badCheck())return;
-  if(taxCheck())return;
   if(S.gift){giftCheck();return}
   bakRemind();
 }
@@ -733,14 +519,16 @@ function bakRemind(){if(R.noStore||S.day<8||S.day-(S.bakDay||0)<7||S.day-(S.bakA
 function autoRestoreDlg(){$('card').onchange=null;
   const list=[['tsBak1','Cuối ngày gần nhất'],['tsBak2','Một ngày trước đó'],['tsBak3','Hai ngày trước đó'],[SAVE+'_rescue','Bản bị lỗi lúc mở game']].map(([k,n])=>{try{const r=localStorage.getItem(k);if(!r)return null;const d=JSON.parse(r);return d&&d.stock?{k,n,d}:null}catch(e){return null}}).filter(Boolean);
   if(!list.length){ask(`<h2>Chưa có bản tự lưu</h2><p>Game tự lưu mỗi cuối ngày. Nếu có mã sao lưu, dùng Khôi phục từ mã.</p>`,[['Đóng',showSettings],['Khôi phục từ mã',()=>restoreDlg(),1]]);return}
-  ask(`<h2>Khôi phục bản tự lưu</h2><p>Chọn bản muốn lấy lại. Tiến trình hiện tại (ngày ${S.day}) sẽ bị thay thế.</p>`,[['Huỷ',showSettings],...list.map(x=>[`${x.n}: ${esc(x.d.shopName||'Tiệm Trà Mơ Ước')} · Ngày ${x.d.day} · ${fmt(x.d.money||0)}`,()=>applyRestore(x.d),1])])}
+  ask(`<h2>Khôi phục bản tự lưu</h2><p>Chọn bản muốn lấy lại. Tiến trình hiện tại (ngày ${S.day}) sẽ bị thay thế.</p>`,[['Huỷ',showSettings],...list.map(x=>[`${x.n}: ${esc(x.d.shopName||'Tiệm Trà Nhỏ')} · Ngày ${x.d.day} · ${fmt(x.d.money||0)}`,()=>applyRestore(x.d),1])])}
 function applyRestore(d){try{localStorage.setItem(SAVE,JSON.stringify(d))}catch(e){}try{loadFrom(d)}catch(e){toast('Bản này bị lỗi, thử bản khác');return}save();R.plan={};R.tab='kho';document.title=shopName();renderPrep();toast('Đã khôi phục ngày '+S.day+(R.noStore?' (máy đang chặn lưu, nhớ tạo mã sao lưu)':''))}
 function giftCheck(){if(!S.gift)return;sfx('lvup');const g=S.gift;S.gift=null;if(g.k==='bung')S.bungN=0;S.money+=g.v;S.cur.gift=(S.cur.gift||0)+g.v;save();
   ask(`<div class="pbig">${ico('gift')}</div><h2>${g.n}</h2><p>${g.d}</p><p class="lvup">+${fmt(g.v)} vào két</p>`,[['Tuyệt quá',()=>{head();refreshPrep()},1]])}
 function traffic(){
   const r=rating(),rf=(.55+(r-1)/4*.9)*Math.min(1,Math.max(.6,.6+(r-3.5)*.4))*(S.day<10?.8+.02*S.day:1);/* tăng khách mượt theo sao, 10 ngày đầu tăng từ từ */
   const gzBoost=(S.upg.staffGz&&!R.gzSulking)?1.5:1.0;
-  const boost=(1+(S.upg.sign?.2:0)+(S.upg.ads?.25:0)+(S.upg.mascot?.3:0)+Math.min(S.day,40)*.012)*gzBoost;
+  const traBoost = 1 + ((S.upgLv && S.upgLv.tra) || 0) * 0.005;
+  const friendBoost = (S.friendBuff && S.friendBuff.day === S.day) ? (1 + (S.friendBuff.boost || 0.15)) : 1.0;
+  const boost=(1+(S.upg.sign?.2:0)+(S.upg.ads?.25:0)+(S.upg.mascot?.3:0)+Math.min(S.day,40)*.012)*gzBoost*traBoost*friendBoost;
   const avgIdx=BASE_KEYS.filter(k=>S.unlocked[k]).reduce((a,k)=>a+S.sell[k]/DEF_SELL[k],0)/BASE_KEYS.filter(k=>S.unlocked[k]).length;
   const e=ev();return rf*boost*(e?EVS[e.id].mul:1)/Math.max(.85,Math.min(1,avgIdx)**2);
 }
@@ -778,17 +566,21 @@ function reviewText(why,c,st,extra){
     const pool=TAIL_MOOD[MOOD[why]||'ok'].filter(x=>x.trim()!==lastTail);t+=rnd(pool.length?pool:TAIL_MOOD.ok)}
   return {t,k:strip(t)};
 }
-function addReview(st,why,online,c,extra){const sr=c&&c.star!=null;if(sr)st=5;const r=sr?(x=>({t:x[0]+' [Tự động dịch] '+x[1],k:'★'+c.star+Math.random()}))(starLine(STARS[c.star],'rv')):reviewText(why,c,st,extra),o=c&&c.cups?c.cups[0]:null;
-  S.reviews.unshift({s:st,t:r.t,k:r.k,d:S.day,o:!!online,...(sr?{st:c.star,tg:STARS[c.star].t}:{}),n:c?c.name:'Khách',f:(c&&c.face)||'🙂',b:o?o.base:null,fl:o?o.flav:null,tp:o?o.tops:[],ch:o?!!o.cheese:false,sz:o?o.size:'M'});
+function addReview(st,why,online,c,extra){
+  const sr=c&&c.star!=null, isFr=c&&c.isFriend;
+  if(sr||isFr)st=5;
+  const frTxt=(c&&c.friendData)?`${c.friendData.quote?`"${c.friendData.quote}" - `:''}Trà của bạn mình pha chuẩn không cần chỉnh! Cả hội bạn đều mê ly ${c.cups&&c.cups[0]&&ITEMS[c.cups[0].base]?ITEMS[c.cups[0].base].n:'trà thơm béo'}! Chấm 5★ ủng hộ bạn iu! 🧋✨`:'Trà của bạn mình pha ngon đỉnh chóp! 5 sao không có nhưng! 🧋✨';
+  const r=sr?(x=>({t:x[0]+' [Tự động dịch] '+x[1],k:'★'+c.star+Math.random()}))(starLine(STARS[c.star],'rv')):isFr?{t:frTxt,k:'friend_'+c.id+Math.random()}:reviewText(why,c,st,extra),o=c&&c.cups?c.cups[0]:null;
+  S.reviews.unshift({s:st,t:r.t,k:r.k,d:S.day,o:!!online,...(sr?{st:c.star,tg:STARS[c.star].t}:{}),...(isFr?{tg:'👑 VIP Bạn Bè'}:{}),n:c?c.name:'Khách',f:(c&&c.face)||'🙂',b:o?o.base:null,fl:o?o.flav:null,tp:o?o.tops:[],ch:o?!!o.cheese:false,sz:o?o.size:'M'});
   S.revTotal=Math.max(S.revTotal||0,S.reviews.length-1)+1;if(S.reviews.length>2500)S.reviews.length=2500;R.today.stars.push(st);
   if(S.upg.staffGz&&R.running&&!R.gzSulking&&(st<=2||['timeout','late','wrong','bad','refused','soldout','soldoutOnl','soldoutPartial'].includes(why)))gzTriggerSulk(why,st)}
 
 /* ---------- HEADER ---------- */
 const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const shopName=()=>(!S.shopName||S.shopName==='Tiệm Trà Nhỏ')?'Tiệm Trà Mơ Ước':S.shopName;
+const shopName=()=>(!S.shopName||S.shopName==='Tiệm Trà Nhỏ')?'Tiệm Trà Nhỏ':S.shopName;
 function setName(v){v=String(v||'').replace(/\s+/g,' ').trim().slice(0,30);S.shopName=v;document.title=shopName();save()}
 function renameDlg(){
-  ask(`<h2>Đặt tên quán</h2><p>Tối đa 30 ký tự. Tên sẽ hiện trên biển hiệu, đánh giá và tổng kết.</p><input id="nameIn" class="pinbox nm" maxlength="30" value="${esc(shopName())}" placeholder="Ví dụ: Tiệm Trà Mơ Ước" aria-label="Tên quán">`,
+  ask(`<h2>Đặt tên quán</h2><p>Tối đa 30 ký tự. Tên sẽ hiện trên biển hiệu, đánh giá và tổng kết.</p><input id="nameIn" class="pinbox nm" maxlength="30" value="${esc(shopName())}" placeholder="Ví dụ: Tiệm Trà Nhỏ" aria-label="Tên quán">`,
     [['Huỷ',()=>{}],['Lưu tên',()=>{setName($('nameIn').value);toast('Đã đổi tên quán');renderPrep()},1]]);
   setTimeout(()=>{const i=$('nameIn');if(i){i.focus();i.select()}},50);
 }
@@ -858,9 +650,12 @@ function menuBoard(){
 }
 const levelOf=d=>{const L=CFG.levels;return d>=L.l3?3:d>=L.l2?2:1};
 const level=()=>levelOf(S.day);
-const LV_TXT={1:'Khách gọi size, loại trà và topping',2:'Khách chọn thêm mức đường và đá',3:'Khách có thể mua 2–5 ly một lần, mỗi ly tới 4 topping'};
-/* app giao hàng: hiện chỉ có Soppi, mở theo điều kiện đơn online, cần 1 tablet */
-const APPS=[{id:'sp',n:'Soppi',c:'#f08a4b',w:20,rows:[0,1]}];
+const LV_TXT={1:'Khách gọi size, loại trà và topping',2:'Khách chọn thêm mức đường và đá',3:'Khách có thể mua 2–5 ly một lần, gọi nhiều topping hoặc full topping'};
+/* app giao hàng: Soppi và Tóp Tóp, mở theo điều kiện, mỗi app cần 1 tablet */
+const APPS=[
+  {id:'sp',n:'Soppi',c:'#f08a4b',w:20,rows:[0,1]},
+  {id:'tt',n:'Tóp Tóp',c:'#fe2c55',w:25,rows:[0,1],day:90,minProfit:50000000,rate:4.5,fee:10000000}
+];
 const appJoined=a=>a.id==='sp'?!!S.online:!!(S.apps||{})[a.id];
 const appMinRate=a=>a.id==='sp'?CFG.online.minRating:a.rate;
 /* app đang nhận đơn: đã mở, có tablet, đủ sao */
@@ -931,14 +726,16 @@ function onlineCard(){
   let h='';
   if(!S.online){const ic=[ico('money'),ico('calendar'),ico('star')];
     h+=`<div class="goalc"><div class="gh">${ico('phone')} Mở đơn online (Soppi)</div><div class="wl">${ico('money')} lợi nhuận · ${ico('calendar')} ngày · ${ico('star')} đánh giá</div>${onlineCheck().map((c,i)=>`<div class="gr2${c.ok?' ok':''}"><span class="gi">${c.ok?'✅':ic[i]}</span><div class="gb"><i style="width:${Math.min(100,c.p*100)}%"></i></div><span class="gv">${c.v}</span></div>`).join('')}</div>`}
-  h+=`<div class="note">Cần 1 tablet (mua ở Trang bị) thì đơn Soppi mới đổ về. Đơn online chiếm khoảng 20% tổng khách. Phí app −${CFG.commission}%.</div>`;
+  h+=`<div class="note">Mỗi tablet (mua ở Trang bị) chạy 1 app giao hàng. Đơn online chiếm khoảng 20% tổng khách. Phí app −${CFG.commission}%.</div>`;
   h+=APPS.map(a=>{const j=appJoined(a),act=on.includes(a),idx=joined.indexOf(a),noTb=j&&idx>=tb;
     let st;
     if(a.id==='sp')st=!S.online?`<span class="wl">Chưa đủ điều kiện</span>`:act?'<span class="okline">✓ Đang nhận đơn</span>':noTb?'<span class="wl">Cần tablet</span>':`<span class="wl">Tạm ngưng · cần ${ico('star')} ${mr}</span>`;
-    else if(j)st=act?'<span class="okline">✓ Đang nhận đơn</span>':noTb?'<span class="wl">Cần tablet</span>':`<span class="wl">Đóng · cần ${ico('star')} ${f1(a.rate)}</span>`;
-    else{const ok=S.online&&S.day>=a.day&&S.money>=a.money&&r>=a.rate;
+    else if(j)st=act?'<span class="okline">✓ Đang nhận đơn</span>':noTb?'<span class="wl">Cần tablet</span>':`<span class="wl">Tạm ngưng · dưới ${f1(a.rate)}★ không nhận đơn</span>`;
+    else{
+      const hasProf=(S.totalProfit||0)>=a.minProfit;
+      const ok=S.online&&S.day>=a.day&&hasProf&&r>=a.rate;
       st=ok?`<button class="sbtn pri" data-join="${a.id}" ${S.money<a.fee?'disabled':''}><b>${fmtTr(a.fee)}</b>Gia nhập</button>`:`<span class="wl">Chưa đủ điều kiện</span>`}
-    const cond=a.id==='sp'?`Từ ngày ${CFG.online.fromDay} · lợi nhuận ${fmtTr(CFG.online.minProfit)} · ${ico('star')} ${mr} trở lên · không mất phí. Dưới ${mr} sao thì tạm ngưng`:`Từ ngày ${a.day} · két ${fmtTr(a.money)} · ${ico('star')} ${f1(a.rate)} trở lên · phí ${fmtTr(a.fee)}. Dưới ${f1(a.rate)} sao thì ${a.n} đóng, không nhận đơn`;
+    const cond=a.id==='sp'?`Từ ngày ${CFG.online.fromDay} · lợi nhuận ${fmtTr(CFG.online.minProfit)} · ${ico('star')} ${mr} trở lên · không mất phí. Dưới ${mr} sao thì tạm ngưng`:`Từ ngày ${a.day} · lợi nhuận ${fmtTr(a.minProfit)} · ${ico('star')} ${f1(a.rate)} trở lên · phí mở ${fmtTr(a.fee)}. Dưới ${f1(a.rate)} sao không nhận đơn`;
     return `<div class="rowi"><span class="icon"><i class="appdot" style="background:${a.c}"></i><i class="tfc" style="${shipBg(a.rows[0],0,40,39)}"></i></span><div><div class="nm">${a.n}</div><div class="sub">${cond}</div></div>${st}</div>`}).join('');
   return h;
 }
@@ -958,7 +755,7 @@ function bindSub(id){
 }
 function renderPrep(){
   R.mode='prep';if(AU.ctx)musSync();document.body.classList.remove('selling');
-  const tabs=[['kho','box','Kho'],['nangcap','tools','Nâng cấp'],['gia','price','Giá bán'],['danhgia','star','Đánh giá'],['tongket','chart','Tổng kết']];
+  const tabs=[['kho','box','Kho'],['nangcap','tools','Nâng cấp'],['gia','price','Giá bán'],['danhgia','star','Đánh giá'],['tongket','chart','Tổng kết'],['banbe','people','Bạn bè']];
   $('view').innerHTML=menuBoard()+
     `<div class="tabs" role="tablist">${tabs.map(([k,ic,l])=>`<button class="tab${R.tab===k?' on':''}" data-tab="${k}" role="tab"><span class="ti">${ico(ic)}</span>${l}</button>`).join('')}</div>
      <div class="pane" id="pane"></div>
@@ -966,20 +763,24 @@ function renderPrep(){
   $('view').querySelector('.tabs').onclick=e=>{const b=e.target.closest('[data-tab]');if(b&&b.dataset.tab!==R.tab)switchTab(b.dataset.tab)};
   $('rename').onclick=renameDlg;
   bindBoard();
-  ({kho:paneKho,nangcap:paneUpg,gia:paneGia,danhgia:paneRev,tongket:paneSum})[R.tab]();
+  const paneFns = {kho:paneKho,nangcap:paneUpg,gia:paneGia,danhgia:paneRev,tongket:paneSum,banbe:()=>window.BanBe&&window.BanBe.render()};
+  if(paneFns[R.tab]) paneFns[R.tab]();
   renderObar(true);head();
   if($('bcBtn')) $('bcBtn').onclick=()=>{if(window.BauCua) window.BauCua.open()};
+  if($('frBtn')) $('frBtn').onclick=()=>{switchTab('banbe')};
   setTimeout(prepChecks,300);
 }
 function refreshPrep(board){if(board){const b=document.querySelector('.board'),sg=document.querySelector('.sign');if(b&&sg){const t=document.createElement('div');t.innerHTML=menuBoard();sg.replaceWith(t.querySelector('.sign'));b.replaceWith(t.querySelector('.board'));$('rename').onclick=renameDlg;bindBoard()}}
-  ({kho:paneKho,nangcap:paneUpg,gia:paneGia,danhgia:paneRev,tongket:paneSum})[R.tab]();renderObar();head()}
+  const paneFns = {kho:paneKho,nangcap:paneUpg,gia:paneGia,danhgia:paneRev,tongket:paneSum,banbe:()=>window.BanBe&&window.BanBe.render()};
+  if(paneFns[R.tab]) paneFns[R.tab]();renderObar();head()}
 function obarHTML(){const t=planTotal();return t?`<button class="big" id="cook" ${t>S.money?'disabled':''}>${t>S.money?'Không đủ tiền · ':'Nấu & nhập · '}${fmt(t)}</button>`:(missingPrep().length?`<button class="big blocked" id="open">${ico('warn')} Chưa nấu ${missingPrep().map(m=>m[0]).join(' · ')}</button>`:`<button class="big" id="open">Mở cửa ngày ${S.day}</button>`)}
 function renderObar(force){const b=$('obar');if(!b)return;const h=obarHTML();if(!force&&b._h===h)return;
   const old=b.firstElementChild,t=document.createElement('div');t.innerHTML=h;const n=t.firstElementChild;
   if(!force&&old&&old.id===n.id&&old.className===n.className&&!n.querySelector('img')){old.textContent=n.textContent;old.disabled=n.disabled}else{b.innerHTML=h}
   b._h=h;if($('open'))$('open').onclick=tryOpen;if($('cook'))$('cook').onclick=cook}
 function switchTab(k){R.tab=k;document.querySelectorAll('#view .tabs [data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===k));
-  ({kho:paneKho,nangcap:paneUpg,gia:paneGia,danhgia:paneRev,tongket:paneSum})[k]();renderObar()}
+  const paneFns = {kho:paneKho,nangcap:paneUpg,gia:paneGia,danhgia:paneRev,tongket:paneSum,banbe:()=>window.BanBe&&window.BanBe.render()};
+  if(paneFns[k]) paneFns[k]();renderObar()}
 function itemIcon(k){const it=ITEMS[k];
   if(it.type==='base')return `<span class="bcup">${baseCup(k)}</span>`;
   if(it.type==='flav')return flavIcon(k,26);
@@ -988,7 +789,7 @@ function itemIcon(k){const it=ITEMS[k];
 }
 const groupRows=(ks,fn)=>TGROUPS.map(G=>{const g=ks.filter(k=>ITEMS[k].g===G.g);return g.length?`<div class="tgl">${G.i} ${G.n}</div>`+g.map(fn).join(''):''}).join('');
 function planTotal(){return Object.entries(R.plan).reduce((a,[k,q])=>a+q*ecost(k),0)}
-function expected(){const sec=dayLen()*60,t=traffic()*(pricyItems().length?.2:1);return {walk:Math.round(sec/(9/t)*.85),onl:onlineActive()?Math.round(sec/(36/t)):0}}
+function expected(){const sec=dayLen()*60,t=traffic()*(pricyItems().length?.2:1);const onlLvMul=1+((S.upgLv&&S.upgLv.onl)||0)*0.001;return {walk:Math.round(sec/(9/t)*.85),onl:onlineActive()?Math.round(sec/(36/(t*onlLvMul))):0}}
 function lifeTag(k){const l=CFG.life[k];return `<span class="life l${l>1?3:l}">${l?ico('hourglass')+' '+l+' ngày':'♾'}</span>`}
 function gzSuggestCard(){
   if(!S.upg.staffGz) return '';
@@ -1177,191 +978,113 @@ function missingPrep(){const has=ks=>ks.some(k=>S.unlocked[k]&&qty(k)>0);
 function tryOpen(){
   const miss=missingPrep();
   if(miss.length){R.tab='kho';R.sub=R.sub||{};R.sub.kho=miss[0][1];renderPrep();toast(ico('warn')+' Chưa nấu: '+miss.map(m=>m[0]).join(', '));return}
-
-  // Nhắc nhở đóng thuế khi chuẩn bị mở bán vào ngày thứ 3 trong chu kỳ nộp
-  const cycle = S.taxCycle || 1;
-  const dueDay = S.taxDueDay || (cycle * 3);
-  const graceDay = S.taxGraceDay || (dueDay + 1);
-  const isPaidThisCycle = (S.taxPaidInCycle === cycle);
-  if(!isPaidThisCycle && (S.day === dueDay || S.day % 3 === 0 || S.day === graceDay)){
-    const isGrace = (S.day === graceDay);
-    const taxAmt = Math.max(0, Math.round((S.money || 0) * 0.15));
-    ask(`
-      <div class="pbig">🏛️</div>
-      <h2 style="color:${isGrace ? '#dc2626' : '#ea580c'};">
-        ${isGrace ? '🚨 CẢNH BÁO ÂN HẠN ĐÓNG THUẾ!' : '🔔 NHẮC NHỞ ĐÓNG THUẾ (NGÀY THỨ 3)!'}
-      </h2>
-      <p>Hôm nay là <b>Ngày ${S.day}</b> ${isGrace ? '(Đang trong thời gian ân hạn 1 ngày cuối)' : '(Ngày thứ 3 đến hạn nộp định kỳ)'}.</p>
-      <div class="note" style="background:#fff7ed;border-left:4px solid #ea580c;color:#7c2d12;text-align:left;line-height:1.5;margin:8px 0;">
-        • <b>Thuế suất:</b> 15% số tiền két hiện tại.<br>
-        • <b>Số tiền thuế cần nộp:</b> <b style="color:#dc2626;font-size:1.05rem;">${fmt(taxAmt)}</b>.<br>
-        • <b>Lưu ý:</b> Cứ 3 ngày phải nộp thuế 1 lần. Quên đóng quá 1 ngày ân hạn sẽ bị cơ quan thuế <b>cưỡng chế tịch thu toàn bộ tài sản</b>!
-      </div>
-      <p style="font-size:0.9rem;color:#475569;">Bạn có muốn vào đóng thuế ngay trước khi mở bán không?</p>
-    `, [
-      ['Mở bán luôn (Nộp sau)', () => startDay()],
-      ['🏛️ Nộp thuế trước', () => goToTaxTab(), 1]
-    ]);
-    return;
-  }
-
   startDay();
 }
-function taxCard(){
-  const taxRate = 0.15;
-  const curMoney = S.money || 0;
-  const taxAmt = Math.max(0, Math.round(curMoney * taxRate));
-  const cycle = S.taxCycle || 1;
-  const dueDay = S.taxDueDay || 3;
-  const graceDay = S.taxGraceDay || (dueDay + 1);
-  const lastPaid = S.taxLastPaidDay || 0;
-  const isPaidThisCycle = S.taxPaidInCycle === cycle;
-  const day = S.day || 1;
 
-  const teaRev = S.totalRev || 0;
-  const gambleWon = S.gambleWon || 0;
-  const gambleLost = S.gambleLost || 0;
-  const gambleNet = (S.gambleNet != null) ? S.gambleNet : (gambleWon - gambleLost);
-  const isIllegal = gambleWon > teaRev && gambleWon > 0;
-
-  let statusBadge = '';
-  let statusDesc = '';
-
-  if (isPaidThisCycle) {
-    statusBadge = '<span style="background:#dcfce7;color:#15803d;padding:3px 10px;border-radius:999px;font-weight:800;font-size:0.8rem;">✓ Đã nộp kỳ này</span>';
-    statusDesc = `<span style="color:#16a34a;">Đã nộp thuế kỳ ${cycle} vào ngày ${lastPaid}. Hạn nộp kỳ tiếp theo: <b>Ngày ${dueDay}</b>.</span>`;
-  } else if (day < dueDay) {
-    statusBadge = `<span style="background:#fef9c3;color:#854d0e;padding:3px 10px;border-radius:999px;font-weight:800;font-size:0.8rem;">⏳ Chưa nộp (Còn ${dueDay - day} ngày)</span>`;
-    statusDesc = `Kỳ thuế ${cycle}: Hạn nộp là <b>Ngày ${dueDay}</b> (mỗi 3 ngày 1 lần). Bạn có thể nộp sớm ngay bây giờ.`;
-  } else if (day === dueDay) {
-    statusBadge = `<span style="background:#fed7aa;color:#c2410c;padding:3px 10px;border-radius:999px;font-weight:800;font-size:0.8rem;">⚠️ HÔM NAY ĐẾN HẠN</span>`;
-    statusDesc = `<b style="color:#c2410c;">Hôm nay là Ngày ${day} - Hạn chót định kỳ 3 ngày! Hãy nộp thuế trước khi hết ngày!</b>`;
-  } else if (day === graceDay) {
-    statusBadge = `<span style="background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:999px;font-weight:800;font-size:0.8rem;">🚨 ĐANG ÂN HẠN (1 NGÀY CUỐI)</span>`;
-    statusDesc = `<b style="color:#b91c1c;">ĐÃ QUÊN HẠN NỘP! Đang trong thời gian ân hạn 1 ngày duy nhất (Ngày ${day}). Hết hôm nay không đóng sẽ bị TỊCH THU TÀI SẢN!</b>`;
-  } else {
-    statusBadge = `<span style="background:#991b1b;color:#fff;padding:3px 10px;border-radius:999px;font-weight:800;font-size:0.8rem;">☠️ QUÁ HẠN NỘP THUẾ</span>`;
-    statusDesc = `<b style="color:#b91c1c;">Đã quá hạn ân hạn! Quán đang nằm trong diện cưỡng chế tịch thu toàn bộ tài sản!</b>`;
+/* ---------- HỆ THỐNG NÂNG CẤP CẤP ĐỘ LEVEL BẰNG TIỀN (Nx3: 10k, 30k, 90k, 270k...) ---------- */
+const UPG_LV_CFG = {
+  tra: {
+    name: 'Trà',
+    desc: 'Tăng 0.5% tỉ lệ khách ghé quán mỗi cấp',
+    pct: 0.5,
+    unit: '%',
+    curBonus: lv => `+${(lv * 0.5).toFixed(1)}% khách ghé quán`
+  },
+  huong: {
+    name: 'Hương',
+    desc: 'Tăng 0.5% thời gian kiên nhẫn chờ mỗi cấp',
+    pct: 0.5,
+    unit: '%',
+    curBonus: lv => `+${(lv * 0.5).toFixed(1)}% thời gian chờ`
+  },
+  top: {
+    name: 'Topping',
+    desc: 'Giảm 0.5% tỉ lệ đánh giá xấu/kém mỗi cấp',
+    pct: 0.5,
+    unit: '%',
+    curBonus: lv => `Giảm ${(lv * 0.5).toFixed(1)}% đánh giá kém`
+  },
+  equip: {
+    name: 'Trang bị',
+    desc: 'Giảm 0.1% tiền phạt khi dính trộm cắp, lừa đảo mỗi cấp',
+    pct: 0.1,
+    unit: '%',
+    curBonus: lv => `Giảm ${(lv * 0.1).toFixed(1)}% thiệt hại sự cố`
+  },
+  staff: {
+    name: 'Nhân viên',
+    desc: 'Có 0.1% tỉ lệ x2 lợi nhuận đơn hàng mỗi cấp',
+    pct: 0.1,
+    unit: '%',
+    curBonus: lv => `+${(lv * 0.1).toFixed(1)}% cơ hội x2 lợi nhuận`
+  },
+  onl: {
+    name: 'Online',
+    desc: 'Tăng 0.1% tần suất nổ đơn online mỗi cấp',
+    pct: 0.1,
+    unit: '%',
+    curBonus: lv => `+${(lv * 0.1).toFixed(1)}% tần suất đơn online`
   }
+};
 
+function getUpgLvCost(lv){
+  return 10000 * Math.pow(3, lv || 0);
+}
+
+function upgLvBanner(cat){
+  const cfg = UPG_LV_CFG[cat];
+  if(!cfg) return '';
+  const lv = (S.upgLv && S.upgLv[cat]) || 0;
+  const cost = getUpgLvCost(lv);
+  const canAfford = S.money >= cost;
   return `
-    <div style="padding:4px 0 12px;">
-      <div style="background:#fff;border:2px solid #fed7aa;border-radius:14px;padding:12px 14px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,0.04);">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
-          <div style="font-weight:800;font-size:1.02rem;color:#9a3412;display:flex;align-items:center;gap:6px;">
-            <span>🏛️</span> Chi Cục Thuế & Quản Lý Thị Trường
-          </div>
-          ${statusBadge}
-        </div>
-        <div style="font-size:0.84rem;color:#4b5563;line-height:1.45;">
-          ${statusDesc}
-        </div>
+    <div class="upg-lv-banner">
+      <div class="ulv-info">
+        <span class="ulv-tag">⭐ NÂNG CẤP CẤP ĐỘ (LEVEL)</span>
+        <div class="ulv-title">Hạng mục: ${cfg.name} (Cấp ${lv})</div>
+        <div class="ulv-desc">${cfg.desc}</div>
+        <div class="ulv-current">Hiệu quả hiện tại: <b>${cfg.curBonus(lv)}</b></div>
       </div>
-
-      <div class="note" style="border-left:4px solid #ea580c;background:#fff7ed;color:#7c2d12;margin-bottom:12px;">
-        📜 <b>Quy định Thuế Hộ Kinh Doanh Tiệm Trà:</b><br>
-        • <b>Thuế suất:</b> 15% tính trên tổng số tiền hiện tại trong két.<br>
-        • <b>Chu kỳ nộp:</b> Mỗi <b>3 ngày</b> phải tự nộp thuế 1 lần.<br>
-        • <b>Hạn ân hạn:</b> Nếu quên, hạn nộp ân hạn là <b>1 ngày</b>. Sau 1 ngày ân hạn nếu không nộp, <b>cơ quan thuế sẽ cưỡng chế tịch thu toàn bộ tài sản</b>.<br>
-        • <b>🔔 Thông báo nộp thuế:</b> Hệ thống sẽ tự động bật thông báo nhắc nhở đóng thuế khi chuẩn bị mở bán vào <b>ngày thứ 3</b> trong chu kỳ nộp!
-      </div>
-
-      <div style="background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px;">
-        <div style="font-weight:800;font-size:0.92rem;color:var(--ink);margin-bottom:8px;display:flex;align-items:center;gap:6px;">
-          <span>🔍</span> Đối Chiếu Doanh Thu Thực & Tiền Cờ Bạc
-        </div>
-        <div style="font-size:0.85rem;display:flex;flex-direction:column;gap:6px;">
-          <div style="display:flex;justify-content:space-between;">
-            <span style="color:#6b7280;">💵 Tiền két hiện tại:</span>
-            <span style="font-weight:800;color:#111827;">${fmt(curMoney)}</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;">
-            <span style="color:#6b7280;">🧋 Doanh thu bán trà (hợp pháp):</span>
-            <span style="font-weight:700;color:#16a34a;">+${fmt(teaRev)}</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;">
-            <span style="color:#6b7280;">🎲 Tiền cờ bạc (Bầu Cua, Xì Dách):</span>
-            <span style="font-weight:700;color:${isIllegal ? '#dc2626' : '#6b7280'};">${gambleWon > 0 ? '+'+fmt(gambleWon) : '0đ'}${gambleWon > 0 ? ` (lời ${gambleNet>=0?'+':''}${fmt(gambleNet)})` : ''}</span>
-          </div>
-          <div style="margin-top:4px;padding-top:6px;border-top:1px dashed #e5e7eb;display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-weight:700;font-size:0.82rem;">Đánh giá nguồn tiền:</span>
-            <span style="font-weight:800;font-size:0.85rem;color:${isIllegal ? '#dc2626' : '#16a34a'};">
-              ${isIllegal ? '🚨 Tiền phi pháp (Cờ bạc > Bán nước)' : '✅ Hợp pháp (Được phép đóng thuế)'}
-            </span>
-          </div>
-        </div>
-        ${isIllegal ? `
-          <div style="background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:8px;padding:8px;margin-top:8px;font-size:0.8rem;line-height:1.4;">
-            ⚠️ <b>Cảnh báo nghiêm trọng:</b> Tiền thu từ cờ bạc (${fmt(gambleWon)}) đang lớn hơn tổng doanh thu bán nước (${fmt(teaRev)})! Nếu tiến hành nộp thuế hoặc bị thanh tra cuối ngày, toàn bộ tài sản sẽ bị <b>tịch thu ngay lập tức vì tiền phi pháp</b>!
-          </div>
-        ` : ''}
-      </div>
-
-      <div style="background:#fafafa;border:2px solid #e5e7eb;border-radius:14px;padding:12px 14px;margin-bottom:12px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <span style="font-size:0.88rem;color:#4b5563;">Thuế suất kê khai:</span>
-          <span style="font-weight:800;color:#9a3412;">15% số tiền két</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-size:0.95rem;font-weight:800;color:var(--ink);">Số tiền thuế cần nộp:</span>
-          <span style="font-size:1.2rem;font-weight:900;color:#dc2626;">${fmt(taxAmt)}</span>
-        </div>
-      </div>
-
-      <button class="big pri" data-paytax="1" style="width:100%;margin-top:4px;" ${isPaidThisCycle ? 'disabled' : ''}>
-        ${isPaidThisCycle ? '✓ Đã hoàn thành thuế kỳ này' : `🏛️ Nộp thuế ngay (15% = ${fmt(taxAmt)})`}
+      <button type="button" class="sbtn pri ulv-btn" data-upglv="${cat}" ${!canAfford ? 'disabled' : ''}>
+        <span class="ulv-next">Nâng lên Cấp ${lv + 1}</span>
+        <span class="ulv-cost">${fmt(cost)}</span>
       </button>
     </div>
   `;
 }
 
-function handlePayTax(){
-  const teaRev = S.totalRev || 0;
-  const gambleWon = S.gambleWon || 0;
-
-  if (gambleWon > teaRev && gambleWon > 0) {
-    confiscateIllegalAssets('gamble');
+function handleUpgLv(cat){
+  if(inDebt()){ toast('Đang nợ, trả xong mới nâng cấp được'); return; }
+  const cfg = UPG_LV_CFG[cat];
+  if(!cfg) return;
+  S.upgLv = S.upgLv || { tra:0, huong:0, top:0, equip:0, staff:0, onl:0 };
+  const curLv = S.upgLv[cat] || 0;
+  const cost = getUpgLvCost(curLv);
+  if(S.money < cost){
+    toast('Két không đủ tiền để nâng cấp cấp độ!');
     return;
   }
-
-  const taxRate = 0.15;
-  const taxAmt = Math.max(0, Math.round(S.money * taxRate));
-
-  ask(`<h2>Nộp thuế cho Chi Cục Thuế?</h2>
-    <p>Thuế suất: <b>15%</b> tính trên số tiền hiện tại (${fmt(S.money)}).</p>
-    <p>Số tiền thuế nộp vào ngân sách: <b style="color:#dc2626;font-size:1.15rem;">${fmt(taxAmt)}</b>.</p>
-    <p>Chu kỳ 3 ngày tiếp theo sẽ bắt đầu tính từ hôm nay. Quên hạn nộp sẽ chỉ được ân hạn tối đa 1 ngày.</p>`,
-    [
-      ['Huỷ', () => {}],
-      ['Nộp thuế ngay', () => {
-        S.money -= taxAmt;
-        S.cur.tax = (S.cur.tax || 0) + taxAmt;
-        const cycle = S.taxCycle || 1;
-        S.taxPaidInCycle = cycle;
-        S.taxLastPaidDay = S.day;
-        S.taxCycle = cycle + 1;
-        S.taxDueDay = S.day + 3;
-        S.taxGraceDay = S.taxDueDay + 1;
-        save();
-        toast(`Đã nộp thành công ${fmt(taxAmt)} (15% thuế) vào ngân sách nhà nước! 🏛️✨`, 5000);
-        head();
-        refreshPrep();
-      }, 1]
-    ]
-  );
+  S.money -= cost;
+  S.upgLv[cat] = curLv + 1;
+  S.cur.equip = S.cur.equip || [];
+  S.cur.equip.push({ n: `Nâng cấp Level ${cfg.name} (Cấp ${curLv + 1})`, v: cost });
+  save();
+  sfx('lvup');
+  toast(`🎉 Đã nâng cấp ${cfg.name} lên Cấp ${curLv + 1}! (${cfg.curBonus(curLv + 1)})`);
+  refreshPrep();
 }
 
 function paneUpg(){
   const row=k=>`<div class="rowi${(S.off||{})[k]?' offm':''}">${itemIcon(k)}<div><div class="nm">${ITEMS[k].n}</div>${(S.off||{})[k]?'<div class="sub">Đã bỏ khỏi menu</div>':''}</div>${S.unlocked[k]?`<button class="sbtn ghost" data-moff="${k}"><b>✓</b>Bỏ khỏi menu</button>`:(S.off||{})[k]?`<button class="sbtn pri" data-mon="${k}"><b>Miễn phí</b>Thêm lại</button>`:`<button class="sbtn pri" data-un="${k}" ${S.money<ITEMS[k].unlock?'disabled':''}><b>${fmt(ITEMS[k].unlock)}</b>Mua</button>`}</div>`;
-  const tea=BASE_KEYS.map(row).join('');
+  const tea=upgLvBanner('tra')+BASE_KEYS.map(row).join('');
   const bRow=k=>{const n=qty(k),bs=S.stock[k].filter(b=>b.q>0),c=bottleCost(k);
     return `<div class="rowi">${itemIcon(k)}<div><div class="nm">${ITEMS[k].n}</div><div class="sub${n?'':' low'}">${n?`${ico('box')} Còn ${n} ly · `+bs.map(b=>`${b.q} ly hết hạn ngày ${b.exp}`).join(', '):'Hết hàng, chưa có trong menu'}</div></div><button class="sbtn pri" data-bottle="${k}" ${S.money<c?'disabled':''}><b>${fmt(c)}</b>Mua chai</button></div>`};
-  const flav=`<div class="note">1 chai = ${CFG.bottleN} ly, dùng được ${CFG.bottleLife} ngày tính cả ngày mua. Mua 2 chai được ${CFG.bottleN*2} ly. Hết chai thì phải mua chai mới mới dùng được, chai quá hạn bị đổ bỏ.</div>`+FLAV_KEYS.map(bRow).join('');
-  const top=groupRows(TOP_KEYS,row);
+  const flav=upgLvBanner('huong')+`<div class="note">1 chai = ${CFG.bottleN} ly, dùng được ${CFG.bottleLife} ngày tính cả ngày mua. Mua 2 chai được ${CFG.bottleN*2} ly. Hết chai thì phải mua chai mới mới dùng được, chai quá hạn bị đổ bỏ.</div>`+FLAV_KEYS.map(bRow).join('');
+  const top=upgLvBanner('top')+groupRows(TOP_KEYS,row);
   const brandRow=`<div class="rowi"><span class="icon">🎨</span><div><div class="nm">Bộ nhận diện thương hiệu</div><div class="sub">Tự thiết kế tem thương hiệu in lên ly: màu nền, logo, tên quán, khẩu hiệu</div></div>${S.upg.brandKit?`<button class="sbtn" data-brand="1">🎨 Thiết kế</button>`:`<button class="sbtn pri" data-buybrand="1" ${S.money<BRAND_COST?'disabled':''}><b>${fmt(BRAND_COST)}</b>Mua</button>`}</div>`+(S.upg.brandKit&&S.brand?`<div class="brandprevrow">${temHTML(S.brand,88,true)}</div>`:'');
-  const tbN=S.tablets||0,tabRow=`<div class="rowi"><span class="icon">${ico('phone')}</span><div><div class="nm">Tablet nhận đơn online (${tbN}/${APPS.length})</div><div class="sub">Mỗi tablet chạy 1 app giao hàng. Phải có tablet thì đơn Soppi mới đổ về, shipper mới tới lấy hàng</div></div>${tbN>=APPS.length?'<span class="okline">✓</span>':`<button class="sbtn pri" data-tablet="1" ${S.money<CFG.tablet?'disabled':''}><b>${fmtTr(CFG.tablet)}</b>Mua</button>`}</div>`;
-  const eq=`<div class="wl" style="text-align:right;margin-bottom:2px">⚡ +${fmt(CFG.utilPerUpg)}/ngày</div>`+UPG.map(u=>`<div class="rowi"><span class="icon">${u.i}</span><div><div class="nm">${u.n}</div><div class="sub">${u.d}</div></div>${S.upg[u.id]?'<span class="okline">✓</span>':`<button class="sbtn pri" data-up="${u.id}" ${S.money<u.cost?'disabled':''}><b>${fmt(u.cost)}</b>Mua</button>`}</div>`).join('')+brandRow+tabRow;
-  const staff=`<div class="note">Thuê một lần, sau đó trả lương mỗi ngày mở cửa. Có nhân viên thì toàn bộ tiền tip của khách là của nhân viên, quán không nhận. Cho nghỉ thì hết trả lương, gọi đi làm lại không tốn tiền thuê (riêng Gen Z nghỉ việc phải thuê lại giá 3tr).</div>`+STAFF.map(u=>{
+  const tbN=S.tablets||0,tabRow=`<div class="rowi"><span class="icon">${ico('phone')}</span><div><div class="nm">Tablet nhận đơn online (${tbN}/${APPS.length})</div><div class="sub">Mỗi tablet chạy 1 app giao hàng (Soppi, Tóp Tóp). Phải có tablet thì đơn mới đổ về, shipper mới tới lấy hàng</div></div>${tbN>=APPS.length?'<span class="okline">✓</span>':`<button class="sbtn pri" data-tablet="1" ${S.money<CFG.tablet?'disabled':''}><b>${fmtTr(CFG.tablet)}</b>Mua</button>`}</div>`;
+  const eq=upgLvBanner('equip')+`<div class="wl" style="text-align:right;margin-bottom:2px">⚡ +${fmt(CFG.utilPerUpg)}/ngày</div>`+UPG.map(u=>`<div class="rowi"><span class="icon">${u.i}</span><div><div class="nm">${u.n}</div><div class="sub">${u.d}</div></div>${S.upg[u.id]?'<span class="okline">✓</span>':`<button class="sbtn pri" data-up="${u.id}" ${S.money<u.cost?'disabled':''}><b>${fmt(u.cost)}</b>Mua</button>`}</div>`).join('')+brandRow+tabRow;
+  const staff=upgLvBanner('staff')+`<div class="note">Thuê một lần, sau đó trả lương mỗi ngày mở cửa. Có nhân viên thì toàn bộ tiền tip của khách là của nhân viên, quán không nhận. Cho nghỉ thì hết trả lương, gọi đi làm lại không tốn tiền thuê (riêng Gen Z nghỉ việc phải thuê lại giá 3tr).</div>`+STAFF.map(u=>{
     const isGz = u.id === 'staffGz';
     const icon = isGz ? '🧑‍💼' : ico('people');
     const badge = isGz ? '<span class="gz-badge-pill">⚡ AUTO A-Z</span>' : '';
@@ -1372,11 +1095,15 @@ function paneUpg(){
     const btnCost = isGz ? costTxt : 'Gọi';
     return `<div class="rowi${isGz ? ' staff-gz-card' : ''}"><span class="icon">${icon}</span><div><div class="nm">${u.n}${badge}</div>${u.d?`<div class="sub">${u.d}</div>`:''}<div class="sub">${wageTxt}</div></div>${S.upg[u.id]?`<button class="sbtn${isGz?' gz-active-btn':''}" data-fire="${u.id}"><b>✓</b>Cho nghỉ</button>`:S.day<u.from?`<span class="wl">Ngày ${u.from}</span>`:u.need&&!u.need()?`<span class="wl">${u.needT}</span>`:isHiredBefore&&!isGz?`<button class="sbtn pri" data-hire="${u.id}"><b>Gọi</b>đi làm</button>`:`<button class="sbtn pri" data-hire="${u.id}" ${S.money<u.cost?'disabled':''}><b>${costTxt}</b>${isGz&&isHiredBefore?'Thuê lại':'Thuê'}</button>`}</div>`;
   }).join('');
-  $('pane').innerHTML=subTabs('upg',[[ico('teapot')+' Trà',tea],[ico('strawberry')+' Hương',flav],[ico('pearlbowl')+' Topping',top],[ico('tools')+' Trang bị',eq],[ico('people')+' Nhân viên',staff],[ico('receipt')+' Đóng thuế',taxCard()],[ico('phone')+' Online',onlineCard()]]);
+  const onl=upgLvBanner('onl')+onlineCard();
+  $('pane').innerHTML=subTabs('upg',[[ico('teapot')+' Trà',tea],[ico('strawberry')+' Hương',flav],[ico('pearlbowl')+' Topping',top],[ico('tools')+' Trang bị',eq],[ico('people')+' Nhân viên',staff],[ico('phone')+' Online',onl]]);
   bindSub('upg');
   $('pane').onclick=e=>{
-    const ptx=e.target.closest('[data-paytax]');
-    if(ptx){handlePayTax();return}
+    const ulv=e.target.closest('[data-upglv]');
+    if(ulv){
+      handleUpgLv(ulv.dataset.upglv);
+      return;
+    }
     const a=e.target.closest('[data-un]'),b=e.target.closest('[data-up]'),hi=e.target.closest('[data-hire]'),fi=e.target.closest('[data-fire]'),bb=e.target.closest('[data-buybrand]'),bd=e.target.closest('[data-brand]'),bt=e.target.closest('[data-bottle]'),tb=e.target.closest('[data-tablet]'),aj=e.target.closest('[data-join]');
     if(bt){const k=bt.dataset.bottle,c=bottleCost(k);if(S.money<c)return;S.money-=c;addStock(k,CFG.bottleN);const g=S.cur.ing[k]=S.cur.ing[k]||{q:0,v:0};g.q+=CFG.bottleN;g.v+=c;syncFlav();save();toast('Đã mua chai '+low(ITEMS[k].n)+': '+qty(k)+' ly');refreshPrep(1);return}
     if((a||b||hi||bb||tb||aj)&&inDebt()){toast('Đang nợ, trả xong mới mua được');return}
@@ -1483,108 +1210,311 @@ function paneGia(){
     const b=document.querySelector('.board');if(b){const t=document.createElement('div');t.innerHTML=menuBoard();b.replaceWith(t.querySelector('.board'));bindBoard()}};
 }
 let revF=null;/* lọc đánh giá: null = tất cả, 1..5 = số sao, 'nr' = chưa trả lời */
+function getCustomerArchetype(x){
+  if(x.st != null || (x.tg && /idol|sao/i.test(x.tg))) return 'star';
+  const name = (x.n || '').toLowerCase();
+  if(/chú|bác|bà|cô|ông/.test(name)) return 'elder';
+  if(/bé|bin|su|sữa|bắp|mít|tôm|cún|nấm|kem|mochi|chuối|xoài|heo|na\b|nhi|my|trâm|vy|kiki/.test(name)) return 'genz';
+  if(x.o || /anh|chị|thảo|ngân|trang|hương|uyên|khoa|tuấn|phúc|đạt|linh|hà|phương|minh|hải|nam|quân|long/.test(name)) return 'office';
+  const txt = (x.t || '').toLowerCase();
+  if(/chát|đậm|nhạt|béo|hương|topping|trân châu|thạch|ngọt|đắng|ngấy|thơm|bọt|kem cheese|hậu vị/.test(txt)) return 'foodie';
+  
+  // Dựa vào chuỗi tên nếu không thuộc nhóm trên
+  const hash = [...(x.n || 'Khách')].reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  const types = ['genz', 'office', 'foodie', 'strict', 'elder'];
+  return types[hash % types.length];
+}
+
 function genCustomerReply(x, shopMsg){
   const s = x.origS || x.s;
   const msg = (shopMsg || '').toLowerCase();
+  const arch = getCustomerArchetype(x);
 
-  // Phân tích thái độ quán
-  const isApology = /xin lỗi|thành thật|rút kinh nghiệm|sơ suất|thông cảm|mong bạn|bỏ qua|cầu thị|khắc phục|sửa đổi|tiếp thu|ghi nhận|đền bù|tặng|voucher|miễn phí|freeship|ly mới|hoàn tiền/.test(msg);
-  const isGift = /tặng|miễn phí|free|voucher|mời bạn|ly mới|đền bù|hoàn tiền/.test(msg);
-  const isThanks = /cảm ơn|cám ơn|thank|dễ thương|yêu bạn|iu bạn|mãi yêu|đồng hành|ủng hộ|chúc bạn|hoan hỉ|rất vui|ấm áp/.test(msg);
-  const isRude = /không thích thì|không uống thì|qua quán khác|khó tính|soi mói|tiền ít|rẻ rách|biến|cút|kệ bạn|ai mượn|chê thì đừng|ngu|bảo thủ|thách|không tiếp|đòi hỏi|hãm|vớ vẩn|vô lý|chặn|báo cáo|đặt điều|vu khống|vô duyên|nết|hãm l|đừng uống|mắc mớ|bớt bớt/.test(msg);
+  // Phân tích sắc thái phản hồi của chủ quán
+  const isVulgar = /mày|tao|bố mày|bà mày|l[\.\*\s_-]*[ồoòóõọôốồổỗộ0\*][\.\*\s_-]*n|c[\.\*\s_-]*[ặaăáàạảãâấầậẩẫ\*][\.\*\s_-]*c|b[\.\*\s_-]*[uùúũụ\*][\.\*\s_-]*[ồoòóõọôốồổỗộ0i\*][\.\*\s_-]*[iìíĩị]?|đ[\.\*\s_-]*[ụuúùũụ\*]|đ[\.\*\s_-]*[ịiíìĩị\*][\.\*\s_-]*t|đ[\.\*\s_-]*m|v[\.\*\s_-]*c[\.\*\s_-]*l|đéo|mẹ mày|bố m|con mẹ|chó đẻ|súc vật|óc chó|óc l|óc bò|cút|biến|câm|sủa|mất dạy|vô học|rẻ rách|đĩ|thất học|mặt dày|đồ điên|con điên|thằng điên|láo chó|bố láo|chó chết|mẹ thiên hạ|bố đời|hãm l/.test(msg);
+  const isRude = isVulgar || /không thích thì|không uống thì|qua quán khác|khó tính|soi mói|tiền ít|rẻ rách|biến|cút|kệ bạn|ai mượn|chê thì đừng|ngu|bảo thủ|thách|không tiếp|đòi hỏi|hãm|vớ vẩn|vô lý|chặn|báo cáo|đặt điều|vu khống|vô duyên|nết|hãm l|đừng uống|mắc mớ|bớt bớt|dạy đời|mua chỗ khác|láo|mất dạy|vô học|bố đời|mẹ thiên hạ|bớt sủa|chó|khùng|điên|đần|đĩ|óc|rác|rác rưởi|bần|kệ mẹ|bớt mỏ|mỏ hỗn|chảnh|ít tiền|nghèo|rẻ tiền|xéo|lượn|ai thèm|ai cần|không rảnh|rảnh háng|thích thì chiều|bố mày|bà mày|im mồm|câm|ngậm mồm|sủa|khó nết|khó ở|ăn mày|chê thì biến|không mua thì|lượn đi|cút xéo|mày|tao|đm|đcm|vcl|đéo|mẹ mày/.test(msg);
+  const isGift = /tặng|miễn phí|free|voucher|mời bạn|ly mới|đền bù|hoàn tiền|bù ly|bồi thường|gửi bạn/.test(msg);
+  const isApology = /xin lỗi|thành thật|rút kinh nghiệm|sơ suất|thông cảm|mong bạn|bỏ qua|cầu thị|khắc phục|sửa đổi|tiếp thu|ghi nhận|nhận lỗi|xin thứ lỗi|chuộc lỗi/.test(msg);
+  const isThanks = /cảm ơn|cám ơn|thank|dễ thương|yêu bạn|iu bạn|mãi yêu|đồng hành|ủng hộ|chúc bạn|hoan hỉ|rất vui|ấm áp|tuyệt vời|hân hạnh/.test(msg);
+  const isHumor = /haha|hihi|kkk|hề|lầy|hài|vui tính|dễ huơng|cưng|dễ sợ|chọc|tếu|chill/.test(msg);
+  const isExplain = /do thời tiết|trời mưa|công thức|trà thật|ủ trà|đá tan|shipper|giao hàng|đông khách|quá tải|bảo quản|nguyên chất/.test(msg);
 
   let replyText = '';
   let deltaStars = 0;
   let newStars = s;
 
-  if (s >= 4) { // KHÁCH HÀI LÒNG 4-5 SAO
+  // ===== 0. CHỦ QUÁN VĂNG TỤC, XÚC PHẠM, MỎ HỖN (MÀY, TAO, LỒN, CẶC, BIẾN, CÚT...) =====
+  if (isVulgar) {
+    newStars = 1;
+    deltaStars = 1 - s;
+    const clapbackDict = {
+      genz: [
+        `Ủa alo con chủ quán kia mày chửi ai đấy? Mày xưng mày tao với văng phụ khoa ra đây với ai? Khách bỏ tiền ra mua nước uống chứ đéo phải đi xin nhé! Thứ bán buôn mất dạy, để tao bóc phốt cả cái tiệm rác rưởi này lên TikTok, Facebook cho mày hết đường làm ăn luôn! 🤬🖕🔥`,
+        `Mày chửi ai đấy hả con mặt dày? Bán ly nước dở tệ như nước cống bị nói trúng tim đen xong nhảy dựng lên cắn càn hả? Mày biến trước đi chứ cái tiệm mạt hạng này tuổi gì mà đuổi khách! 1★ cũng là quá sang cho loại vô học như mày! 💩🚫`,
+        `Ủa mở tiệm bán trà hay mở chuồng heo mà sủa kinh vậy mày? Khách góp ý mà mày rep kiểu bố đời giang hồ chợ búa, để tao cap màn hình gửi thẳng lên Quản lý thị trường với Công an xử lý cái nết mày nhé! 👊🔥`,
+        `Mày ăn nói với khách kiểu gì đấy hả thứ thất học? Mở mồm ra là chửi bậy tục tĩu, tưởng vậy là ngầu hả con điên? Đừng để tao kéo cả hội tới quán combat thẳng mặt mày đấy! 🤬💥`
+      ],
+      office: [
+        `Ăn nói xưng mày tao, văng tục chửi bậy xúc phạm khách hàng à? Tôi làm quản lý văn phòng bao năm chưa từng thấy chủ quán nào vô văn hoá và chợ búa đến mức này! Tôi đã gửi cảnh báo cho toàn bộ toà nhà và các công ty xung quanh để cấm tiệt quán rác này! 📉🚫`,
+        `Chủ quán buôn bán làm ăn mà mở mồm ra là chửi tục, lăng mạ khách hàng? Đừng tưởng trên mạng muốn nói gì thì nói! Tôi hạ 1★ và sẽ gửi phản ánh lên Ban Quản lý ATTP & trật tự đô thị kiểm tra tư cách tiệm này! 🛑`,
+        `Văn hóa dưới đáy xã hội! Đã làm ăn tệ hại còn dùng ngôn từ dơ bẩn xúc phạm khách. Cả công ty tôi chính thức cấm tiệt mọi nhân viên đặt hàng ở cái tiệm vô giáo dục này! 👎`
+      ],
+      elder: [
+        `Mày xưng mày tao với ai đấy hả thứ mất dạy? Tuổi mày đáng tuổi con tuổi cháu tao mà dám mở mồm ra chửi bậy, văng tục xúc phạm người lớn thế à? Bố mẹ mày không dạy được mày cách ăn nói thì để đời dạy cho mày chừa! Đồ thất đức! 👵💢`,
+        `Trời đất ơi, buôn bán mà ăn nói như đồ đầu đường xó chợ, chửi rủa khách vuốt mặt không kịp! Thứ vô giáo dục này thì sớm muộn cũng đóng cửa dẹp tiệm thôi! Tao hạ 1★ và nguyền rủa cho cái quán này ế mốc meo! 👴🚫`,
+        `Ăn nói xấc xược, dùng lời lẽ ô uế với khách! Cô cấm tiệt cả họ hàng con cháu bén mảng tới đây, thứ chủ quán lưu manh côn đồ! 👵🔥`
+      ],
+      foodie: [
+        `Pha chế dở tệ, nguyên liệu rẻ tiền bị người ta chê thì quay sang chửi bậy xúc phạm khách? Đúng là loại chủ quán vô học, bần nông từ trong máu! Tôi sẽ làm bài bóc phốt chi tiết trên các hội ẩm thực lớn nhất để vạch mặt cái tiệm trà mạt hạng này! 📝🔥`,
+        `Chẳng còn gì để nói ngoài sự ghê tởm với thứ văn hóa chợ búa này. Mở mồm ra là tục tĩu, đe dọa khách. Để xem với cái mỏ này thì quán mày trụ được mấy ngày nữa! 1★ tiễn vong! 🤮👎`
+      ],
+      star: [
+        `[Tự động dịch] Chủ quán dùng lời lẽ thô tục xúc phạm tôi sao? Tôi không ngờ một quán trà sữa lại có cách hành xử độc hại và côn đồ đến mức này! Tôi sẽ công khai đoạn tin nhắn này lên trang cá nhân hàng triệu người theo dõi! 🚫💔`
+      ],
+      strict: [
+        `Anh/chị nói chuyện với ai bằng cái giọng mày tao và ngôn từ bẩn thỉu đó? Đây là bằng chứng rõ ràng của hành vi xúc phạm danh dự khách hàng. Tôi đã lưu lại bằng chứng và hạ xuống 1★, quán chuẩn bị tinh thần tiếp đón cơ quan chức năng đi! ⚠️`
+      ]
+    };
+    replyText = rnd(clapbackDict[arch] || clapbackDict.genz);
+    return { text: replyText, deltaStars, newStars, isVulgar: true };
+  }
+
+  // ===== 1. KHÁCH HÀI LÒNG (4 - 5 SAO) =====
+  if (s >= 4) {
     if (isRude) {
-      deltaStars = -2;
-      newStars = Math.max(1, s + deltaStars);
-      const rudeReplies = [
-        `Ủa alo chủ quán? Người ta khen ngon ủng hộ nhiệt tình mà tự nhiên rep cộc lốc, thái độ vậy trời? Tụt hết mood, xin phép trừ 2 sao! 😒`,
-        `Ủa gì vậy? Tính rủ cả phòng đặt uống tiếp mà nghe chủ quán trả lời thấy sốc ngang. Xin phép quay xe, hạ 2 sao quán nha! 👎`,
-        `Đang là khách ruột mà nghe chủ quán nói chuyện chối tai quá. Thái độ thế này thì có ngon mấy cũng xin cạch! 🚫`
-      ];
-      replyText = rnd(rudeReplies);
+      // Dù khách đã cho 5★ hoặc 4★, nếu chủ quán phản hồi láo thì khách sẽ nổi giận và hạ sao cực mạnh xuống 1★ (hoặc 2★)!
+      newStars = Math.random() < 0.75 ? 1 : 2;
+      deltaStars = newStars - s;
+      const rudeDict = {
+        genz: [
+          `Ủa gì vậy trời? Tui cho ${s}★ khen nhiệt tình mà chủ quán rep kiểu láo toét, mỏ hỗn vậy á hả? Tụt mood ngang, sửa thẳng xuống ${newStars}★ và bóc phốt lên hội review cho cả cõi mạng né gấp! 🤬🚫`,
+          `Trời đất ơi đúng là 'làm ơn mắc oán'! Khách có lòng đánh giá ${s} sao ủng hộ mà chủ tiệm ăn nói mất dạy như tát vào mặt khách? Hạ liền xuống ${newStars}★, cạch mặt quán này 8 đời! 🤮👎`,
+          `Xịt keo con voi luôn! Tưởng quán dễ thương ai ngờ mỏ hỗn số 1. Khách khen ${s}★ mà đáp lại kiểu thách thức coi thường khách, hạ thẳng xuống ${newStars}★ cho sáng mắt ra nha! Bye vĩnh viễn! 😤🔥`
+        ],
+        office: [
+          `Khách hàng có lòng ủng hộ ${s}★ mà chủ quán ăn nói trịch thượng, xúc phạm khách hàng thế này sao? Tôi đã sửa lại còn ${newStars}★ và huỷ luôn đơn của cả công ty! 📉🚫`,
+          `Thật sự quá sốc với thái độ này! Vừa khen quán ${s} sao xong lại nhận được lời lẽ thiếu văn hoá. Lập tức hạ xuống ${newStars}★ và thông báo cho cả toà nhà tẩy chay quán! 🛑`,
+          `Một sự thất vọng tột cùng. Đồ uống có ngon mà văn hóa phục vụ chợ búa, coi thường khách thì xứng đáng ${newStars}★. Sẽ không bao giờ đặt lại tiệm này nữa! 👎`
+        ],
+        elder: [
+          `Cô già cả ăn nói đàng hoàng cho ${s} sao khen ngợi mà cháu ăn nói xấc xược, hỗn hào thế này à? Thất đức quá cháu ơi! Cô sửa lại ${newStars}★ và cấm tiệt con cháu bén mảng tới đây! 👵💢`,
+          `Buôn bán mà mỏ hỗn, ăn nói xấc láo với khách như thế thì không bao giờ bền được! Bác hạ xuống ${newStars}★ cho cháu chừa cái thói ngạo mạn! 👴🚫`
+        ],
+        foodie: [
+          `Đúng là sai lầm lớn khi cho quán này ${s} sao! Bán được vài ly nước mà tự cao tự đại, rep khách láo toét trịch thượng. Hạ thẳng về ${newStars}★, để xem tiệm trụ được bao lâu! 📝👎`,
+          `Rút lại toàn bộ lời khen! Tôi đánh giá lại ${newStars}★ và sẽ lên một bài bóc trần văn hoá phục vụ kém cỏi này cho cộng đồng ẩm thực cùng biết! 🍵🚫`
+        ],
+        star: [
+          `[Tự động dịch] Mình đã rất vui vẻ cho ${s} sao nhưng câu trả lời thô lỗ xấc xược này làm mình vô cùng thất vọng! Mình xin phép hạ xuống ${newStars}★! 💔🚫`
+        ],
+        strict: [
+          `Tôi đã rộng lượng cho ${s} sao để khích lệ, nhưng thái độ phản hồi láo xược này chứng minh quán không hề xứng đáng. Hạ xuống ${newStars}★ ngay lập tức! 👎`
+        ]
+      };
+      replyText = rnd(rudeDict[arch] || rudeDict.genz);
     } else if (isGift) {
-      const giftReplies = [
-        `U là trời chủ quán hào phóng quá chừng! Đồ uống đã ngon chuẩn gu rồi mà còn được ưu ái nữa, cảm ơn quán siêu nhiều nha! 😍`,
-        `Ui bất ngờ ghê á, cảm ơn quán nhìu nha! Lần sau ghé nhất định mình sẽ gọi thêm topping thử cho đã! 🥳`,
-        `Chủ quán đáng yêu số 1! Nhất định sẽ rủ cả hội bạn thân ghé ủng hộ quán dài dài! 💖`
-      ];
-      replyText = rnd(giftReplies);
+      if (s === 4) { deltaStars = 1; newStars = 5; }
+      const giftDict = {
+        genz: [
+          `U là chời, được chủ quán cưng chiều tặng voucher luôn! Quá đã sếp ơi, em sẽ quay clip TikTok flex tiệm triệu view liền! 🎬💖`,
+          `Quán vừa ngon vừa phóng khoáng thế này bảo sao khách ruột đông nghẹt! Em xin nhận chiếc voucher keo lì này nha! 😍🎁`,
+          `Chủ quán đáng yêu số 1 hệ mặt trời! Đã ngon lại còn được quà, chấm 10 điểm không có nhưng! 🧋✨`
+        ],
+        office: [
+          `Tuyệt vời quá, cảm ơn quán đã ưu ái! Mình sẽ dùng voucher này khao cả team chạy deadline chiều mai nha! 🎁💼`,
+          `Chăm sóc khách hàng điểm 10 luôn! Cả phòng mình chính thức kết nạp tiệm thành quán ruột dài hạn! ☕🏢`
+        ],
+        elder: [
+          `Cảm ơn cháu nhiều nhé, chủ quán thảo ăn ngoan ngoãn thế này cô quý lắm. Chiều cô dắt mấy đứa cháu qua ủng hộ tiếp! 👵❤️`,
+          `Cháu chu đáo quá. Bác chúc tiệm trà của cháu ngày càng phát tài phát lộc, buôn may bán đắt nha! 👴🎉`
+        ],
+        foodie: [
+          `Cảm ơn món quà tinh tế của quán! Rất trân trọng niềm đam mê và phong cách phục vụ chu đáo của các bạn. 🍵✨`
+        ],
+        star: [
+          `[Tự động dịch] Wow cảm ơn chủ tiệm đáng yêu! Món quà bất ngờ này làm ngày lưu diễn của mình vui hơn bao giờ hết! 🌟💖`
+        ],
+        strict: [
+          `Quán rất biết cách giữ chân khách hàng. Dịch vụ tốt, đồ uống chuẩn chỉ. Rất đáng khen! 🤝`
+        ]
+      };
+      replyText = rnd(giftDict[arch] || giftDict.genz);
+    } else if (isHumor) {
+      const humDict = {
+        genz: [
+          `Haha chủ quán duyên xỉu á, rep hài hước tếu táo ghê! Mê trà sữa 1 thì mê admin quán 10 luôn nè haha! 🤣🥤`,
+          `Ủa alo tiệm trà hay sân khấu hài vậy trời? Đọc rep mà cười rớt hàm, chiều phải ghé ủng hộ ngay mới được! 🥳✨`
+        ],
+        office: [
+          `Haha tiệm trà dí dỏm quá, đọc rep mà xua tan hết áp lực công việc buổi chiều luôn! Lát mình order tiếp nha! 💼😆`,
+          `Admin quán mặn mòi dễ sợ! Đồ uống ngon mà tư vấn duyên dáng thế này thì khách nào nỡ từ chối! ☕👍`
+        ],
+        elder: [
+          `Mấy đứa nhỏ buôn bán vui vẻ hoạt bát thế này khách nào tới cũng thấy trẻ ra vài tuổi. Cứ phát huy nha cháu! 👵❤️`
+        ],
+        foodie: [
+          `Phong cách phục vụ rất trẻ trung, tích cực! Hy vọng quán luôn giữ được tinh thần sảng khoái và vị trà chuẩn vị này! 🧋👌`
+        ],
+        star: [
+          `[Tự động dịch] Haha bạn thật hài hước! Năng lượng vui tươi này tuyệt vời y như vị ngọt của ly trà sữa vậy! ✨🥰`
+        ],
+        strict: [
+          `Giao lưu vui vẻ, tạo cảm giác thân thiện thoải mái. Chúc quán luôn duy trì được tinh thần này. 👍`
+        ]
+      };
+      replyText = rnd(humDict[arch] || humDict.genz);
     } else if (isThanks || msg.length > 5) {
-      const thankReplies = [
-        `Dạ iu quán nhiều lắm! Vị trà đậm thơm béo ngậy đúng chuẩn vị em thích luôn, sẽ ủng hộ quán nhiệt tình ạ! 🥰`,
-        `Chủ quán rep dễ thương xỉu á! Đồ uống ngon mà chăm sóc khách hàng 10 điểm thế này thì thành khách quen dài hạn luôn nè! ✨`,
-        `Trà sữa đỉnh chóp, kem cheese béo thơm không lẫn đi đâu được. Chúc tiệm mình ngày càng đông khách nha! 🧋`,
-        `Cảm ơn chủ quán nhen! Ngày nào không làm 1 ly của quán là bứt rứt không chịu nổi á haha. Mai em lại ghé tiếp! 🥤`,
-        `Nhận được phản hồi ấm áp từ quán thích ghê. Quán giữ vững phong độ phục vụ tốt thế này nhé! ❤️`
-      ];
-      replyText = rnd(thankReplies);
+      const thankDict = {
+        genz: [
+          `Dạ iu quán nhiều lắm! Vị trà đậm thơm béo ngậy đúng gu em luôn, mãi là 'trà thủ' trung thành của quán ạ! 🥰💅`,
+          `Đỉnh nóc kịch trần bay phấp phới luôn sếp ơi! Mai em lại lên đơn tiếp, nhớ cho em nhiều trân châu xíu nhen! 🔥🧋`,
+          `Đọc rep của quán mà thấy được chữa lành sau ngày dài học tập mệt mỏi luôn á. Quán giữ vững phong độ nha! 💖🎧`
+        ],
+        office: [
+          `Cảm ơn quán! Cả phòng mình trưa nào cũng ngóng đơn của quán, uống vào là tỉnh cả người chạy KPI! 💼🧋`,
+          `Trà ô long sữa đậm đà, đường đá chuẩn chỉ không bị tan nhạt. Chiều nay phòng mình lại lên đơn ủng hộ tiếp nhé! ☕📊`,
+          `Dịch vụ giao hàng rất nhanh và đóng gói ly cẩn thận. Mình đã ghim quán vào danh mục quán ruột của team rồi! 👍✨`
+        ],
+        elder: [
+          `Quán trả lời lễ phép ngoan ngoãn quá, cô rất có cảm tình. Trà thanh ngọt vừa phải, chúc quán buôn may bán đắt nha! 👵🍵`,
+          `Bác thích cách các cháu làm ăn đàng hoàng, sạch sẽ. Giữ chữ tín thì buôn bán mới bền lâu được các cháu nhé! 👴✨`,
+          `Cảm ơn cháu nhé, chiều nào đi tập thể dục về chú cũng ghé làm một ly giải nhiệt. Cứ giữ giá cả phải chăng như vậy nhé! 🥤❤️`
+        ],
+        foodie: [
+          `Hậu vị trà ô long đậm đà, kem cheese có độ mặn béo cân bằng cực tốt. Lâu lắm mới thấy quán giữ được cốt trà chuẩn thế này! 🍵👌`,
+          `Trân châu đen dẻo thơm ngấm đường rất đều, không bị sượng lõi. Đánh giá cao tay nghề pha chế của tiệm! 🧋✨`
+        ],
+        star: [
+          `[Tự động dịch] Cảm ơn sự tiếp đãi nồng hậu của quán! Trà thơm ngon như ở quê nhà vậy, mình đã đăng ảnh lên Instagram rồi nhé! 📸💖`,
+          `[Tự động dịch] Ôi chủ tiệm thật ấm áp! Boba tea ở đây tuyệt vời nhất chuyến lưu diễn Việt Nam của mình! Saranghaeyo! 🌟🎤🧋`
+        ],
+        strict: [
+          `Chất lượng đồ uống và dịch vụ đều đạt chuẩn. Tôi là người khó tính nhưng quán làm tôi hài lòng. Cứ thế phát huy. ⭐`,
+          `Đồ uống ngon, phục vụ đúng giờ. Tôi sẽ tiếp tục ủng hộ nếu quán giữ vững chất lượng ổn định như hiện tại. 🤝`
+        ]
+      };
+      replyText = rnd(thankDict[arch] || thankDict.genz);
     } else {
-      replyText = `Dạ cảm ơn quán nhiều nhen! Chúc quán luôn đắt hàng ạ! 🥰`;
+      replyText = `Dạ cảm ơn bạn nhiều nhen! Nhận được phản hồi của bạn là quán có thêm bao nhiêu động lực luôn á! Chúc bạn ngày mới ngọt ngào! 🥰🧋`;
     }
-  } else if (s === 3) { // KHÁCH TRUNG LẬP 3 SAO
+
+  // ===== 2. KHÁCH TRUNG LẬP (3 SAO) =====
+  } else if (s === 3) {
     if (isRude) {
       deltaStars = -2;
       newStars = 1;
       const rude3 = [
-        `Người ta góp ý chân thành để quán phát triển mà chủ quán tự ái rồi cãi tay đôi luôn? Xin phép hạ xuống 1★ và bái bai vĩnh viễn! 😡`,
-        `Thái độ phục vụ lồi lõm thật sự. Đã làm chưa tới đâu mà cái tôi to quá. Tiễn vong tiệm trà này gấp! 👎`,
-        `Khách ăn nói lịch sự mà chủ quán rep như đấm vào tai. Thôi xin phép cạch mặt quán từ đây! 🤮`
+        `Khách góp ý chân thành để quán cải thiện mà chủ quán tự ái rồi cãi tay đôi luôn? Xin phép hạ xuống 1★ và bái bai vĩnh viễn! 😡`,
+        `Thái độ phục vụ lồi lõm thật sự. Đồ uống đã bình thường mà cái tôi to quá. Tiễn vong tiệm trà này gấp! 👎`,
+        `Ủa alo? Khách ăn nói đàng hoàng mà chủ quán đáp như đấm vào tai. Không bao giờ có lần thứ hai ghé quán! 🤮🚫`
       ];
       replyText = rnd(rude3);
     } else if (isApology || isGift) {
       deltaStars = 1;
-      newStars = Math.min(5, s + 1);
+      newStars = Math.min(5, s + deltaStars);
       const apo3 = [
-        `Thấy chủ quán biết lắng nghe và cầu thị vậy là mình có thiện cảm liền á. Đã sửa đánh giá lên 4★ động viên quán nha, lần sau mình sẽ thử lại! 👍`,
+        `Thấy chủ quán biết lắng nghe và cầu thị vậy là mình có thiện cảm liền á. Đã sửa đánh giá lên ${newStars}★ động viên quán nha, lần sau mình sẽ thử lại! 👍`,
         `Chăm sóc khách hàng rất có tâm! Thấy quán biết tiếp thu ý kiến nên mình nâng thêm 1★ ủng hộ, chúc quán ngày càng hoàn thiện! ✨`,
-        `Dạ không sao đâu quán ơi, thấy quán trả lời lịch sự và chu đáo là ưng bụng rồi. Lần tới mình sẽ dặn kỹ hơn khi order! 🥰`
+        `Dạ không sao đâu quán ơi, thấy quán trả lời lịch sự và chu đáo là ưng bụng rồi. Lần tới mình sẽ dặn kỹ hơn khi order! 🥰🧋`,
+        `Cảm ơn quán đã tiếp thu chân thành. Sự nhiệt tình này xứng đáng được cộng thêm sao! Chúc quán đắt khách nhé! 💖`
       ];
       replyText = rnd(apo3);
+    } else if (isExplain) {
+      const exp3 = [
+        `À ra là vậy, giờ mình mới hiểu lý do. Cảm ơn quán đã giải thích rõ ràng và dễ hiểu nhé, lần sau mình sẽ order vị khác thử xem! ☕👍`,
+        `Ghi nhận lời giải thích từ quán. Mong là những ngày sau quán sẽ tối ưu quy trình tốt hơn để giữ vững chất lượng nhé! ✨`
+      ];
+      replyText = rnd(exp3);
     } else {
       const neu3 = [
-        `Cảm ơn quán đã ghi nhận ý kiến. Mong lần tới trải nghiệm của mình sẽ trọn vẹn hơn nha!`,
-        `Dạ mong quán giữ chất lượng ổn định và đồng đều ở những ly sau nhé!`
+        `Cảm ơn quán đã ghi nhận ý kiến. Mong lần tới ghé lại trải nghiệm của mình sẽ trọn vẹn hơn nha! 🧋`,
+        `Dạ mong quán giữ chất lượng ổn định và đồng đều ở những lần sau nhé! Cố lên tiệm ơi!`
       ];
       replyText = rnd(neu3);
     }
-  } else { // KHÁCH PHÀN NÀN 1-2 SAO
+
+  // ===== 3. KHÁCH PHÀN NÀN (1 - 2 SAO) =====
+  } else {
     if (isRude) {
       deltaStars = 0;
       newStars = 1;
-      const roastReplies = [
-        `Bán hàng dở tệ bị chê mà còn lên mặt dạy đời khách à? Để chụp màn hình đăng lên hội Review Trà Sữa bóc phốt cho cả xóm né gấp! 🤬`,
-        `Ủa làm ăn kiểu gì ngộ nghĩnh vậy? Đã pha dở như nước lã còn thích hơn thua với khách? Để coi quán trụ được mấy ngày với cái nết này nha cưng! 💩`,
-        `Trần đời mới thấy cái quán trà sữa vừa dở vừa bảo thủ tới cỡ này. Khách bỏ tiền ra mua bực vào người hay gì? Đừng bao giờ mong có ngày quay lại! 🚫`,
-        `Khách phản ánh sự thật thì giãy nảy lên cãi cùn. Mời mọi người né vội cái tiệm trà này ra nha, vừa mất tiền vừa rước cục tức! 🤮`,
-        `Ủa alo bán đồ uống hay bán thái độ vậy? Coi thường khách hàng thế này thì chuẩn bị tinh thần đóng cửa sớm đi nhé! 😤`
-      ];
-      replyText = rnd(roastReplies);
-    } else if (isApology || isGift) {
+      const roastDict = {
+        genz: [
+          `Ủa làm ăn dở tệ bị chê mà còn mỏ hỗn hơn thua với khách à? Để em cap màn hình bóc phốt lên hội Review Trà Sữa cho cả cõi mạng né gấp! 🤬🔥`,
+          `Xịt keo con voi thật sự! Đã bán đồ dở như nước ốc còn bonus thêm quả thái độ lồi lõm. Cả đám tụi tao né cái quán này 8 đời tổ tông! 💩🚫`,
+          `Ủa tưởng vậy là ngầu hả chủ quán? Khách bỏ tiền ra mua nước chứ có đi xin đâu mà lên mặt? Chuẩn bị tinh thần ăn bão 1 sao đi nhé! 🤮👎`
+        ],
+        office: [
+          `Thái độ phục vụ phi chuyên nghiệp đến khó tin. Mình sẽ gửi cảnh báo lên nhóm nội bộ công ty và các phòng ban khác để tẩy chay quán! 📉🚫`,
+          `Khách hàng phản ánh sự thật thì cãi tay đôi công kích cá nhân. Thất vọng toàn tập, 1 sao cũng là quá nhiều cho cái quán này! 👎`,
+          `Văn hóa phục vụ quá kém cỏi. Đã làm sai còn thách thức khách, để xem quán trụ được bao lâu với cái nết này! 😤`
+        ],
+        elder: [
+          `Ăn nói vô phép vô tắc với người lớn thế này thì hỏng hẳn rồi! Buôn bán mà coi thường khách hàng thế thì không bao giờ bền được đâu cháu! 👴💢`,
+          `Cô già cả rồi ăn nói chân thật mong quán sửa mà quán dùng lời lẽ chợ búa thế à? Quá thất vọng, từ nay cấm cửa con cháu trong nhà bén mảng tới đây! 👵🚫`
+        ],
+        foodie: [
+          `Đã pha sai công thức cơ bản, vị trà tanh chát dở tệ mà còn ngụy biện lên mặt dạy đời? Để tôi viết bài phân tích chuyên sâu bóc trần tay nghề tiệm này! 📝👎`,
+          `Nguyên liệu kém chất lượng bị phát hiện là giãy nảy lên cãi cùn. Thật xấu hổ cho những người làm nghề trà sữa! 🤮`
+        ],
+        star: [
+          `[Tự động dịch] Quá sốc với cách hành xử này... Một trải nghiệm tồi tệ nhất mình từng gặp tại Việt Nam! 💔🚫`
+        ],
+        strict: [
+          `Sai không chịu nhận còn giở thói bao biện hung hăng. Quán làm ăn vô trách nhiệm thế này thì sớm muộn cũng tự đào thải! 🚫`,
+          `Khách trả tiền để nhận sản phẩm và dịch vụ xứng đáng chứ không phải nghe những lời xúc phạm này. Báo cáo quán vi phạm ngay lập tức! ⚖️`
+        ]
+      };
+      replyText = rnd(roastDict[arch] || roastDict.genz);
+    } else if (isGift || (isApology && msg.length > 25)) {
+      // Quán xin lỗi chân thành hoặc có đền bù/voucher -> Khách cảm kích tăng 1-2 sao!
+      deltaStars = (isGift || msg.length > 50) ? 2 : 1;
+      newStars = Math.min(5, s + deltaStars);
+      const forgiveDict = {
+        genz: [
+          `Thấy quán nhận lỗi nhanh, rep chân thành và gửi quà thiện chí nên em bớt dỗi rồi nè. Tặng lại quán +${deltaStars}★ động viên nha, lần sau nhớ làm ngon cho em đó! 🥺🤝`,
+          `Ui chủ quán rep dễ thương ghê, biết lắng nghe là ghi điểm lại liền á! Em nâng lên thành ${newStars}★ rồi nha, mai em order kiểm chứng lại nè! ✨🧋`,
+          `Tưởng bị bơ ai ngờ chủ quán giải quyết có tâm và đáng yêu quá chừng. Em bỏ qua lần này nhen, chúc quán buôn may bán đắt! 💖🎉`
+        ],
+        office: [
+          `Cách xử lý khủng hoảng chăm sóc khách hàng của quán rất văn minh và chuyên nghiệp. Mình ghi nhận thiện chí, đã nâng lên ${newStars}★ cho quán nhé! 🤝💼`,
+          `Cảm ơn chủ quán đã giải thích và hỗ trợ nhiệt tình. Đi làm cả ngày mệt mỏi chỉ cần sự tôn trọng thế này là đủ rồi. Chiều mai phòng mình sẽ ủng hộ lại! ☕🏢`,
+          `Rất ưng ý với thái độ cầu thị này của quán. Đã sửa lại đánh giá thành ${newStars}★ khích lệ tiệm nha! 👍`
+        ],
+        elder: [
+          `Thôi cháu biết nhận lỗi chân thành và xử lý đàng hoàng là cô mừng rồi. Buôn bán đông khách đôi lúc sơ suất cô hiểu, cô nâng lên ${newStars}★ cho cháu yên tâm bán hàng nhé! 👵💖`,
+          `Bác không giận nữa đâu, thấy chủ quán ăn nói biết trước biết sau là bác quý rồi. Lần sau làm cẩn thận hơn cho bác là được. 🤝👴`
+        ],
+        foodie: [
+          `Ghi nhận quán biết tiếp thu nghiêm túc về độ ngọt và cách bảo quản nguyên liệu. Sự cầu thị này rất đáng hoan nghênh, đã tăng +${deltaStars}★ khích lệ quán hoàn thiện! ☕📈`,
+          `Làm đồ uống cốt ở cái tâm và biết lắng nghe người thưởng thức. Hy vọng lần thử tiếp theo ly trà của tiệm sẽ thực sự chuẩn vị! 👍🍵`
+        ],
+        star: [
+          `[Tự động dịch] Cảm ơn sự chân thành của bạn! Nhận được phản hồi tử tế này mình rất ấm lòng, hẹn gặp lại quán vào chuyến lưu diễn sau nhé! ✨🥰`
+        ],
+        strict: [
+          `Tôi đánh giá thấp là để quán nhìn nhận lại vấn đề chứ không có ác ý. Thấy quán nghiêm túc rút kinh nghiệm và đền bù thỏa đáng, tôi nâng lên ${newStars}★. Hãy giữ đúng lời hứa. 🤝`,
+          `Hành động thiết thực hơn ngàn lời nói mồm. Quán đã xử lý đúng mực, tôi sửa lại số sao cho quán. 👍`
+        ]
+      };
+      replyText = rnd(forgiveDict[arch] || forgiveDict.genz);
+    } else if (isApology) {
       deltaStars = 1;
       newStars = s + 1;
-      const forgiveReplies = [
-        `Thôi thấy quán xin lỗi chân thành và có thiện chí xử lý nên mình cũng không làm khó nữa. Đã tăng thêm 1★ động viên, mong quán rút kinh nghiệm thật sự nhé! 🤝`,
-        `Dịch vụ chăm sóc khách hàng thế này là rất chuyên nghiệp. Mình ghi nhận sự cầu thị của quán, lần sau mình sẽ thử lại xem sao. ☕`,
-        `Biết sai biết sửa là tốt rồi quán ơi. Mình bớt giận rồi nè, mong là lần sau quán kiểm tra kỹ topping và độ ngọt trước khi giao nha! 💖`,
-        `Thấy quán rep rất có tâm nên mình vote thêm sao động viên. Hy vọng lần sau ghé sẽ được uống ly trà sữa ngon chuẩn chỉ! ✨`
-      ];
-      replyText = rnd(forgiveReplies);
+      replyText = `Thấy quán biết nói lời xin lỗi và có thái độ tiếp thu nên mình cũng bớt gay gắt. Đã sửa lên ${newStars}★ động viên quán, mong tiệm rút kinh nghiệm thật sự ở những đơn sau nhé! 🤝✨`;
+    } else if (isExplain) {
+      replyText = `Cảm ơn quán đã dành thời gian giải thích lý do cụ thể. Dù trải nghiệm vừa rồi chưa ưng ý nhưng mình ghi nhận sự thẳng thắn của tiệm, mong lần sau quán làm tốt hơn. ☕`;
     } else {
       const coldReplies = [
-        `Trả lời qua loa cho có lệ vậy à? Chừng nào chưa cải thiện chất lượng thật sự thì đừng mong khách quay lại nha quán.`,
-        `Uống 1 lần là quá đủ thất vọng rồi, không có lần thứ hai đâu!`,
-        `Ghi nhận bằng hành động đi chứ nói mồm thì ai chả nói được.`
+        `Trả lời qua loa cho có lệ vậy à? Chừng nào chưa cải thiện chất lượng thật sự thì đừng mong khách quay lại nha quán. 😒`,
+        `Uống 1 lần là quá đủ thất vọng rồi, không bao giờ có lần thứ hai đâu!`,
+        `Ghi nhận bằng hành động thực tế đi chứ nói mồm cho qua chuyện thì ai chả nói được.`
       ];
       replyText = rnd(coldReplies);
     }
   }
 
-  return { text: replyText, deltaStars, newStars };
+  return { text: replyText, deltaStars, newStars, isVulgar: false };
 }
 
 function paneRev(){
@@ -1637,7 +1567,18 @@ function replyDlg(i){const x=S.reviews[i];if(!x)return;
         }, 1600);
       } else if(res.deltaStars < 0){
         setTimeout(()=>{
-          toast('⚠️ Khách bức xúc và đã trừ ' + Math.abs(res.deltaStars) + '★ của quán!');
+          const prevS = x.origS || (x.s - res.deltaStars);
+          if (res.isVulgar) {
+            toast(`🤬 Khách nổi đóa vì quán văng tục/xúc phạm, chửi đáp trả cực gắt và hạ từ ${prevS}★ xuống 1★!`);
+          } else {
+            toast(`⚠️ Khách bức xúc vì quán phản hồi láo nên đã hạ từ ${prevS}★ xuống ${res.newStars}★!`);
+          }
+          head();
+          paneRev();
+        }, 1600);
+      } else if(res.isVulgar && res.deltaStars === 0){
+        setTimeout(()=>{
+          toast(`🤬 Khách nổi đóa vì quán văng tục chửi bậy và đã chửi đáp trả cực gắt!`);
           head();
           paneRev();
         }, 1600);
@@ -1670,7 +1611,8 @@ function cupHTML(d,mini){
   h+=`<div class="liquid${d.base?' full':''}" style="background:${d.base&&ITEMS[d.base]?ITEMS[d.base].c:'transparent'}"></div>`;
   if(d.base&&d.flav&&ITEMS[d.flav])h+=`<div class="flavband" style="background:${ITEMS[d.flav].c}"></div>`;
   if(d.base&&d.ice&&d.ice!=='Không đá'){const n=d.ice==='Ít đá'?2:4;for(let i=0;i<n;i++)h+=`<span class="ice" style="left:${20+i*16}%;top:${(foam?30:18)+(i%2)*8}%"></span>`}
-  tops.filter(t=>t!==foam).forEach((t,ti)=>{for(let i=0;i<9;i++){const l=18+((i*37+ti*19)%60),b=3+((i*23+ti*13)%20);h+=`<span class="tp g-${ITEMS[t].g} k-${t}" style="left:${l}%;bottom:${b}%;background:${pieceBg(t,i)};animation-delay:${i*40}ms"></span>`}});
+  const dotN=Math.max(3,Math.min(9,Math.floor(36/Math.max(1,tops.length))));
+  tops.filter(t=>t!==foam).forEach((t,ti)=>{for(let i=0;i<dotN;i++){const l=18+((i*37+ti*19)%60),b=3+((i*23+ti*13)%20);h+=`<span class="tp g-${ITEMS[t].g} k-${t}" style="left:${l}%;bottom:${b}%;background:${pieceBg(t,i)};animation-delay:${i*40}ms"></span>`}});
   h+=`<div class="foam${foam?' on':''}"${foam?` style="background:${ITEMS[foam].c}"`:''}></div>`;
   if(!mini&&d.base&&S.upg&&S.upg.brandKit&&S.brand&&S.brand.i)h+=`<div class="cuptem">${temHTML(S.brand,66,false)}</div>`;
   return h+`</div></div>`;
@@ -1678,7 +1620,7 @@ function cupHTML(d,mini){
 function orderTx(o){
   const on=cup&&cup.used, sameTops=cup&&cup.tops.length===o.tops.length&&o.tops.every(t=>cup.tops.includes(t))&&cup.cheese===o.cheese;
   const it=(txt,ok)=>`<span class="oi${ok?' ok':''}">${txt}</span>`;
-  const tops=(o.tops.length?o.tops.map(t=>ITEMS[t].s).join(' + '):'Không topping')+(o.cheese?' + Kem cheese':'');
+  const tops=(o.tops.length?(o.isFullTop?('Full top ('+o.tops.map(t=>ITEMS[t].s).join(' + ')+')'):o.tops.map(t=>ITEMS[t].s).join(' + ')):'Không topping')+(o.cheese?' + Kem cheese':'');
   return `<div class="ol"><span class="n">1</span>${it('<b>'+ITEMS[o.base].n+'</b>',cup&&cup.base===o.base)}</div>
   <div class="ol"><span class="n">2</span>${it('Size '+o.size,cup&&cup.size===o.size)}</div>
   <div class="ol"><span class="n">3</span>${it(tops,on&&sameTops)}</div>
@@ -1686,11 +1628,22 @@ function orderTx(o){
   <div class="ol"><span class="n">5</span>${it(o.ice,cup&&cup.ice===o.ice)}</div>`:''}`;
 }
 function shortOrder(o){const tl=o.tops.map(t=>ITEMS[t].s);
-  return `<b>${dname(o)}</b> · <b>${o.size}</b> · ${tl.join(' + ')||'—'}${o.sugar!=null?` · ${o.sugar}% · ${o.ice}`:''}`}
+  return `<b>${dname(o)}</b> · <b>${o.size}</b> · ${o.isFullTop?`Full top (${tl.length})`:tl.join(' + ')||'—'}${o.sugar!=null?` · ${o.sugar}% · ${o.ice}`:''}`}
 function sentence(c){
   const o=c.order,n=c.cups.length,k=c.cups.indexOf(o)+1,ice={'Không đá':'không đá','Ít đá':'ít đá','Đá thường':'đá bình thường'}[o.ice];
   const tl=o.tops.map(t=>low(ITEMS[t].n));if(o.cheese)tl.push('kem cheese');
-  const tops=tl.length?(tl.length>2?tl.slice(0,-1).join(', ')+' và '+tl[tl.length-1]:tl.join(' với ')):'không topping';
+  let tops;
+  if(!tl.length){
+    tops='không topping';
+  } else if(o.isFullTop){
+    tops='full topping ('+tl.length+' loại: '+o.tops.map(t=>ITEMS[t].s).join(', ')+')';
+  } else if(tl.length>4){
+    tops=tl.length+' loại topping ('+o.tops.map(t=>ITEMS[t].s).join(', ')+')';
+  } else if(tl.length>2){
+    tops=tl.slice(0,-1).join(', ')+' và '+tl[tl.length-1];
+  } else {
+    tops=tl.join(' với ');
+  }
   const tail=o.sugar!=null?`, ${tops}, ${o.sugar}% đường và ${ice}`:tl.length?` với ${tops}`:`, ${tops}`;
   if(n>1)return `<span class="cupno">Ly ${k}:</span> <b>${low(dname(o))}</b> size <b>${o.size}</b>${tail}.`;
   return `${c.say} 1 ly <b>${low(dname(o))}</b> size <b>${o.size}</b>${tail}${c.end}`;
@@ -1742,7 +1695,7 @@ function useCup(){if(cup.used)return true;if(!take('cup')){toast('Hết ly! Nh�
 function use(k){R.today.used[k]=(R.today.used[k]||0)+1}
 function consume(k){take(k);use(k);R.today.cogs+=CFG.cost[k];cup.cost+=CFG.cost[k]}
 function spoilCup(){if(cup.used){const r=S.cur;r.spoil=r.spoil||{n:0,v:0};r.spoil.n++;r.spoil.v+=cup.cost}cup=newCup()}
-const maxTop=()=>4;
+const maxTop=()=>16;
 function addIng(kind,k){
   if(!qty(k))return toast('Hết '+ITEMS[k].n);
   if(kind==='base'){if(cup.base===k)return;if(!useCup())return;consume(k);cup.base=k}
@@ -1789,8 +1742,9 @@ const CX=55.6,BY=141,LH=105,halfAt=y=>y<51.7?44:44-(y-51.7)/(136.5-51.7)*11.1;
 function glassHTML(c,opt){opt=opt||{};
   const fill=c.fill||0,surf=BY-Math.min(fill,1)*LH,vt=c.vt||[],vi=c.vi||[],foams=(c.tops||[]).filter(t=>ITEMS[t]&&ITEMS[t].g==='foam');let inner='';
   if(fill>0||opt.pour)inner+=`<rect class="lq" x="0" y="${surf}" width="110" height="${BY-surf+8}" fill="${liqCol(c)}"/><rect class="lqh" x="0" y="${surf}" width="110" height="3.5" fill="#fff" opacity=".3"/>`;
-  vt.forEach((p,i)=>{const big=p.pts.length>10,sc=big?1.3:1;p.pts.forEach(([u,v],j)=>{const y=BY-(big?6:5)-v-i*(big?25:9),x=CX+u*(halfAt(y)-(big?7:6));inner+=big?`<g transform="translate(${x} ${y}) scale(${sc}) translate(${-x} ${-y})">${pc(p.k,x,y,j+i)}</g>`:pc(p.k,x,y,j+i)})});
-  const iceTop=fill>0?surf:BY-(8+vt.length*25);
+  const step=vt.length>3?Math.min(22,60/vt.length):22;
+  vt.forEach((p,i)=>{const big=p.pts.length>10,sc=big?1.3:1;p.pts.forEach(([u,v],j)=>{const y=BY-(big?6:5)-v-i*step,x=CX+u*(halfAt(y)-(big?7:6));inner+=big?`<g transform="translate(${x} ${y}) scale(${sc}) translate(${-x} ${-y})">${pc(p.k,x,y,j+i)}</g>`:pc(p.k,x,y,j+i)})});
+  const iceTop=fill>0?surf:Math.max(52,BY-(8+Math.min(vt.length*20,68)));
   vi.forEach(([u,v,r])=>{const x=CX+u*(halfAt(iceTop)-12);inner+=`<rect x="${x-8}" y="${iceTop+v}" width="16" height="16" rx="4" fill="#f2fbff" fill-opacity=".75" stroke="#8fb9cf" stroke-width="1.5" transform="rotate(${r} ${x} ${iceTop+v+8})"/>`});
   let fy=fill>0?surf:iceTop;
   foams.forEach(k=>{const th=13;fy-=th-3;const w=halfAt(fy)*2+4,x0=CX-w/2;
@@ -1920,20 +1874,26 @@ function renderLane(){
   const L=$('lane');if(!L)return;const f=focusCust();
   const items=[...R.slots.map((c,i)=>c&&{c,a:`data-slot="${i}"`}),...R.online.map((c,j)=>({c,a:`data-on="${j}"`}))].filter(Boolean).sort((x,y)=>x.c.id-y.c.id);
   L.innerHTML=items.map(({c,a})=>{const r=Math.max(0,c.pat/c.max),on=f&&c.id===f.id,left=c.done.filter(x=>!x).length;
-    const stc=isSt(c);return `<button class="q3chip${on?' q3on':''}${stc?' q3stc':''}${c.born&&performance.now()-c.born<700?' q3in':''}" ${a} data-fc="${c.id}" aria-label="${esc(c.name)}" style="--p:${r};--c:${r>.5?'#5aae86':r>.25?'#f4b73a':'#e2574c'}">
-      ${hasFace(c)?`<i class="q3fc" style="${faceOf(c,r<.3?2:0,56,55)}"></i>`:'<i class="q3fc q3ph">📱</i>'}${c.app?`<b class="q3app" style="background:${(APPS.find(a=>a.id===c.app)||APPS[0]).c}">${ico('phone')}</b>`:''}${left>1?`<b class="q3n">×${left}</b>`:''}${(R.st2&&R.st2.id===c.id)||isSto(c)?`<b class="q3st">${ico('people')}</b>`:''}${c.vip?`<b class="q3vip">${ico('star')}</b>`:''}${!stc&&missing(c.order).length?`<b class="q3so">Hết</b><span class="q3x" data-decl="${c.id}" role="button" aria-label="${R.slots.includes(c)?'Mời khách về':'Huỷ đơn online'}">×</span>`:''}</button>`}).join('')||'';
+    const stc=isSt(c);return `<button class="q3chip${on?' q3on':''}${stc?' q3stc':''}${c.born&&performance.now()-c.born<700?' q3in':''}${c.isFriend?' friend-vip':''}" ${a} data-fc="${c.id}" aria-label="${esc(c.name)}" style="--p:${r};--c:${r>.5?'#5aae86':r>.25?'#f4b73a':'#e2574c'}">
+      ${c.isFriend?`<span class="q3fc" style="display:flex;align-items:center;justify-content:center;font-size:2rem;background:none;">${c.face||'😎'}</span>`:hasFace(c)?`<i class="q3fc" style="${faceOf(c,r<.3?2:0,56,55)}"></i>`:'<i class="q3fc q3ph">📱</i>'}${c.app?`<b class="q3app" style="background:${(APPS.find(a=>a.id===c.app)||APPS[0]).c}">${ico('phone')}</b>`:''}${left>1?`<b class="q3n">×${left}</b>`:''}${(R.st2&&R.st2.id===c.id)||isSto(c)?`<b class="q3st">${ico('people')}</b>`:''}${c.vip?`<b class="q3vip">${ico('star')}</b>`:''}${c.isFriend?`<b class="q3friend-vip" title="VIP Bạn Bè">👑</b>`:''}${!stc&&missing(c.order).length?`<b class="q3so">Hết</b><span class="q3x" data-decl="${c.id}" role="button" aria-label="${R.slots.includes(c)?'Mời khách về':'Huỷ đơn online'}">×</span>`:''}</button>`}).join('')||'';
   const fc=$('q3face'),say=$('q3say');
   if(!f){coach();fc._id=null;fc.style.cssText='';fc.className='q3face';say._t=null;$('q3bub').classList.add('q3idleB');say.innerHTML=`<span class="q3idle">${R.closing?'Đã đóng cửa':R.running&&rushMul()<.6?'Quán đang vắng':'Đang chờ khách…'}<small>${R.closing?'Nhân viên pha chế đang làm nốt đơn':'Ngồi chơi xíu đi'}</small></span>`;$('q3want').innerHTML='';$('q3want')._o=null;$('q3pat').style.width='0';return}
   if(fc._id!==f.id){fc._id=f.id;if(!q3reduce)fc.animate([{transform:'translateX(-150px) rotate(-6deg)',opacity:0},{transform:'translateX(-60px) rotate(4deg)',opacity:1,offset:.5},{transform:'translateX(-20px) rotate(-3deg)',offset:.75},{transform:'none'}],{duration:650,easing:'ease-out'})}
-  fc.className='q3face'+(!hasFace(f)?' q3ph':'');fc.style.cssText=hasFace(f)?faceOf(f,f.pat/f.max<.3?2:0,144,141):'';fc.textContent=!hasFace(f)?'📱':'';
+  if(f.isFriend){
+    fc.className='q3face';
+    fc.style.cssText='font-size:5rem;display:flex;align-items:center;justify-content:center;background:none;';
+    fc.textContent=f.face||'😎';
+  } else {
+    fc.className='q3face'+(!hasFace(f)?' q3ph':'');fc.style.cssText=hasFace(f)?faceOf(f,f.pat/f.max<.3?2:0,144,141):'';fc.textContent=!hasFace(f)?'📱':'';
+  }
   const n=f.cups.length,online=R.online.includes(f);
-  let t=online?`<span class="q3vipT" style="background:${(APPS.find(a=>a.id===f.app)||APPS[0]).c}">${appN(f)}</span> <b>${f.big?'Đơn lớn':'Đơn'} #${f.id}</b>: ${shortOrder(f.order)}`:(f.star!=null?`<span class="q3vipT" style="background:#9b5fd0">⭐ ${esc(STARS[f.star].n)}</span> `+(performance.now()-f.born<3500?`<span class="q3nat">${esc(f.hi)}</span>`:`<small class="q3tr">[Tự động dịch]</small> `):'')+(f.star!=null&&performance.now()-f.born<3500?'':(f.vip?'<span class="q3vipT">Food reviewer</span> ':'')+(f.brat&&f.brat!=='mac'&&BRATS[f.brat].n?`<span class="q3vipT" style="background:${BRATS[f.brat].c}">${BRATS[f.brat].n}</span> `:'')+sentence(f));
+  let t=online?`<span class="q3vipT" style="background:${(APPS.find(a=>a.id===f.app)||APPS[0]).c}">${appN(f)}</span> <b>${f.big?'Đơn lớn':'Đơn'} #${f.id}</b>: ${shortOrder(f.order)}`:(f.star!=null?`<span class="q3vipT" style="background:#9b5fd0">⭐ ${esc(STARS[f.star].n)}</span> `+(performance.now()-f.born<3500?`<span class="q3nat">${esc(f.hi)}</span>`:`<small class="q3tr">[Tự động dịch]</small> `):'')+(f.isFriend?`<span class="q3vipT" style="background:#eab308;color:#000;">👑 VIP Bạn: ${esc(f.name)}</span> `:'')+(f.star!=null&&performance.now()-f.born<3500?'':(f.vip?'<span class="q3vipT">Food reviewer</span> ':'')+(f.brat&&f.brat!=='mac'&&BRATS[f.brat].n?`<span class="q3vipT" style="background:${BRATS[f.brat].c}">${BRATS[f.brat].n}</span> `:'')+sentence(f));
   if(n>5)t=`<span class="q3tabs"><span class="q3cur">Ly ${f.cups.indexOf(f.order)+1}/${n}</span><span class="q3dn">✓ ${f.done.filter(Boolean).length}</span></span> `+t;
   else if(n>1)t=`<span class="q3tabs">${f.cups.map((x,j)=>`<span class="${f.done[j]?'q3dn':x===f.order?'q3cur':''}" data-cv="${j}">${f.done[j]?'✓ ':''}Ly ${j+1}</span>`).join('')}</span> `+t;
   if(missing(f.order).length&&!online)t+=` <button class="q3decl" data-decl="${f.id}">Hết món, mời về</button>`;
   $('q3bub').classList.remove('q3idleB');if(say._t!==t){say._t=t;say.innerHTML=t;q3fitSay()}coach();const qw=$('q3want');if(qw._o!==f.order){qw._o=f.order;qw.innerHTML=orderGlass(f.order)}updPat(f);
 }
-function q3fitSay(){const e=$('q3say');let f=24;e.style.fontSize=f+'px';while(e.scrollHeight>e.clientHeight+1&&f>15){f--;e.style.fontSize=f+'px'}}
+function q3fitSay(){const e=$('q3say');let f=24;e.style.fontSize=f+'px';while(e.scrollHeight>e.clientHeight+1&&f>13){f--;e.style.fontSize=f+'px'}}
 const renderStreet=renderLane,renderOnline=renderLane;
 function updPat(c){const r=Math.max(0,c.pat/c.max),ch=document.querySelector(`#lane [data-fc="${c.id}"]`);
   if(ch){ch.style.setProperty('--p',r);ch.style.setProperty('--c',r>.5?'#5aae86':r>.25?'#f4b73a':'#e2574c');const fc=ch.querySelector('.q3fc');if(fc&&hasFace(c))fc.style.backgroundPosition=`${-(r<.3?2:0)*56}px ${-faceRow(c)*55}px`}
@@ -2352,8 +2312,7 @@ function staffGzStep(){
     R.gzWork = null;
     renderGzWidget();
     return;
-  }
-  const o = c.cups[w.cupIdx];
+  }const o = c.cups[w.cupIdx];
   if(!o || !needs(o).every(k => qty(k) > 0)){
     R.gzWork = null;
     renderGzWidget();
@@ -2556,6 +2515,8 @@ function autoSeal(){if(!S.upg.sealer)return;clearTimeout(R.asT);R.asT=setTimeout
   if(cup.base!==o.base||cup.mixed)bad.push('sai loại trà');
   if(cup.flav&&cup.flav!==(o.flav||null))bad.push(o.flav?'sai siro':'dư siro '+low(ITEMS[cup.flav].n));
   cup.tops.filter(t=>!o.tops.includes(t)).forEach(t=>bad.push('dư '+low(ITEMS[t].n)));
+  const misTops=o.tops.filter(t=>!cup.tops.includes(t));
+  if(misTops.length)bad.push('thiếu '+(misTops.length>2?`${misTops.length} loại topping`:misTops.map(t=>low(ITEMS[t].n)).join(', ')));
   if(lv>=2&&o.sugar!=null&&(cup.sugar||0)>o.sugar)bad.push('dư đường');
   const iceN={'Không đá':0,'Ít đá':1,'Đá thường':2};if(lv>=2&&o.ice!=null&&(cup.iceN||0)>iceN[o.ice])bad.push('dư đá');return bad};
   const bad=all.map(diff).sort((x,y)=>x.length-y.length)[0];
@@ -2608,11 +2569,68 @@ function genOrder(){
   const want=ks=>{const k=rnd(ks);if(has(k))return k;const av=ks.filter(has);if(av.length&&Math.random()<.5)return rnd(av);so=so||k;return k};
   const tr=evIs('trend')&&S.unlocked[ev().k]&&Math.random()<.5?ev().k:null;
   const base=tr||want(bases),flav0=base!=='thai'&&fl.length&&Math.random()<.6?want(fl):null,flav=flav0&&addSkip(flav0)?null:flav0;
-  const pool=TOP_KEYS.filter(un).filter(addOk).sort(()=>Math.random()-.5),r=Math.random();
-  let n=lv===1?wpick([0,1,2],[.15,.55,.3]):lv===2?wpick([1,2,3],[.25,.5,.25]):wpick([1,2,3,4],[.15,.4,.3,.15]);n=Math.min(n,pool.length);
-  const pick=[];for(const k0 of pool){if(pick.length>=n)break;let k=k0;if(!has(k)){const av=pool.filter(x=>has(x)&&!pick.includes(x));if(av.length&&Math.random()<.5)k=av[0];else{so=so||k}}
-    if(pick.includes(k)||(ITEMS[k].g==='foam'&&pick.some(x=>ITEMS[x].g==='foam'))||addSkip(k))continue;pick.push(k)}
-  return {base,flav,tops:pick,cheese:false,size:Math.random()<lChance()?'L':'M',so,
+
+  const tcPool=TOP_KEYS.filter(k=>un(k)&&addOk(k)&&ITEMS[k].g==='tc').sort(()=>Math.random()-.5);
+  const thachPool=TOP_KEYS.filter(k=>un(k)&&addOk(k)&&ITEMS[k].g==='thach').sort(()=>Math.random()-.5);
+  const pmPool=TOP_KEYS.filter(k=>un(k)&&addOk(k)&&ITEMS[k].g==='pm').sort(()=>Math.random()-.5);
+  const foamPool=TOP_KEYS.filter(k=>un(k)&&addOk(k)&&ITEMS[k].g==='foam').sort(()=>Math.random()-.5);
+
+  const canFullTop=(tcPool.length+thachPool.length+pmPool.length)>=3;
+  const isFullTopCandidate=canFullTop&&Math.random()<(lv>=3?0.12:lv>=2?0.08:0.04);
+  let nTc=0,nThach=0,nPm=0,nFoam=0;
+  if(isFullTopCandidate){
+    nTc=tcPool.length;
+    nThach=thachPool.length;
+    nPm=pmPool.length;
+    nFoam=foamPool.length&&Math.random()<0.3?1:0;
+  } else {
+    // 0 đến 5 loại trân châu
+    const maxTc=Math.min(5,tcPool.length);
+    if(maxTc===1)nTc=wpick([0,1],[.2,.8]);
+    else if(maxTc===2)nTc=lv===1?wpick([0,1,2],[.2,.55,.25]):wpick([0,1,2],[.15,.45,.4]);
+    else if(maxTc===3)nTc=wpick([0,1,2,3],[.1,.4,.3,.2]);
+    else if(maxTc===4)nTc=wpick([0,1,2,3,4],[.08,.32,.3,.2,.1]);
+    else if(maxTc>=5)nTc=wpick([0,1,2,3,4,5],[.08,.25,.25,.2,.12,.1]);
+
+    // 0 đến 4 loại thạch
+    const maxThach=Math.min(4,thachPool.length);
+    if(maxThach===1)nThach=wpick([0,1],[.65,.35]);
+    else if(maxThach===2)nThach=wpick([0,1,2],[.55,.32,.13]);
+    else if(maxThach===3)nThach=wpick([0,1,2,3],[.45,.32,.15,.08]);
+    else if(maxThach>=4)nThach=wpick([0,1,2,3,4],[.38,.32,.16,.09,.05]);
+
+    // 0 đến 3 loại phô mai
+    const maxPm=Math.min(3,pmPool.length);
+    if(maxPm===1)nPm=wpick([0,1],[.7,.3]);
+    else if(maxPm===2)nPm=wpick([0,1,2],[.6,.28,.12]);
+    else if(maxPm>=3)nPm=wpick([0,1,2,3],[.5,.3,.12,.08]);
+
+    // 0 đến 1 loại foam
+    if(foamPool.length)nFoam=Math.random()<0.22?1:0;
+  }
+
+  const targetKeys=[
+    ...tcPool.slice(0,nTc),
+    ...thachPool.slice(0,nThach),
+    ...pmPool.slice(0,nPm),
+    ...foamPool.slice(0,nFoam)
+  ];
+  const pick=[];
+  for(const k0 of targetKeys){
+    let k=k0;
+    const gPool=ITEMS[k].g==='tc'?tcPool:ITEMS[k].g==='thach'?thachPool:ITEMS[k].g==='pm'?pmPool:foamPool;
+    if(!has(k)){
+      const av=gPool.filter(x=>has(x)&&!pick.includes(x));
+      if(av.length&&Math.random()<.5)k=av[0];
+      else{so=so||k}
+    }
+    if(pick.includes(k)||(ITEMS[k].g==='foam'&&pick.some(x=>ITEMS[x].g==='foam'))||addSkip(k))continue;
+    pick.push(k);
+  }
+  const isFullTop=isFullTopCandidate||(canFullTop&&nTc===tcPool.length&&nThach===thachPool.length&&nPm===pmPool.length&&pick.length>=3);
+  const preferL=(pick.length>=5||isFullTop)&&Math.random()<.65;
+  const size=preferL?'L':(Math.random()<lChance()?'L':'M');
+  return {base,flav,tops:pick,isFullTop,cheese:false,size,so,
     sugar:lv>=2?wpick(SUGAR,[.15,.3,.35,.2]):null,ice:lv>=2?wpick(ICE,evIs('hot')?[.05,.2,.75]:[.15,.35,.5]):null};
 }
 const bigOrder=()=>R.slots.some(c=>c&&!(R.st2&&c.id===R.st2.id)&&c.done.filter(x=>!x).length>=3);/* đơn của NV pha chế không chặn khách mới */
@@ -2620,12 +2638,14 @@ const isSto=c=>!!(c&&R.sto&&c.id===R.sto.id),isSt=c=>!!(c&&R.st2&&c.id===R.st2.i
 function spawn(){
   const i=R.slots.findIndex(s=>!s);if(i<0||bigOrder())return;
   if(R.starPend){R.starPend=false;spawnStar(i);return}
+  if(!R.vipPending && window.BanBe && window.BanBe.checkSpawnVIPFriend && window.BanBe.checkSpawnVIPFriend(i)){ R.firstDone=true; return; }
   {const pi=pricyItems();if(pi.length&&Math.random()<.8){R.today.priceLost++;if(Math.random()<.08)addReview(rnd([1,2,2]),'pricey',false,null);if(!R.pricyT||performance.now()-R.pricyT>8000){R.pricyT=performance.now();toast('Khách xem menu chê '+(pi[0]==='L'?'size L':low(ITEMS[pi[0]].n))+' mắc quá, bỏ đi')}return}}
   const nc=level()>=3?wpick([1,2,3,4,5],[.45,.25,.15,.10,.05]):(evIs('weekend')||evIs('holiday'))&&level()>=2&&Math.random()<.3?2:1,cups=Array.from({length:nc},genOrder),o=cups[0],idx=cups.reduce((a,x)=>a+priceIdx(x),0)/nc;
   const so=cups.find(x=>x.so);if(so){R.today.soldLost=(R.today.soldLost||0)+1;R.today.lost++;fl($('lane'),'🚫 Hết '+low(ITEMS[so.so].n)+', khách về',true);return}
   const over=cups.some(overCap);
   if((over&&Math.random()<.6)||(cups.some(orderPricey)&&Math.random()<.4)){R.today.priceLost++;toast('Có khách chê đắt, bỏ đi');return}
-  const max=(55+(level()>=2?8:0))*(S.upg.seats?1.25:1)*(S.upg.mascot?1.3:1)*(1+.8*(nc-1))*(1+.35*cups.reduce((a,x)=>a+slowN(x)+Math.max(0,x.tops.length-1),0)/nc);
+  const huongMul=1+((S.upgLv&&S.upgLv.huong)||0)*0.005;
+  const max=(55+(level()>=2?8:0))*(S.upg.seats?1.25:1)*(S.upg.mascot?1.3:1)*(1+.8*(nc-1))*(1+.35*cups.reduce((a,x)=>a+slowN(x)+Math.max(0,x.tops.length-1),0)/nc)*huongMul;
   const who=Math.floor(Math.random()*9),pp=PERSONA[who];
   const vip=R.vipPending;if(vip){R.vipPending=false;toast('Food reviewer vừa tới quán!')}
   const brat=vip?null:pickBrat();
@@ -2635,11 +2655,12 @@ function spawn(){
 const onCap=()=>R.slots.length;
 const onMul=()=>appsOn().length?1:0;
 function pickApp(){const on=appsOn();return on.length?wpick(on,on.map(a=>a.w)):null}
-function mkOnline(app,cups){const n=cups.length,max=90*(n>1?1+.15*(n-1):1);
+function mkOnline(app,cups){const huongMul=1+((S.upgLv&&S.upgLv.huong)||0)*0.005,n=cups.length,max=90*(n>1?1+.15*(n-1):1)*huongMul;
   return {id:++uid,app:app.id,ship:rnd(app.rows),born:performance.now(),name:genName(),face:rnd(FACES),cups,done:cups.map(()=>false),order:cups[0],pat:max,max,wrong:0,big:n>1}}
 function spawnStar(i){const last=S.starLast,pool=STARS.map((x,k)=>k).filter(k=>k!==last),k=rnd(pool),st=STARS[k];S.starLast=k;if(S.starSch)S.starSch.done=true;
   let o=genOrder();for(let t=0;t<8&&o.so;t++)o=genOrder();if(o.so)o.so=null;
-  const hi=starLine(st,'hi'),max=(55+(level()>=2?8:0))*1.6*(S.upg.seats?1.25:1)*(S.upg.mascot?1.3:1)*(1+.35*(slowN(o)+Math.max(0,o.tops.length-1)));
+  const huongMul=1+((S.upgLv&&S.upgLv.huong)||0)*0.005;
+  const hi=starLine(st,'hi'),max=(55+(level()>=2?8:0))*1.6*(S.upg.seats?1.25:1)*(S.upg.mascot?1.3:1)*(1+.35*(slowN(o)+Math.max(0,o.tops.length-1)))*huongMul;
   R.slots[i]={star:k,hi:hi[0],born:performance.now(),id:++uid,name:st.n,face:'⭐',say:st.m?'Cho anh':'Cho chị',end:rnd([' nha!',' nhé, cảm ơn nha!',' nha em!']),cups:[o],done:[false],order:o,pat:max,max,wrong:0,paid:0};
   renderStreet();sfx('star');toast('⭐ '+st.t+' '+st.n+' vừa ghé quán!',5000,1);setTimeout(()=>{const q=$('q3say');if(q)q._t=null;renderLane()},3600)}
 function spawnOnline(){
@@ -2647,8 +2668,8 @@ function spawnOnline(){
   const app=pickApp();if(!app)return;
   {const o=genOrder();if(o.so)return;R.online.push(mkOnline(app,[o]))}renderOnline();
 }
-/* đơn lớn: mỗi 30 ngày Soppi có 1 đơn 5–10 ly, rơi vào ngày ngẫu nhiên */
-const BIG={sp:{n:()=>1,min:5,max:10}};
+/* đơn lớn: mỗi 30 ngày Soppi và Tóp Tóp có 1 đơn lớn, rơi vào ngày ngẫu nhiên */
+const BIG={sp:{n:()=>1,min:5,max:10},tt:{n:()=>1,min:6,max:12}};
 function planBig(){R.bigQ=[];const sc=S.bigSched=S.bigSched||{};
   appsOn().forEach(a=>{let x=sc[a.id];if(!x||S.day>x.end){const n=BIG[a.id].n(),d=[];while(d.length<n){const v=S.day+Math.floor(Math.random()*30);if(!d.includes(v))d.push(v)}x=sc[a.id]={end:S.day+29,days:d}}
     x.days.filter(v=>v===S.day).forEach(()=>R.bigQ.push({app:a.id,at:.2+Math.random()*.5}))})}
@@ -2681,6 +2702,14 @@ function stars(c,online){
   if(md==='kho')s=Math.min(s,Math.random()<.5?3:4);/* ngày khó ở: phục vụ tốt cũng chỉ 3–4 sao */
   if(md==='vui'&&why==='great')s=Math.max(s,5-(c.fillPen?1:0));
   if(c.rf.cheap&&s<5&&!c.wrong){s++;if(why==='great')why='cheap'}
+  // Giảm tỉ lệ đánh giá kém theo cấp độ Topping (0.5%/level)
+  const topLv=(S.upgLv&&S.upgLv.top)||0;
+  if(s<5&&topLv>0&&Math.random()<topLv*0.005){
+    s=Math.min(5,s+1);
+    if(s>=4&&(why==='bad'||why==='wrong'||why==='timeout'||why==='late'||why==='meh')){
+      why=s>=5?'great':'ok';
+    }
+  }
   s=Math.max(1,Math.min(5,s));
   if(why==='great'||(why==='cheap'&&s<4))why=s>=5?'great':s===4?'ok':s===3?'meh':'bad';
   return {s,why};
@@ -2753,9 +2782,9 @@ function reportFakeMoneyPolice(){
   ask(`
     <div class="police-report-wrap">
       <div class="police-report-badge">🚨 CÔNG AN PHƯỜNG TRÍCH XUẤT CAMERA</div>
-      <h2 style="margin:4px 0 8px;font-size:1.25rem;color:#b91c1c;">HỒ SƠ ĐIỀU TRA: VỤ ÁN TIỀN GIẢ</h2>
-      <p style="font-size:0.86rem;line-height:1.5;color:#475569;margin-bottom:8px;">
-        Quán vừa bị lừa đưa <b>TIỀN GIẢ</b> (đơn hàng: <b>${esc(real.order)}</b>, thiệt hại: <b style="color:#dc2626;">-${fmt(real.loss)}</b>).
+      <h2 class="police-report-title">HỒ SƠ ĐIỀU TRA: VỤ ÁN TIỀN GIẢ</h2>
+      <p class="police-report-desc">
+        Quán vừa bị lừa đưa <b>TIỀN GIẢ</b> (đơn hàng: <b>${esc(real.order)}</b>, thiệt hại: <b style="color:#ef4444;font-weight:800;">-${fmt(real.loss)}</b>).
         Công an đã khoanh vùng được <b>3 nghi phạm</b> dưới đây. Hãy nhận diện đúng người đã đưa tiền giả!
       </p>
       <div class="police-legal-warning">
@@ -2823,16 +2852,16 @@ function handleSuspectVerdict(chosen, real, wasRunning){
 
     ask(`
       <div class="pbig">👮‍♂️🎉</div>
-      <h2 style="color:#059669;margin-bottom:6px;">PHÁ ÁN THÀNH CÔNG!</h2>
-      <p style="font-size:0.92rem;color:#334155;line-height:1.5;">
-        Công an phường đã bắt giữ đúng đối tượng <b>${esc(chosen.name)}</b> cùng xấp tiền giả mang theo người!
+      <h2 class="verdict-title success">PHÁ ÁN THÀNH CÔNG!</h2>
+      <p class="verdict-desc">
+        Công an phường đã bắt giữ đúng đối tượng <b class="highlight-success">${esc(chosen.name)}</b> cùng xấp tiền giả mang theo người!
       </p>
-      <div style="background:#ecfdf5;border:1.5px solid #a7f3d0;border-radius:12px;padding:10px 14px;margin:10px 0;line-height:1.6;font-size:0.92rem;color:#065f46;">
+      <div class="verdict-box success">
         <div>💵 Hoàn tiền đơn hàng: <b>+${fmt(originalLoss)}</b></div>
-        <div>🏆 Thưởng nóng &amp; đền bù thiệt hại: <b style="color:#059669;font-size:1.1rem;">+1.000.000đ (1tr)</b></div>
-        <div>⭐ Đánh giá uy tín quán: <b style="color:#059669;font-size:1rem;">Tăng điểm sao (+2 đánh giá 5 sao từ Công An &amp; Khách)</b></div>
-        <div style="border-top:1px dashed #6ee7b7;margin-top:6px;padding-top:6px;">
-          💰 Tổng tiền két quán nhận được: <b style="color:#047857;font-size:1.15rem;">+${fmt(totalGet)}</b>
+        <div>🏆 Thưởng nóng &amp; đền bù thiệt hại: <b class="amt-gain">+1.000.000đ (1tr)</b></div>
+        <div>⭐ Đánh giá uy tín quán: <b class="amt-gain">Tăng điểm sao (+2 đánh giá 5 sao từ Công An &amp; Khách)</b></div>
+        <div class="verdict-box-footer">
+          💰 Tổng tiền két quán nhận được: <b class="amt-total">+${fmt(totalGet)}</b>
         </div>
       </div>
     `, [
@@ -2871,15 +2900,15 @@ function handleSuspectVerdict(chosen, real, wasRunning){
 
     ask(`
       <div class="pbig">⚖️❌</div>
-      <h2 style="color:#dc2626;margin-bottom:6px;">VU KHỐNG - TỐ CÁO SAI SỰ THẬT!</h2>
-      <p style="font-size:0.92rem;color:#334155;line-height:1.5;">
-        Người bạn chỉ điểm là <b>${esc(chosen.name)}</b> hoàn toàn vô tội và có chứng cứ ngoại phạm xác thực!
+      <h2 class="verdict-title fail">VU KHỐNG - TỐ CÁO SAI SỰ THẬT!</h2>
+      <p class="verdict-desc">
+        Người bạn chỉ điểm là <b class="highlight-fail">${esc(chosen.name)}</b> hoàn toàn vô tội và có chứng cứ ngoại phạm xác thực!
       </p>
-      <div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:12px;padding:10px 14px;margin:10px 0;line-height:1.6;font-size:0.92rem;color:#991b1b;">
-        <div>⚠️ Hành vi: <b>Tố cáo oan người vô tội, vu khống</b></div>
-        <div>💸 Phạt vi phạm hành chính: <b style="color:#dc2626;font-size:1.1rem;">−7.000.000đ (7tr)</b></div>
-        <div>📉 Đánh giá uy tín quán: <b style="color:#dc2626;font-size:1rem;">Bị giảm điểm sao (-2 đánh giá 1 sao vì thiếu minh bạch)</b></div>
-        <div style="font-size:0.82rem;color:#7f1d1d;margin-top:4px;">(Tiền phạt đã trừ trực tiếp vào két tiền quán và ghi vào chi phí sự cố)</div>
+      <div class="verdict-box fail">
+        <div>⚠️ Hành vi: <b class="act-name">Tố cáo oan người vô tội, vu khống</b></div>
+        <div>💸 Phạt vi phạm hành chính: <b class="amt-penalty">−7.000.000đ (7tr)</b></div>
+        <div>📉 Đánh giá uy tín quán: <b class="star-penalty">Bị giảm điểm sao (-2 đánh giá 1 sao vì thiếu minh bạch)</b></div>
+        <div class="verdict-box-note">(Tiền phạt đã trừ trực tiếp vào két tiền quán và ghi vào chi phí sự cố)</div>
       </div>
     `, [
       ['Chấp hành & Tiếp tục', ()=>{
@@ -2895,9 +2924,14 @@ function serve(i){
   const j=c.cups.findIndex((x,k)=>!c.done[k]&&matches(cup,x));
   if(j>=0){
     sfx('coin');if(!R.coachDone&&S.coach!==true){R.coachDone=true;setTimeout(coach,50)}const o=c.cups[j];let p=price(o)*(c.star!=null?3:1);const full=p;const gd=guardLv(),T=R.today;
+    const staffLv=(S.upgLv&&S.upgLv.staff)||0;
+    if(staffLv>0&&Math.random()<staffLv*0.001){
+      p*=2;
+      toast(`✨ Nhân viên khéo léo x2 tiền lời ly nước! (+${fmt(p)}) 🎉`,3000);
+    }
     let isFake = false;
     const fakeChance = S.money >= 500000000 ? 0.30 : 0.055;
-    if(S.day >= 2 && !c.star && c.brat !== 'bung' && !c.fakeChecked && Math.random() < fakeChance){
+    if(S.day >= 2 && !c.star && !c.isFriend && c.brat !== 'bung' && !c.fakeChecked && Math.random() < fakeChance){
       c.fakeChecked = true;
       isFake = true;
       p = 0;
@@ -2929,7 +2963,8 @@ function serve(i){
     if(left){c.order=c.cups[c.done.indexOf(false)];const st_=isSt(c);if(!st_)R.focus=c.id;fl(el,isFake?`💸 TIỀN GIẢ! 0đ (Hụt -${fmt(full)}) · còn ${left} ly`:c.brat==='mac'?`+${fmt(p)} (Bill: ${fmt(full)}) · còn ${left} ly`:`+${fmt(p)} · còn ${left} ly`,false);renderLane();renderCup();renderPanel();head();if(!st_)toast('Xong ly '+(c.done.indexOf(false))+', làm tiếp ly '+(c.done.indexOf(false)+1));return}
     let tip=isFake?0:Math.round((c.pat/c.max)*5)*1000*(S.upg.sealer?1.3:1)*(evIs('holiday')?2:1)*c.cups.length;
     if(c.brat==='haophong'&&!isFake)tip=Math.round(tip*2.5);
-    const rv=stars(c,false);
+    if(c.isFriend&&!isFake)tip=Math.round(tip*2);
+    const rv=c.isFriend?{s:5,why:'friend_vip'}:stars(c,false);
     const toStaff=STAFF.some(x=>S.upg[x.id]&&!x.guard);
     if(toStaff){S.cur.staffTip=(S.cur.staffTip||0)+tip}else{S.cur.tips+=tip;S.money+=tip;S.totalRev+=tip;R.today.tips+=tip}
     if(rv.s>=5)setTimeout(()=>sfx('star'),250);addReview(rv.s,rv.why,false,c);if(c.vip){addReview(rv.s,rv.why,false,c);addReview(rv.s,rv.why,false,c)}
@@ -2972,7 +3007,13 @@ function serveOnline(j){
   if(!ready())return;
   const k=c.cups.findIndex((x,q)=>!c.done[q]&&matches(cup,x));
   if(k>=0){sfx('coin');
-    const o=c.cups[k],p=price(o),fee=p*CFG.commission/100;
+    const o=c.cups[k];let p=price(o);
+    const staffLv=(S.upgLv&&S.upgLv.staff)||0;
+    if(staffLv>0&&Math.random()<staffLv*0.001){
+      p*=2;
+      toast(`✨ Nhân viên làm đơn online x2 tiền lời! (+${fmt(p)}) 🎉`,3000);
+    }
+    const fee=p*CFG.commission/100;
     recSale(o);S.cur.onl+=p;S.cur.fee+=fee;S.money+=p-fee;R.today.onl+=p-fee;S.totalRev+=p;R.today.fee+=fee;R.today.served++;S.served++;c.done[k]=true;cup=newCup();
     const left=c.done.filter(x=>!x).length;
     if(left){c.order=c.cups[c.done.indexOf(false)];fl(el,`+${fmt(p-fee)} · còn ${left} ly`,false);renderOnline();renderCup();renderPanel();head();return}
@@ -3034,7 +3075,7 @@ function rushMul(){const el=1-R.t/(dayLen()*60);/* 0 = 11:00, 1 = 22:00 */
 function tick(){
   const dt=.1;R.t-=dt;R.spawnT-=dt;
   if(R.spawnT<=0&&R.t>5&&bigOrder())R.spawnT=2.5;else if(R.spawnT<=0&&R.t>5){spawn();R.spawnT=9/traffic()/rushMul()*(.75+Math.random()*.5)}
-  if(onlineActive()){R.onT-=dt;if(R.onT<=0&&R.t>Math.max(8,dayLen()*60*30/660)){spawnOnline();R.onT=36/traffic()/onMul()*(evIs('rain')?.45:1)*(.7+Math.random()*.6)}
+  if(onlineActive()){R.onT-=dt;if(R.onT<=0&&R.t>Math.max(8,dayLen()*60*30/660)){spawnOnline();const onlLvMul=1+((S.upgLv&&S.upgLv.onl)||0)*0.001;R.onT=36/(traffic()*onlLvMul)/onMul()*(evIs('rain')?.45:1)*(.7+Math.random()*.6)}
     if(R.bigQ&&R.bigQ.length&&R.t>8){const tot0=dayLen()*60;R.bigQ=R.bigQ.filter(q=>!(R.t<tot0*(1-q.at)&&spawnBig(q)))}}
   let ch=false,cho=false;
   R.tk=(R.tk||0)+1;const upd=R.tk%5===0;
@@ -3098,6 +3139,11 @@ function endDay(){
   r.gzStolen=T.gzStolen||0;
   const yi=Math.floor((S.day-1)/360);if(S.taxYear!==yi){S.taxYear=yi;S.yearRev=0}
   const rev=recRev(r)+r.onl*0,before=S.yearRev;S.yearRev+=rev;
+  S.bestDayRev = Math.max(S.bestDayRev || 0, rev);
+  if(window.BanBe && window.BanBe.checkChallengeEnd) window.BanBe.checkChallengeEnd(rev);
+  S.giftsReceivedToday = 0;
+  S.giftsDay = S.day;
+  S.friendBuff = null;
   const taxable=Math.max(0,S.yearRev-Math.max(CFG.taxThreshold,before));r.tax=Math.round(taxable*(CFG.vat+CFG.pit)/100);
   r.ev=ev()?{id:ev().id,k:ev().k}:null;{const otMin=R.otT<0?-R.otT/(dayLen()*60)*660:0;r.ot=S.upg.staff2&&otMin>0?Math.ceil(otMin/30-1e-9)*20000:0}r.wage=wageDay()+r.ot;
   debts().forEach(L=>{const x=S[L.id];r.loanInt=(r.loanInt||0)+x.int;r.loanOut=(r.loanOut||0)+x.pay;S.money-=x.pay+x.int;x.left--;if(!x.left)S[L.id]=null});S.money-=r.rent+r.util+r.tax+r.wage;
@@ -3335,12 +3381,37 @@ function tn(f,at,dur,type,vol,to,dest){const c=AU.ctx;if(!c)return;const t=c.cur
 function nz(at,dur,freq,q,vol,type){const c=AU.ctx;if(!c)return;const t=c.currentTime+(at||0),s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();
   s.buffer=AU.nb;f.type=type||'bandpass';f.frequency.value=freq;f.Q.value=q||1;g.gain.setValueAtTime(vol||.1,t);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
   s.connect(f);f.connect(g);g.connect(AU.fx);s.start(t,Math.random()*.5);s.stop(t+dur+.02)}
+const ICE_SRC = 'Ice cube in the glass sound effect.mp3';
+const _iceAudioPool = [];
+function playIceCubeSound(){
+  if(!AU.on) return;
+  try {
+    let a = _iceAudioPool.find(el => el.paused || el.ended);
+    if(!a){
+      if(_iceAudioPool.length < 6){
+        a = new Audio(encodeURI(ICE_SRC));
+        a.volume = 0.85;
+        _iceAudioPool.push(a);
+      } else {
+        a = _iceAudioPool[0];
+      }
+    }
+    a.currentTime = 0;
+    const p = a.play();
+    if(p && p.catch) p.catch(()=>{});
+  } catch(e) {
+    try {
+      tn(2100,0,.12,'sine',.08); tn(2700,.06,.1,'sine',.06);
+    } catch(err){}
+  }
+}
 const SFX={
   tap(){tn(740,0,.07,'triangle',.08)},
   cup(){tn(520,0,.06,'triangle',.12);tn(780,.05,.08,'triangle',.08)},
-  plop(){tn(420,0,.16,'sine',.22,160)},
+  plop(){playIceCubeSound()},
+  top(){playIceCubeSound()},
   pump(){nz(0,.09,1400,2,.12);tn(300,.02,.08,'sine',.08,200)},
-  ice(){tn(2100,0,.12,'sine',.08);tn(2700,.06,.1,'sine',.06);tn(1800,.11,.12,'sine',.05)},
+  ice(){playIceCubeSound()},
   trash(){nz(0,.25,500,1,.18,'lowpass');tn(180,0,.2,'sine',.12,90)},
   seal(){nz(0,.12,300,1,.25,'lowpass');tn(120,0,.1,'square',.06);tn(1175,.28,.25,'sine',.1)},
   coin(){tn(988,0,.08,'square',.05);tn(1319,.07,.3,'square',.05)},
@@ -3594,7 +3665,7 @@ function showSplash(had,after){
     ${stk('berry',80,1228,64,4.6,1.5)}${stk('leaf',626,1228,66,5.2,3)}
     <img class="sp4-head" src="${IMG}cathead.png" alt="">
     <span class="sp4-z" style="animation-delay:0s">z</span><span class="sp4-z" style="animation-delay:1s">z</span><span class="sp4-z" style="animation-delay:2s">z</span>
-    <h1 class="sp4-t">Tiệm Trà Mơ Ước</h1>
+    <h1 class="sp4-t">Tiệm Trà Nhỏ</h1>
     <p class="sp4-tag">Pha trà, đón khách, mở tiệm nhỏ của riêng bạn</p>
     ${had?`<p class="sp4-me">${esc(shopName())} · Ngày ${S.day} · ${fmt(S.money)}</p>`:''}
     <div class="sp4-foot"><div class="sp4-msg" id="spMsg">${SP_MSG[0]}</div>
@@ -3606,8 +3677,8 @@ function showSplash(had,after){
       <div class="sp-banner-card">
         <button class="sp-banner-close" id="spBannerClose" aria-label="Đóng">✕</button>
         <div class="sp-banner-badge">📢 Lời nhắn từ Dev</div>
-        <h2 class="sp-banner-title">Tiệm Trà Mơ Ước</h2>
-        <p class="sp-banner-text">Hi mn, sau thành công của Tiệm Trà Nhỏ, để thoã lòng đam mê của các trà thủ, mình sẽ tiếp tục update phiên bản mới của game Tiệm Trà Mơ Ước. Hiện game vẫn giữa cơ chế cũ, nhưng bổ sung các tính năng mới để mn đỡ chán nhé . Trân trọng</p>
+        <h2 class="sp-banner-title">Tiệm Trà Nhỏ</h2>
+        <p class="sp-banner-text">Chào mừng bạn đến với Tiệm Trà Nhỏ do Aunomay phát hành. Game sẽ tiếp tục được cập nhật với nhiều tính năng quản lý quán, bạn bè và trải nghiệm mới.</p>
         <div class="sp-banner-qr-wrap">
           <img src="img/qrzl.jpg" alt="Mã QR Nhóm Zalo" class="sp-banner-qr">
           <span class="sp-banner-qr-caption">Quét mã QR bằng Zalo để tham gia nhóm!</span>
@@ -3722,7 +3793,7 @@ async function backupDlg(){$('card').onchange=null;S.bakDay=S.day;save();
   $('bkCopy').onclick=async()=>{const t=$('bkCode');let ok=false;try{await navigator.clipboard.writeText(code);ok=true}catch(e){}if(!ok){t.focus();t.select();try{ok=document.execCommand('copy')}catch(e){}}t.blur();toast(ok?'Đã chép mã':'Giữ vào ô mã để chép')};
   {let inFrame=true;try{inFrame=window.self!==window.top}catch(e){}if(inFrame)$('bkFile').hidden=true}
   $('bkFile').onclick=async()=>{const name='tiemtranho-ngay-'+S.day+'.txt',f=new File([code],name,{type:'text/plain'});
-    try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Sao lưu Tiệm Trà Mơ Ước'});return}}catch(e){if(e&&e.name==='AbortError')return}
+    try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Sao lưu Tiệm Trà Nhỏ'});return}}catch(e){if(e&&e.name==='AbortError')return}
     const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)};
   $('bkClose').onclick=showSettings}
 function restoreDlg(msg){$('card').onchange=null;
@@ -3734,7 +3805,7 @@ function restoreDlg(msg){$('card').onchange=null;
   $('rsFile').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{$('rsCode').value=t.trim();toast('Đã đọc file')})};
   $('rsBack').onclick=()=>{if(!$('splash').hidden)$('modal').hidden=true;else showSettings()};
   $('rsGo').onclick=async()=>{const code=$('rsCode').value;if(isField(document.activeElement))document.activeElement.blur();let d;const c8=String(code||'').replace(/[\s.-]/g,'');try{if(/^\d{8}$/.test(c8)){$('rsGo').disabled=true;$('rsGo').textContent='Đang tải…';d=await cloudLoad(c8)}else d=await readBackup(code)}catch(e){restoreDlg(typeof e==='string'?e:'Mã không đọc được');return}
-    ask(`<div class="pbig">${ico('reload')}</div><h2>Khôi phục tiến trình?</h2><p>Bản sao lưu: <b>${esc(d.shopName||'Tiệm Trà Mơ Ước')}</b> · Ngày ${d.day} · ${fmt(d.money||0)}</p><p>Tiến trình hiện tại (ngày ${S.day}) sẽ bị thay thế.</p>`,
+    ask(`<div class="pbig">${ico('reload')}</div><h2>Khôi phục tiến trình?</h2><p>Bản sao lưu: <b>${esc(d.shopName||'Tiệm Trà Nhỏ')}</b> · Ngày ${d.day} · ${fmt(d.money||0)}</p><p>Tiến trình hiện tại (ngày ${S.day}) sẽ bị thay thế.</p>`,
       [['Huỷ',()=>restoreDlg()],['Khôi phục',()=>{closeSplash();applyRestore(d)},1]])}}
 const ttnInstallShareIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11M8 7l4-4 4 4" stroke="#3F7FBF" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 10H7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-1.5" stroke="#3F7FBF" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>';
 const ttnInstallMenuIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.2" fill="#3A1E2A"/><circle cx="12" cy="12" r="2.2" fill="#3A1E2A"/><circle cx="12" cy="19" r="2.2" fill="#3A1E2A"/></svg>';
@@ -3831,8 +3902,8 @@ function showZaloBanner(){
       <div class="sp-banner-card">
         <button class="sp-banner-close" id="spBannerClose" aria-label="Đóng">✕</button>
         <div class="sp-banner-badge">📢 Lời nhắn từ Dev</div>
-        <h2 class="sp-banner-title">Tiệm Trà Mơ Ước</h2>
-        <p class="sp-banner-text">Hi mn, sau thành công của Tiệm Trà Nhỏ, để thoã lòng đam mê của các trà thủ, mình sẽ tiếp tục update phiên bản mới của game Tiệm Trà Mơ Ước. Hiện game vẫn giữa cơ chế cũ, nhưng bổ sung các tính năng mới để mn đỡ chán nhé . Trân trọng</p>
+        <h2 class="sp-banner-title">Tiệm Trà Nhỏ</h2>
+        <p class="sp-banner-text">Hi mn, sau thành công của Tiệm Trà Nhỏ, để thoã lòng đam mê của các trà thủ, mình sẽ tiếp tục update phiên bản mới của game Tiệm Trà Nhỏ. Hiện game vẫn giữa cơ chế cũ, nhưng bổ sung các tính năng mới để mn đỡ chán nhé . Trân trọng</p>
         <div class="sp-banner-qr-wrap">
           <img src="img/qrzl.jpg" alt="Mã QR Nhóm Zalo" class="sp-banner-qr">
           <span class="sp-banner-qr-caption">Quét mã QR bằng Zalo để tham gia nhóm!</span>
@@ -3886,8 +3957,11 @@ async function autoSyncVersion(){
           for(let reg of rs) await reg.unregister();
         }catch(e){}
       }
-      const base = location.protocol + '//' + location.host + location.pathname;
-      location.replace(base + '?v=' + encodeURIComponent(d.version) + '&_t=' + Date.now());
+      try{
+        const cleanUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+      }catch(e){}
+      window.location.reload(true);
     }
   }catch(e){}
 }
