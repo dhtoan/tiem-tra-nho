@@ -1,4 +1,4 @@
-#cloudAccountBtn{position:fixed;right:14px;bottom:14px;z-index:2147483000;border:0;border-radius:999px;padding:10px 14px;background:#6f4738;color:#fff;font:700 13px/1 system-ui;box-shadow:0 5px 20px #0003;cursor:pointer}
+#cloudAccountBtn{display:none;position:fixed;right:14px;bottom:14px;z-index:2147483000;border:0;border-radius:999px;padding:10px 14px;background:#6f4738;color:#fff;font:700 13px/1 system-ui;box-shadow:0 5px 20px #0003;cursor:pointer}
 #cloudAccountDlg{border:0;border-radius:18px;padding:0;max-width:min(92vw,420px);width:100%;box-shadow:0 24px 80px #0005}
 #cloudAccountDlg::backdrop{background:#24140faa}.caBox{padding:20px;font-family:system-ui;color:#38251d;background:#fffaf2}.caBox h2{margin:0 0 6px;font-size:22px}.caBox p{margin:6px 0 14px;color:#765c50;font-size:13px;line-height:1.45}
 .caGrid{display:grid;gap:10px}.caGrid input{box-sizing:border-box;width:100%;padding:11px 12px;border:1px solid #dbc9bc;border-radius:10px;font-size:16px;background:#fff}
