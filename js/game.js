@@ -3042,6 +3042,17 @@ function recSale(o){const sl=S.cur.sales,add=(k,a)=>{const x=sl[k]=sl[k]||{q:0,a
   add(o.base,sv(S.sell,o.base));if(o.flav)add(o.flav,sv(S.sell,o.flav));o.tops.forEach(t=>add(t,sv(S.sell,t)));if(o.cheese)add('cheese',sv(S.sell,'cheese'));if(o.size==='L')add('L',sv(S.sell,'L'))}
 const recRev=r=>Object.values(r.sales).reduce((a,x)=>a+x.a,0)+r.tips+(r.gift||0);
 const recCost=r=>r.rent+r.util+(r.wage||0)+(r.bad||0)+(r.loanInt||0)+r.fee+r.tax+r.equip.reduce((a,x)=>a+x.v,0)+Object.values(r.ing).reduce((a,x)=>a+x.v,0);
+function taxSnapshot(){
+  const threshold=Number(CFG.taxThreshold||1000000000);
+  const yearRev=Math.max(0,Number(S?.yearRev||0));
+  const dayInYear=((Math.max(1,Number(S?.day||1))-1)%360)+1;
+  const remaining=Math.max(0,threshold-yearRev);
+  const projectedRev=Math.round(yearRev/Math.max(1,dayInYear)*360);
+  const vatRate=Number(CFG.vat||2.4),pitRate=Number(CFG.pit||1.5);
+  const projectedVat=projectedRev>threshold?Math.round(projectedRev*vatRate/100):0;
+  const projectedPit=S?.taxMethod==='profit'?0:Math.round(Math.max(0,projectedRev-threshold)*pitRate/100);
+  return {threshold,yearRev,dayInYear,remaining,projectedRev,projectedTax:projectedVat+projectedPit,vatRate,pitRate};
+}
 function ready(){const lv=level(),miss=!cup.base?'loại trà':!cup.size?'size':lv>=2&&!cup.sugar?'đường':lv>=2&&!cup.ice?'đá':null;if(miss){toast('Chưa chọn '+miss);return false}return true}
 const needs=o=>[o.base,...(o.flav?[o.flav]:[]),...o.tops,...(o.cheese?['cheese']:[]),'cup'];
 const missing=o=>needs(o).filter(k=>!qty(k)&&!(cup&&cup.used&&(k==='cup'||cup.base===k||cup.flav===k||cup.tops.includes(k)||(k==='cheese'&&cup.cheese))));
@@ -3186,7 +3197,8 @@ function endDay(){
     <div><span>${ico('receipt')} Chi phí</span><span class="neg">−${fmt(cost)}</span></div>
     ${r.wage-(r.ot||0)?`<div><span class="wl">${ico('people')} Lương nhân viên</span><span class="wl">${fmt(r.wage-(r.ot||0))}</span></div>`:''}${r.ot?`<div><span class="wl">${ico('clock')} Tăng ca nhân viên pha chế</span><span class="wl">${fmt(r.ot)}</span></div>`:''}${r.bad?`<div><span class="wl">${ico('warn')} Sự cố mất tiền</span><span class="wl">${fmt(r.bad)}</span></div>`:''}
     ${r.loanInt?`<div><span class="wl">${ico('money')} Trả nợ (lãi ${fmt(r.loanInt)})</span><span class="wl">${fmt(r.loanOut+r.loanInt)}</span></div>`:''}
-    ${r.tax?`<div><span class="wl">${ico('receipt')} Thuế GTGT 2026 (${CFG.vat}%)</span><span class="wl">${fmt(r.taxVat||0)}</span></div><div><span class="wl">${ico('receipt')} Thuế TNCN</span><span class="wl">${fmt(r.taxPit||0)}</span></div>`:''}
+    ${r.tax?`<div><span class="wl">${ico('receipt')} Thuế GTGT 2026 (${CFG.vat}%)</span><span class="wl">${fmt(r.taxVat||0)}</span></div><div><span class="wl">${ico('receipt')} Thuế TNCN</span><span class="wl">${fmt(r.taxPit||0)}</span></div>`:`<div><span class="wl">${ico('receipt')} Thuế phải nộp hôm nay</span><span class="wl">0đ</span></div>`}
+    ${(()=>{const tx=taxSnapshot();return `<div class="note" style="margin:4px 0 0">Doanh thu năm: <b>${fmt(tx.yearRev)}</b> / ${fmt(tx.threshold)} · ${tx.remaining>0?'còn '+fmt(tx.remaining)+' tới ngưỡng':'đã vượt ngưỡng chịu thuế'}.</div>${tx.projectedTax>0?`<div class="note" style="margin:2px 0 0">Nếu giữ nhịp hiện tại: doanh thu năm ≈ <b>${fmt(tx.projectedRev)}</b>, thuế ước tính ≈ <b>${fmt(tx.projectedTax)}</b> (không trừ vào két cho tới khi phát sinh thực tế).</div>`:''}`})()}
     ${r.guard?`<div><span class="wl">${ico('people')} Bảo vệ thu lại</span><span class="wl">+${fmt(r.guard)}</span></div>`:''}
     ${r.staffTip?`<div><span class="wl">${ico('people')} Tip nhân viên giữ (quán không nhận)</span><span class="wl">${fmt(r.staffTip)}</span></div>`:''}
     ${r.gzStolen?`<div><span class="wl">🤫 Gen Z đá bill (thiếu giám sát)</span><span class="neg">−${fmt(r.gzStolen)}</span></div>`:''}
@@ -3279,7 +3291,8 @@ function paneSum(){
   <div class="crow"><span>Nguyên liệu</span><span>${vn(ingTot)}</span></div>
   ${Object.entries(g.ing).sort((a,b)=>b[1].v-a[1].v).map(([k,x])=>`<div class="trow sub"><div>– ${iname(k)}: ${x.q} phần</div><div>${vn(x.v/x.q)}</div><div>${vn(x.v)}</div></div>`).join('')}
   ${g.spoil.n?`<div class="wbox">🥤 Ly làm hỏng: ${g.spoil.n} ly · ${vn(g.spoil.v)}k (đã nằm trong tiền nguyên liệu)</div>`:''}
-  <div class="crow"><span>Thuế</span><span>${vn(g.tax)}</span></div>
+  <div class="crow"><span>Thuế đã phát sinh</span><span>${vn(g.tax)}</span></div>
+  ${(()=>{const tx=taxSnapshot();return `<div class="note" style="margin:3px 0 8px">Doanh thu lũy kế năm: <b>${fmt(tx.yearRev)}</b> / ${fmt(tx.threshold)} · ${tx.remaining>0?'còn '+fmt(tx.remaining)+' nên thuế thực nộp có thể vẫn là 0đ':'đã vượt ngưỡng chịu thuế'}.${tx.projectedTax>0?` Nếu giữ nhịp hiện tại, thuế cả năm ước khoảng <b>${fmt(tx.projectedTax)}</b>.`:''}</div>`})()}
   <div class="ttot neg"><span>Tổng chi phí</span><span>${vn(cost)}k</span></div>
   <div class="final ${profit<0?'neg':'pos'}"><span>Lợi nhuận sau thuế<small>Doanh thu − chi phí</small></span><span>${profit<0?'−':''}${vn(Math.abs(profit))}k</span></div>`;
   $('pane').innerHTML=h;
