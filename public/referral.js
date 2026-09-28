@@ -37,7 +37,7 @@ async function api(path,opt={}){
 function ensureDlg(){
   let d=$('aunoReferralDlg');if(d)return d;
   d=document.createElement('dialog');d.id='aunoReferralDlg';
-  d.innerHTML='<div class="arBox"><div class="arHead"><div class="arIcon">🎁</div><div><h2>Hết vốn? Rủ bạn cùng chơi</h2><p>Chia sẻ link giới thiệu để cứu két và kéo thêm bạn vào quán.</p></div></div><div class="arReward"><b>+300k cho cả hai</b><small>Bạn và người được mời đều nhận thưởng sau khi người mới đăng nhập và nhận lời mời.</small></div><div id="arGuest" class="arGuest" hidden>Đăng nhập hoặc tạo tài khoản để có link giới thiệu riêng và nhận thưởng.</div><div id="arSigned" hidden><div class="arLink"><input id="arLink" readonly aria-label="Link giới thiệu"><button class="arSecondary" id="arCopy" type="button">Chép</button></div><div class="arBtns"><button class="arPrimary" id="arShare" type="button">Chia sẻ link</button><button class="arSecondary" id="arQr" type="button">Tạo QR đẹp</button></div><div class="arPreview" id="arPreview"></div></div><div class="arBtns" id="arGuestBtns" hidden><button class="arPrimary" id="arLogin" type="button">Đăng nhập / Tạo tài khoản</button><button class="arSecondary" id="arLater" type="button">Để sau</button></div><div class="arStatus" id="arStatus"></div><button class="arClose" id="arClose" type="button">Đóng</button></div>';
+  d.innerHTML='<div class="arBox"><div class="arHead"><div class="arIcon">🎁</div><div><h2>Hết vốn? Rủ bạn cùng chơi</h2><p>Chia sẻ link giới thiệu để cứu két và kéo thêm bạn vào quán.</p></div></div><div class="arReward"><b>+300k cho cả hai</b><small>Bạn và người được mời đều nhận thưởng sau khi người mới đăng nhập và nhận lời mời.</small></div><div id="arGuest" class="arGuest" hidden>Đăng nhập hoặc tạo tài khoản để có link giới thiệu riêng và nhận thưởng.</div><div id="arSigned" hidden><div class="arLink"><input id="arLink" readonly aria-label="Link giới thiệu"><button class="arSecondary" id="arCopy" type="button">Chép</button></div><div class="arBtns"><button class="arPrimary" id="arShare" type="button">Chia sẻ link</button><button class="arSecondary" id="arQr" type="button">Tải QR chia sẻ</button></div><div class="arPreview" id="arPreview"></div></div><div class="arBtns" id="arGuestBtns" hidden><button class="arPrimary" id="arLogin" type="button">Đăng nhập / Tạo tài khoản</button><button class="arSecondary" id="arLater" type="button">Để sau</button></div><div class="arStatus" id="arStatus"></div><button class="arClose" id="arClose" type="button">Đóng</button></div>';
   document.body.appendChild(d);
   $('arClose').onclick=()=>d.close();$('arLater').onclick=()=>d.close();
   $('arLogin').onclick=()=>{d.close();document.getElementById('cloudAccountBtn')?.click()};
@@ -118,29 +118,40 @@ function qrCanvas(link){
     },80);
   })
 }
-async function makeQrCard(){
+async function makeQrCard(linkOverride='',codeOverride=''){
   if(!info)await referralInfo();if(!info)return status('Chưa có link giới thiệu.');
-  status('Đang thiết kế ảnh QR…');
+  const shareUrl=linkOverride||info.link;
+  const shareCode=codeOverride||info.code;
+  status('Đang tạo ảnh QR chia sẻ…');
   try{
-    const qr=await qrCanvas(info.link),p=palette(),c=document.createElement('canvas');c.width=900;c.height=1200;const x=c.getContext('2d');
+    const qr=await qrCanvas(shareUrl),p=palette(),c=document.createElement('canvas');c.width=900;c.height=1200;const x=c.getContext('2d');
     const g=x.createLinearGradient(0,0,900,1200);g.addColorStop(0,p.a);g.addColorStop(1,p.b);x.fillStyle=g;x.fillRect(0,0,900,1200);
     x.fillStyle='rgba(255,255,255,.12)';for(let i=0;i<22;i++){x.beginPath();x.arc((i*137)%900,(i*211)%1200,22+(i%4)*10,0,Math.PI*2);x.fill()}
     x.fillStyle='#fffaf5';x.fillRect(70,85,760,1030);
     x.textAlign='center';x.fillStyle='#3d241d';x.font='800 52px system-ui';x.fillText(gameName(),450,175);
-    x.fillStyle=p.b;x.font='900 66px system-ui';x.fillText('CỨU KÉT +300K',450,255);
-    x.fillStyle='#6d5147';x.font='600 29px system-ui';x.fillText('Quét QR để vào chơi — cả hai cùng nhận thưởng',450,310);
+    x.fillStyle=p.b;x.font='900 66px system-ui';x.fillText('CÙNG NHẬN +300K',450,255);
+    x.fillStyle='#6d5147';x.font='600 29px system-ui';x.fillText('Quét QR để mở quán cùng mình',450,310);
     x.fillStyle='#fff';x.fillRect(165,365,570,570);x.drawImage(qr,200,400,500,500);
-    x.fillStyle='#3d241d';x.font='800 34px system-ui';x.fillText('Quét để mở quán cùng mình',450,985);
-    x.fillStyle='#80665b';x.font='500 24px system-ui';x.fillText('Aunomay · '+location.host,450,1040);
+    x.fillStyle='#3d241d';x.font='800 34px system-ui';x.fillText('Mã giới thiệu: '+shareCode,450,985);
+    x.fillStyle='#80665b';x.font='500 24px system-ui';x.fillText('tiemtranho.aunomay.com',450,1040);
     x.fillStyle=p.c;x.fillRect(250,1075,400,6);
     const blob=await new Promise(r=>c.toBlob(r,'image/png',.95));
-    const url=URL.createObjectURL(blob),im=new Image();im.src=url;im.alt='QR giới thiệu '+gameName();$('arPreview').replaceChildren(im);
-    const file=new File([blob],(gameName()==='Tiệm Mì Cay'?'tiem-mi-cay':'tiem-tra-nho')+'-ref-'+info.code+'.png',{type:'image/png'});
-    const canFile=!!(navigator.canShare&&navigator.canShare({files:[file]}));
-    const btn=$('arQr');btn.textContent=canFile?'Chia sẻ ảnh QR':'Tải ảnh QR';
-    btn.onclick=async()=>{if(canFile){try{await navigator.share({files:[file],title:gameName()+' — QR mời bạn'});return}catch(e){if(e?.name==='AbortError')return}}const a=document.createElement('a');a.href=url;a.download=file.name;document.body.appendChild(a);a.click();a.remove()};
-    status('Ảnh QR đã sẵn sàng.');
-  }catch(e){status('Không tạo được ảnh QR trên trình duyệt này.')}
+    if(!blob)throw new Error('Không tạo được ảnh');
+    const url=URL.createObjectURL(blob),im=new Image();im.src=url;im.alt='QR giới thiệu '+gameName();$('arPreview')?.replaceChildren(im);
+    const fileName='tiem-tra-nho-ref-'+String(shareCode||'share').replace(/[^A-Za-z0-9_-]/g,'')+'.png';
+    const a=document.createElement('a');a.href=url;a.download=fileName;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),30000);
+    status('Đã tạo và tải QR chia sẻ. Bạn có thể gửi ảnh QR cho bạn bè.');
+    return true;
+  }catch(e){status('Không tạo được ảnh QR trên trình duyệt này.');return false}
+}
+async function downloadFriendQr(friendCode){
+  const user=await auth();
+  if(!user){open('manual');status('Đăng nhập để tạo QR Mã Bạn Bè +300k.');return false}
+  if(!info)await referralInfo();if(!info)return false;
+  const u=new URL(info.link,location.origin);
+  if(friendCode)u.searchParams.set('friend',String(friendCode).trim());
+  return makeQrCard(u.toString(),info.code);
 }
 function monitorMoney(){
   if(typeof window.getMoney!=='function')return;
@@ -152,5 +163,5 @@ function monitorMoney(){
 captureRef();
 addEventListener('DOMContentLoaded',()=>{ensureDlg();setTimeout(()=>{redeemPendingFriend();claimPending()},1200);setInterval(monitorMoney,1600);setInterval(()=>claimPending(),20000)});
 addEventListener('visibilitychange',()=>{if(!document.hidden)claimPending()});
-window.AunomayReferral={open,claimPending,takeRewards,shareFriendCode,redeemPendingFriend};
+window.AunomayReferral={open,claimPending,takeRewards,shareFriendCode,downloadFriendQr,redeemPendingFriend};
 })();
