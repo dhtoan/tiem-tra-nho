@@ -4,6 +4,7 @@ const MAX_ACCOUNT_SAVE_BYTES=512*1024;
 const AUTH_COOKIE='ttn_session';
 const SESSION_MS=30*24*60*60*1000;
 const REFERRAL_REWARD=300000;
+const DEFAULT_PUBLIC_ORIGIN='https://tiemtranho.aunomay.com';
 const USER_RE=/^[\p{L}\p{N}][\p{L}\p{N}._-]{2,31}$/u;
 const LOCAL_HOSTS=new Set(['localhost','127.0.0.1','0.0.0.0','::1']);
 let authSchemaReady=false;
@@ -33,6 +34,14 @@ function hostAllowed(hostname,env){
   const raw=String(env.ALLOWED_HOSTS||'').trim();
   if(!raw||LOCAL_HOSTS.has(hostname))return true;
   return raw.split(',').map(x=>x.trim().toLowerCase()).filter(Boolean).includes(hostname.toLowerCase());
+}
+function publicOrigin(env){
+  const raw=String(env.PUBLIC_ORIGIN||DEFAULT_PUBLIC_ORIGIN).trim();
+  try{
+    const u=new URL(raw);
+    if(u.protocol==='https:'&&u.hostname)return u.origin;
+  }catch{}
+  return DEFAULT_PUBLIC_ORIGIN;
 }
 
 async function handleApi(request,env,url){
@@ -232,7 +241,7 @@ async function referralMe(request,env,url){
   const user=await sessionUser(env.DB,request);
   if(!user)return json({error:'Chưa đăng nhập.'},401);
   const code=await ensureReferralCode(env.DB,user.id);
-  return json({ok:true,code,link:url.origin+'/?ref='+encodeURIComponent(code),reward:REFERRAL_REWARD});
+  return json({ok:true,code,link:publicOrigin(env)+'/?ref='+encodeURIComponent(code),reward:REFERRAL_REWARD});
 }
 
 async function referralClaim(request,env,url){
@@ -434,7 +443,9 @@ function withSecurity(response,url){
   h.set('x-frame-options','DENY');
   h.set('referrer-policy','strict-origin-when-cross-origin');
   h.set('permissions-policy','camera=(), microphone=(), geolocation=(), payment=()');
+  h.set('cross-origin-opener-policy','same-origin');
   h.set('cross-origin-resource-policy','same-origin');
+  if(url.pathname.startsWith('/api/')||/\.(?:js|mjs|css)$/i.test(url.pathname))h.set('x-robots-tag','noindex, noarchive, nosnippet');
   h.set('content-security-policy',"default-src 'self' data: blob:; img-src 'self' data: blob:; media-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; script-src 'self' 'unsafe-inline'; connect-src 'self'; worker-src 'self' blob:; manifest-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
   if(url.pathname.startsWith('/api/'))h.set('cache-control','no-store');
   else if(url.pathname==='/'||/\.(?:html?|css|js|mjs|json|webmanifest)$/i.test(url.pathname))h.set('cache-control','no-cache, max-age=0, must-revalidate');
