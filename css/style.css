@@ -1,3 +1,4 @@
+@charset "UTF-8";
 :root{color-scheme:only light;
   --bg:#fdf3e4; --ink:#3a2317; --soft:#7a5a48; --panel:#fffaf2; --line:#ead7bd;
   --counter:#8a5a3b; --counter-top:#a8714c; --pink:#ef6f8e; --pink-d:#c24c69; --mint:#4fa883; --warn:#e2574c; --gold:#f0b43c;
@@ -298,7 +299,7 @@ body.selling .gear{display:none}
 .gz-active-btn{background:#eef8f1!important;color:#2b7d43!important;border-color:#a3d9b1!important}
 .setl{display:flex;flex-direction:column;gap:8px;margin-top:10px}
 .setb{display:flex;align-items:center;gap:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink);border-radius:14px;padding:12px 14px;font-weight:800;font-size:1rem;cursor:pointer;min-height:52px;text-align:left}
-.setb span{font-size:1.3rem}.setb small{margin-left:auto;color:var(--soft);font-weight:700}
+.setb{flex-wrap:wrap}.setb span{font-size:1.3rem}.setb small{display:block;flex-basis:calc(100% - 42px);margin:-7px 0 0 42px;color:var(--soft);font-weight:700;line-height:1.25}
 .setb.warnb{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 40%,var(--line))}
 .big.blocked{background:var(--warn);box-shadow:0 4px 0 #a83a31}
 .lowstar{margin:0 12px 10px;border:2px solid var(--warn);background:color-mix(in srgb,var(--warn) 14%,var(--panel));color:var(--warn);border-radius:14px;padding:9px 12px;font-weight:800;text-align:center}
@@ -1395,3 +1396,5 @@ body.dark .verdict-desc .highlight-success {
 .hsr small b{display:inline;font-size:12px;color:#3a2317}
 .hsi{width:40px;height:40px;border-radius:12px;background:#fff;display:grid;place-items:center;box-shadow:0 2px 0 #f1d5ca,inset 0 0 0 1.5px #f6e1d9;font-size:20px}
 .hsi svg{width:22px;height:22px}
+
+.sp-banner-friend-label{font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:#8a5a38;margin-bottom:6px}.sp-banner-friend-code{background:#fff;border:2px dashed #d69a58;border-radius:12px;padding:10px 8px;font:900 13px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;color:#7a431f;word-break:break-all;user-select:all}.sp-banner-share{width:100%;margin-top:10px;border:0;border-radius:12px;padding:10px 12px;background:#d96b82;color:#fff;font-weight:900;cursor:pointer}.sp-banner-share:active{transform:scale(.98)}
