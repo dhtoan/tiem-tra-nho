@@ -260,7 +260,7 @@ async function referralClaim(request,env,url){
   if(code.length<6)return json({error:'Mã giới thiệu không hợp lệ.'},400);
   const inviter=await env.DB.prepare('SELECT account_id FROM referral_codes WHERE code=?').bind(code).first();
   if(!inviter)return json({error:'Không tìm thấy mã giới thiệu.'},404);
-  if(inviter.account_id===user.id)return json({error:'Bạn không thể tự giới thiệu chính mình.'},400);
+  if(inviter.account_id===user.id)return json({error:'Bạn không thể tự giới thiệu chính mình.',selfReferral:true},400);
   const old=await env.DB.prepare('SELECT inviter_account_id FROM referral_claims WHERE invitee_account_id=?').bind(user.id).first();
   if(old)return json({error:'Tài khoản này đã nhận thưởng giới thiệu.',alreadyClaimed:true},409);
   const now=Date.now();
