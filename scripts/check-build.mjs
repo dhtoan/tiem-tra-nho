@@ -48,5 +48,5 @@ for(const [name,text] of [['baucua',bc],['xidach',xd]]){
 }
 const account=await readFile(join(root,'account-sync.js'),'utf8');
 for(const ref of ['/api/auth/me','/api/auth/','/api/account/save'])if(!account.includes(ref))throw new Error('account sync missing '+ref);
-for(const mode of ['login','register'])if(!account.includes("auth('"+mode+"')"))throw new Error('account sync missing '+mode+' action');
+for(const mode of ['login','register'])if(!new RegExp('auth\\(["\\\']'+mode+'["\\\']\\)').test(account))throw new Error('account sync missing '+mode+' action');
 console.log('build verification passed: 1.0.0 + minigames + login + D1 auto-sync + PWA');
