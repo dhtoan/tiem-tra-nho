@@ -8,6 +8,8 @@ const USER_RE=/^[\p{L}\p{N}][\p{L}\p{N}._-]{2,31}$/u;
 const LOCAL_HOSTS=new Set(['localhost','127.0.0.1','0.0.0.0','::1']);
 let authSchemaReady=false;
 let authSchemaInit=null;
+let referralSchemaReady=false;
+let referralSchemaInit=null;
 
 export default {
   async fetch(request,env){
@@ -92,6 +94,33 @@ async function ensureAuthSchema(db){
     ]).then(()=>{authSchemaReady=true}).catch(e=>{authSchemaInit=null;throw e});
   }
   await authSchemaInit;
+}
+
+async function ensureReferralSchema(db){
+  await ensureAuthSchema(db);
+  if(referralSchemaReady)return;
+  if(!referralSchemaInit){
+    referralSchemaInit=db.batch([
+      db.prepare(`CREATE TABLE IF NOT EXISTS referral_codes(
+        code TEXT PRIMARY KEY,
+        account_id TEXT NOT NULL UNIQUE REFERENCES accounts(id) ON DELETE CASCADE,
+        created_at INTEGER NOT NULL
+      )`),
+      db.prepare(`CREATE TABLE IF NOT EXISTS referral_claims(
+        invitee_account_id TEXT PRIMARY KEY REFERENCES accounts(id) ON DELETE CASCADE,
+        inviter_account_id TEXT NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+        created_at INTEGER NOT NULL
+      )`),
+      db.prepare('CREATE INDEX IF NOT EXISTS idx_referral_claims_inviter ON referral_claims(inviter_account_id)'),
+      db.prepare(`CREATE TABLE IF NOT EXISTS referral_rewards(
+        account_id TEXT PRIMARY KEY REFERENCES accounts(id) ON DELETE CASCADE,
+        pending_amount INTEGER NOT NULL DEFAULT 0,
+        total_amount INTEGER NOT NULL DEFAULT 0,
+        updated_at INTEGER NOT NULL
+      )`)
+    ]).then(()=>{referralSchemaReady=true}).catch(e=>{referralSchemaInit=null;throw e});
+  }
+  await referralSchemaInit;
 }
 
 async function authRegister(request,env,url){
@@ -198,7 +227,7 @@ async function accountSave(request,env,url){
 }
 
 async function referralMe(request,env,url){
-  await ensureAuthSchema(env.DB);
+  await ensureReferralSchema(env.DB);
   if(request.method!=='GET')return methodNotAllowed('GET');
   const user=await sessionUser(env.DB,request);
   if(!user)return json({error:'Chưa đăng nhập.'},401);
@@ -207,7 +236,7 @@ async function referralMe(request,env,url){
 }
 
 async function referralClaim(request,env,url){
-  await ensureAuthSchema(env.DB);
+  await ensureReferralSchema(env.DB);
   if(request.method!=='POST')return methodNotAllowed('POST');
   if(!sameOrigin(request,url))return json({error:'Yêu cầu không hợp lệ.'},403);
   const user=await sessionUser(env.DB,request);
@@ -237,7 +266,7 @@ async function referralClaim(request,env,url){
 }
 
 async function referralTakeRewards(request,env,url){
-  await ensureAuthSchema(env.DB);
+  await ensureReferralSchema(env.DB);
   if(request.method!=='POST')return methodNotAllowed('POST');
   if(!sameOrigin(request,url))return json({error:'Yêu cầu không hợp lệ.'},403);
   const user=await sessionUser(env.DB,request);
@@ -393,6 +422,14 @@ async function bodyJson(request){try{const max=600*1024,len=Number(request.heade
 function json(data,status=200){return new Response(JSON.stringify(data),{status,headers:JSON_HEADERS})}
 function withSecurity(response,url){
   const h=new Headers(response.headers);
+  const currentType=h.get('content-type')||'';
+  const ext=(url.pathname.toLowerCase().match(/\.([a-z0-9]+)$/)||[])[1]||'';
+  const utf8Type=/^(text\/|application\/(?:javascript|json|manifest\+json|xml)|image\/svg\+xml)/i.test(currentType);
+  if(utf8Type&&!/charset=/i.test(currentType))h.set('content-type',currentType.split(';')[0].trim()+'; charset=utf-8');
+  if(!currentType){
+    const byExt={html:'text/html',htm:'text/html',css:'text/css',js:'text/javascript',mjs:'text/javascript',json:'application/json',webmanifest:'application/manifest+json',xml:'application/xml',svg:'image/svg+xml',txt:'text/plain'};
+    if(byExt[ext])h.set('content-type',byExt[ext]+'; charset=utf-8');
+  }
   h.set('x-content-type-options','nosniff');
   h.set('x-frame-options','DENY');
   h.set('referrer-policy','strict-origin-when-cross-origin');
@@ -400,5 +437,6 @@ function withSecurity(response,url){
   h.set('cross-origin-resource-policy','same-origin');
   h.set('content-security-policy',"default-src 'self' data: blob:; img-src 'self' data: blob:; media-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; script-src 'self' 'unsafe-inline'; connect-src 'self'; worker-src 'self' blob:; manifest-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
   if(url.pathname.startsWith('/api/'))h.set('cache-control','no-store');
+  else if(url.pathname==='/'||/\.(?:html?|css|js|mjs|json|webmanifest)$/i.test(url.pathname))h.set('cache-control','no-cache, max-age=0, must-revalidate');
   return new Response(response.body,{status:response.status,statusText:response.statusText,headers:h});
 }
