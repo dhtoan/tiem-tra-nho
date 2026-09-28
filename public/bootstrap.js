@@ -1,3 +1,3 @@
 if ('serviceWorker' in navigator) {
-  addEventListener('load', () => navigator.serviceWorker.register('/sw.js').then(r => r.update()).catch(() => {}));
+  addEventListener('load', () => navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).then(r => r.update()).catch(() => {}));
 }
