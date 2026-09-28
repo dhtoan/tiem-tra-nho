@@ -65,8 +65,13 @@
     let prev=localSave();
     setInterval(()=>{const cur=localSave();if(cur!==prev){prev=cur;mark();dirty=true;if(user&&!conflict){clearTimeout(timer);timer=setTimeout(()=>upload(true),AUTOSAVE_DELAY)}else if(!user)scheduleNudge()}},1000);
   }
+  function openAccount(){
+    const dlg=$('cloudAccountDlg');if(!dlg)return;
+    dlg.showModal();status(user?'Tự động lưu cloud đang bật.':'Đăng nhập để bật tự động lưu cloud.');
+    setTimeout(()=>$('caUserInput')?.focus(),80);
+  }
   function bind(){
-    $('cloudAccountBtn').onclick=()=>{$('cloudAccountDlg').showModal();status(user?'Tự động lưu cloud đang bật.':'Đăng nhập để bật tự động lưu cloud.')};
+    $('cloudAccountBtn').onclick=openAccount;
     $('caClose').onclick=()=>$('cloudAccountDlg').close();
     $('caLogin').onclick=()=>auth('login');$('caRegister').onclick=()=>auth('register');$('caUpload').onclick=()=>upload(false);$('caDownload').onclick=downloadCloud;$('caLogout').onclick=logout;
     $('caNudgeOpen').onclick=()=>{hideNudge(false);$('cloudAccountDlg').showModal();status('Tạo tài khoản hoặc đăng nhập để bật tự động lưu cloud.')};
@@ -75,5 +80,6 @@
     document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){if(user&&dirty&&!conflict)upload(true,true)}else if(!user)scheduleNudge()});
     addEventListener('pagehide',()=>{if(user&&dirty&&!conflict)upload(true,true)});
   }
+  window.TTNAccount={open:openAccount,sync:()=>upload(false),me:()=>user};
   addEventListener('DOMContentLoaded',()=>{bind();watch();if(localSave()&&!localTs())mark();me()});
 })();
