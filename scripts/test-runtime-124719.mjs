@@ -38,4 +38,7 @@ for(const marker of ['taxThreshold:1000000000','vat:2.4','function taxSnapshot()
   if(!files.game.includes(marker))throw new Error('2026 tax UX missing '+marker);
 }
 if(!files.sw.includes('AUNOMAY_REFERRAL'))throw new Error('service worker referral bridge missing');
+for(const marker of ['const COSMETICS=[','function cosmeticShop()','shop_sakura','counter_luxe','cup_gold','Màu mới được mở khi quán lên cấp','maybeAutoInstall','settings-x','sDecor']){
+  if(!files.game.includes(marker))throw new Error('new settings/decor/install UX missing '+marker);
+}
 console.log('Tiệm Trà Nhỏ Aunomay 1.0.0 feature import checks passed');
