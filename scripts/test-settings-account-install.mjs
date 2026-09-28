@@ -18,4 +18,7 @@ if(!account.includes('window.TTNAccount'))throw new Error('Account module must e
 if(!css.includes('#cloudAccountBtn{display:none'))throw new Error('Floating account button must be hidden');
 const style=await readFile(new URL('../css/style.css',import.meta.url),'utf8');
 if(!style.includes('.hsi svg'))throw new Error('Install instruction icons must be styled');
-console.log('settings account and install menu regression checks passed');
+if(!game.includes('Thông tin Aunomay'))throw new Error('Settings must include Aunomay publisher info');
+if(!game.includes('Điều khoản chơi'))throw new Error('Settings must include play terms');
+if(!game.includes('Toàn màn hình'))throw new Error('Settings must include fullscreen control');
+console.log('settings account, install and Aunomay UX regression checks passed');
