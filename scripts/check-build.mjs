@@ -25,5 +25,6 @@ if(!game.includes("const SAVE='tsShop2'"))throw new Error('expected tsShop2 save
 const bc=await readFile(join(root,'js/baucua.js'),'utf8');
 for(const img of ['bau.png','ca.png','cua.png','tom.png','nai.png','ga.png'])if(!bc.includes(img))throw new Error('baucua missing '+img);
 const account=await readFile(join(root,'account-sync.js'),'utf8');
-for(const ref of ['/api/auth/me','/api/auth/login','/api/auth/register','/api/account/save'])if(!account.includes(ref))throw new Error('account sync missing '+ref);
+for(const ref of ['/api/auth/me','/api/auth/','/api/account/save'])if(!account.includes(ref))throw new Error('account sync missing '+ref);
+for(const mode of ['login','register'])if(!account.includes("auth('"+mode+"')"))throw new Error('account sync missing '+mode+' action');
 console.log('build verification passed: 12.47.11 + minigames + login + D1 auto-sync + PWA');
