@@ -16,6 +16,11 @@ export default {
   async fetch(request,env){
     const url=new URL(request.url);
     if(!hostAllowed(url.hostname,env)) return withSecurity(new Response('Forbidden',{status:403}),url);
+    const canonical=publicOrigin(env);
+    if(!url.pathname.startsWith('/api/')&&url.origin!==canonical&&request.method==='GET'){
+      const target=new URL(url.pathname+url.search+url.hash,canonical);
+      return withSecurity(Response.redirect(target.toString(),308),url);
+    }
     try{
       if(url.pathname.startsWith('/api/')){
         const response=await handleApi(request,env,url);
