@@ -1,3 +1,4 @@
+@charset "UTF-8";
 body:not(.selling) .pbtn.dice{display:inline-flex;align-items:center;justify-content:center}
 body.selling .pbtn.dice{display:none}
 .baucua-modal{position:fixed;inset:0;z-index:80;background:rgba(40,20,10,.68);display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}
