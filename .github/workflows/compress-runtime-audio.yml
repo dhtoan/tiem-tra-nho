@@ -1,0 +1,55 @@
+name: Compress runtime audio
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/compress-runtime-audio.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  compress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compress BGM below Cloudflare 25 MiB asset limit
+        shell: bash
+        run: |
+          set -euo pipefail
+          src='public/Nhạc Chill Quán Cafe - Những Ca Khúc Lofi Nhẹ Nhàng Hay Nhất Dành Cho Quán Cafe - Nhạc Lofi 2026.mp3'
+          tmp='/tmp/bgm-compressed.mp3'
+          test -s "$src"
+          before="$(stat -c%s "$src")"
+          echo "Before: $before bytes"
+
+          ffmpeg -hide_banner -loglevel error -y -i "$src"             -codec:a libmp3lame -b:a 128k -ar 44100 "$tmp"
+
+          test -s "$tmp"
+          after="$(stat -c%s "$tmp")"
+          echo "After: $after bytes"
+
+          max=$((24 * 1024 * 1024))
+          test "$after" -lt "$max" || { echo "Compressed BGM is still too large"; exit 1; }
+
+          mv "$tmp" "$src"
+
+      - name: Commit compressed BGM
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/*.mp3
+          if git diff --cached --quiet; then
+            echo "Audio already compressed"
+            exit 0
+          fi
+          git commit -m "assets: compress BGM for Cloudflare Workers [skip ci]"
+          git push
