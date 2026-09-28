@@ -7,7 +7,9 @@ const required=[
   'css/style.css','css/baucua.css','css/xidach.css',
   'js/game.js','js/baucua.js','js/xidach.js',
   'account-sync.css','account-sync.js','bootstrap.js',
-  'manifest.webmanifest','sw.js',
+  'manifest.webmanifest','sw.js','version.json',
+  'Nhạc Chill Quán Cafe - Những Ca Khúc Lofi Nhẹ Nhàng Hay Nhất Dành Cho Quán Cafe - Nhạc Lofi 2026.mp3',
+  'Pouring water-liquid into a glass sound effect [HQ].mp3',
   'img/ga.png','img/bau.png','img/ca.png','img/cua.png','img/tom.png','img/nai.png','img/xocdia.png'
 ];
 for(const file of required)await access(join(root,file));
