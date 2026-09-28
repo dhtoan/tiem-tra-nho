@@ -110,6 +110,7 @@ jobs:
 
           [vars]
           ALLOWED_HOSTS = "tiemtranho.aunomay.com,tiem-tra-nho.aunomay.workers.dev"
+          PUBLIC_ORIGIN = "https://tiemtranho.aunomay.com"
 
           [[d1_databases]]
           binding = "DB"
