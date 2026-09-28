@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 15
     environment: production
     env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_API_TOKEN_RAW: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       D1_NAME: tiem-tra-nho
       PROD_HOST: tiemtranho.aunomay.com
@@ -27,12 +27,30 @@ jobs:
         with:
           node-version: 22
 
-      - name: Verify Cloudflare credentials
+      - name: Normalize and verify Cloudflare credentials
         shell: bash
         run: |
           set -euo pipefail
-          test -n "${CLOUDFLARE_API_TOKEN:-}" || { echo "Missing CLOUDFLARE_API_TOKEN GitHub secret"; exit 1; }
+          test -n "${CLOUDFLARE_API_TOKEN_RAW:-}" || { echo "Missing CLOUDFLARE_API_TOKEN GitHub secret"; exit 1; }
           test -n "${CLOUDFLARE_ACCOUNT_ID:-}" || { echo "Missing CLOUDFLARE_ACCOUNT_ID GitHub secret"; exit 1; }
+
+          NORMALIZED_TOKEN="$(node -e "let s=String(process.env.CLOUDFLARE_API_TOKEN_RAW||'').trim().replace(/^Bearer\\s+/i,'');if((s.startsWith('\\\"')&&s.endsWith('\\\"'))||(s.startsWith(\\"'\\")&&s.endsWith(\\"'\\")))s=s.slice(1,-1).trim();process.stdout.write(s)")"
+          test -n "$NORMALIZED_TOKEN" || { echo "CLOUDFLARE_API_TOKEN is empty after normalization"; exit 1; }
+
+          echo "::add-mask::$NORMALIZED_TOKEN"
+          printf 'CLOUDFLARE_API_TOKEN=%s\n' "$NORMALIZED_TOKEN" >> "$GITHUB_ENV"
+
+          HTTP_CODE="$(curl --silent --show-error --output /tmp/cf-token.json --write-out '%{http_code}'             -H "Authorization: Bearer $NORMALIZED_TOKEN"             -H "Content-Type: application/json"             https://api.cloudflare.com/client/v4/user/tokens/verify || true)"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "Cloudflare API token verification failed (HTTP $HTTP_CODE)."
+            echo "GitHub secret CLOUDFLARE_API_TOKEN must contain the raw API Token only, not a Global API Key."
+            node -e "try{const j=JSON.parse(require('fs').readFileSync('/tmp/cf-token.json','utf8'));for(const e of (j.errors||[]))console.error('Cloudflare:',e.code||'',e.message||'')}catch{}"
+            exit 1
+          fi
+
+          node -e "const j=JSON.parse(require('fs').readFileSync('/tmp/cf-token.json','utf8'));if(!j.success||j.result?.status!=='active'){console.error('Cloudflare API token is not active');process.exit(1)}"
+          echo "Cloudflare API token is active."
 
       - name: Install
         run: npm install
