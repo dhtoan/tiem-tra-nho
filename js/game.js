@@ -1797,7 +1797,7 @@ function renderSell(){
     h+=`<div class="q3badge q3sm" style="left:${x+6}px;top:1206px" id="q3n_${k}"></div>`});
   applyCosmetics();$('view').innerHTML=`<div id="q3"><div id="q3stage" class="${esc(S.cosmetics?.active?.counter||'counter_classic')}">
     <div id="gzWidget" class="gz-widget" style="display:none"></div>
-    ${patch}<div id="q3tint" aria-hidden="true"></div>${(evIs('rain')||evIs('storm'))?'<div id="q3rain" aria-hidden="true"><i class="r1"></i><i class="r2"></i></div>':''}
+    ${patch}<div id="q3counterSkin" aria-hidden="true"></div><div id="q3tint" aria-hidden="true"></div>${(evIs('rain')||evIs('storm'))?'<div id="q3rain" aria-hidden="true"><i class="r1"></i><i class="r2"></i></div>':''}
     <div class="q3lane" id="lane"></div>
     <div class="q3face" id="q3face" aria-hidden="true"></div>
     <div class="q3bub" id="q3bub"><div id="q3want" aria-hidden="true"></div><div id="q3say"></div><div class="q3pat"><span>KIÊN NHẪN</span><div class="q3bar"><i id="q3pat"></i></div></div></div>
