@@ -6,6 +6,7 @@ on:
     paths:
       - scripts/sync-reference-sites.mjs
       - .github/workflows/sync-reference-sites.yml
+      - .sync-reference-trigger
   workflow_dispatch:
 
 permissions:
