@@ -3045,7 +3045,8 @@ const recCost=r=>r.rent+r.util+(r.wage||0)+(r.bad||0)+(r.loanInt||0)+r.fee+r.tax
 function taxSnapshot(){
   const threshold=Number(CFG.taxThreshold||1000000000);
   const yearRev=Math.max(0,Number(S?.yearRev||0));
-  const dayInYear=((Math.max(1,Number(S?.day||1))-1)%360)+1;
+  const curDay=Math.max(1,Number(S?.day||1));
+  const dayInYear=curDay<=1?1:(((curDay-2)%360)+1);
   const remaining=Math.max(0,threshold-yearRev);
   const projectedRev=Math.round(yearRev/Math.max(1,dayInYear)*360);
   const vatRate=Number(CFG.vat||2.4),pitRate=Number(CFG.pit||1.5);
