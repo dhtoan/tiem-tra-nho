@@ -18,9 +18,11 @@ jobs:
         run: npm install
       - name: Syntax and production build
         run: npm run check
+      - name: Apply local D1 migrations
+        run: npx wrangler d1 migrations apply DB --local --config wrangler.ci.toml
       - name: Start local Worker
         run: |
-          npx wrangler dev --local --port 8787 > /tmp/ttn-wrangler.log 2>&1 &
+          npx wrangler dev --local --config wrangler.ci.toml --port 8787 > /tmp/ttn-wrangler.log 2>&1 &
           echo $! > /tmp/ttn-wrangler.pid
           for i in {1..30}; do
             if curl -fsS http://127.0.0.1:8787/api/health >/dev/null; then exit 0; fi
