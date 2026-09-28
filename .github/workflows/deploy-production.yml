@@ -34,7 +34,235 @@ jobs:
           test -n "${CLOUDFLARE_API_TOKEN_RAW:-}" || { echo "Missing CLOUDFLARE_API_TOKEN GitHub secret"; exit 1; }
           test -n "${CLOUDFLARE_ACCOUNT_ID:-}" || { echo "Missing CLOUDFLARE_ACCOUNT_ID GitHub secret"; exit 1; }
 
-          NORMALIZED_TOKEN="$(node -e "let s=String(process.env.CLOUDFLARE_API_TOKEN_RAW||'').trim().replace(/^Bearer\\s+/i,'');if((s.startsWith('\\\"')&&s.endsWith('\\\"'))||(s.startsWith(\\"'\\")&&s.endsWith(\\"'\\")))s=s.slice(1,-1).trim();process.stdout.write(s)")"
+          NORMALIZED_TOKEN="$CLOUDFLARE_API_TOKEN_RAW"
+          NORMALIZED_TOKEN="${NORMALIZED_TOKEN//
+
+          echo "::add-mask::$NORMALIZED_TOKEN"
+          printf 'CLOUDFLARE_API_TOKEN=%s\n' "$NORMALIZED_TOKEN" >> "$GITHUB_ENV"
+
+          HTTP_CODE="$(curl --silent --show-error --output /tmp/cf-token.json --write-out '%{http_code}'             -H "Authorization: Bearer $NORMALIZED_TOKEN"             -H "Content-Type: application/json"             https://api.cloudflare.com/client/v4/user/tokens/verify || true)"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "Cloudflare API token verification failed (HTTP $HTTP_CODE)."
+            echo "GitHub secret CLOUDFLARE_API_TOKEN must contain the raw API Token only, not a Global API Key."
+            node -e "try{const j=JSON.parse(require('fs').readFileSync('/tmp/cf-token.json','utf8'));for(const e of (j.errors||[]))console.error('Cloudflare:',e.code||'',e.message||'')}catch{}"
+            exit 1
+          fi
+
+          node -e "const j=JSON.parse(require('fs').readFileSync('/tmp/cf-token.json','utf8'));if(!j.success||j.result?.status!=='active'){console.error('Cloudflare API token is not active');process.exit(1)}"
+          echo "Cloudflare API token is active."
+
+      - name: Install
+        run: npm install
+
+      - name: Verify game, auth and PWA build
+        run: npm run check
+
+      - name: Find or create production D1
+        id: d1
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx wrangler d1 list --json > /tmp/d1-list.json
+          DB_ID="$(node -e "const a=JSON.parse(require('fs').readFileSync('/tmp/d1-list.json','utf8'));const d=a.find(x=>x.name===process.env.D1_NAME);if(d)process.stdout.write(String(d.uuid||d.id||''));")"
+          if [ -z "$DB_ID" ]; then
+            echo "D1 $D1_NAME not found; creating in APAC..."
+            npx wrangler d1 create "$D1_NAME" --location=apac
+            npx wrangler d1 list --json > /tmp/d1-list.json
+            DB_ID="$(node -e "const a=JSON.parse(require('fs').readFileSync('/tmp/d1-list.json','utf8'));const d=a.find(x=>x.name===process.env.D1_NAME);if(d)process.stdout.write(String(d.uuid||d.id||''));")"
+          fi
+          test -n "$DB_ID" || { echo "Could not resolve D1 database id"; exit 1; }
+          echo "database_id=$DB_ID" >> "$GITHUB_OUTPUT"
+          echo "Using D1: $D1_NAME ($DB_ID)"
+
+      - name: Generate production Wrangler config
+        shell: bash
+        run: |
+          cat > wrangler.production.toml <<EOF
+          name = "tiem-tra-nho"
+          main = "src/worker.js"
+          compatibility_date = "2026-09-28"
+          workers_dev = true
+          preview_urls = true
+
+          [observability]
+          enabled = true
+
+          [assets]
+          directory = "./dist"
+          binding = "ASSETS"
+          run_worker_first = true
+
+          [vars]
+          ALLOWED_HOSTS = "tiemtranho.aunomay.com"
+
+          [[d1_databases]]
+          binding = "DB"
+          database_name = "tiem-tra-nho"
+          database_id = "${{ steps.d1.outputs.database_id }}"
+          migrations_dir = "migrations"
+          EOF
+          cat wrangler.production.toml
+
+      - name: Apply remote D1 migrations
+        run: npx wrangler d1 migrations apply DB --remote --config wrangler.production.toml
+
+      - name: Deploy Worker
+        run: npx wrangler deploy --config wrangler.production.toml
+
+      - name: Attach production custom domain
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/domain.json <<'JSON'
+          {
+            "hostname": "tiemtranho.aunomay.com",
+            "service": "tiem-tra-nho",
+            "zone_name": "aunomay.com"
+          }
+          JSON
+
+          HTTP_CODE="$(curl --silent --show-error --output /tmp/domain-response.json --write-out '%{http_code}'             "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains"             -X PUT             -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN"             -H "Content-Type: application/json"             --data-binary @/tmp/domain.json || true)"
+
+          if [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+            echo "Could not attach custom domain (HTTP $HTTP_CODE)"
+            node -e "try{const j=JSON.parse(require('fs').readFileSync('/tmp/domain-response.json','utf8'));for(const e of (j.errors||[]))console.error('Cloudflare:',e.code||'',e.message||'')}catch{}"
+            exit 1
+          fi
+
+          node -e "const j=JSON.parse(require('fs').readFileSync('/tmp/domain-response.json','utf8'));if(!j.success){console.error(j);process.exit(1)};console.log('Custom domain attached:',j.result?.hostname||'tiemtranho.aunomay.com')"
+
+      - name: Production health check
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in {1..20}; do
+            if curl -fsS "https://$PROD_HOST/api/health" | tee /tmp/health.json; then
+              node -e "const j=JSON.parse(require('fs').readFileSync('/tmp/health.json','utf8'));if(!j.ok||!j.database)process.exit(1)"
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Production health check failed"
+          exit 1
+\\r'/}"
+          NORMALIZED_TOKEN="${NORMALIZED_TOKEN//
+
+          echo "::add-mask::$NORMALIZED_TOKEN"
+          printf 'CLOUDFLARE_API_TOKEN=%s\n' "$NORMALIZED_TOKEN" >> "$GITHUB_ENV"
+
+          HTTP_CODE="$(curl --silent --show-error --output /tmp/cf-token.json --write-out '%{http_code}'             -H "Authorization: Bearer $NORMALIZED_TOKEN"             -H "Content-Type: application/json"             https://api.cloudflare.com/client/v4/user/tokens/verify || true)"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "Cloudflare API token verification failed (HTTP $HTTP_CODE)."
+            echo "GitHub secret CLOUDFLARE_API_TOKEN must contain the raw API Token only, not a Global API Key."
+            node -e "try{const j=JSON.parse(require('fs').readFileSync('/tmp/cf-token.json','utf8'));for(const e of (j.errors||[]))console.error('Cloudflare:',e.code||'',e.message||'')}catch{}"
+            exit 1
+          fi
+
+          node -e "const j=JSON.parse(require('fs').readFileSync('/tmp/cf-token.json','utf8'));if(!j.success||j.result?.status!=='active'){console.error('Cloudflare API token is not active');process.exit(1)}"
+          echo "Cloudflare API token is active."
+
+      - name: Install
+        run: npm install
+
+      - name: Verify game, auth and PWA build
+        run: npm run check
+
+      - name: Find or create production D1
+        id: d1
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx wrangler d1 list --json > /tmp/d1-list.json
+          DB_ID="$(node -e "const a=JSON.parse(require('fs').readFileSync('/tmp/d1-list.json','utf8'));const d=a.find(x=>x.name===process.env.D1_NAME);if(d)process.stdout.write(String(d.uuid||d.id||''));")"
+          if [ -z "$DB_ID" ]; then
+            echo "D1 $D1_NAME not found; creating in APAC..."
+            npx wrangler d1 create "$D1_NAME" --location=apac
+            npx wrangler d1 list --json > /tmp/d1-list.json
+            DB_ID="$(node -e "const a=JSON.parse(require('fs').readFileSync('/tmp/d1-list.json','utf8'));const d=a.find(x=>x.name===process.env.D1_NAME);if(d)process.stdout.write(String(d.uuid||d.id||''));")"
+          fi
+          test -n "$DB_ID" || { echo "Could not resolve D1 database id"; exit 1; }
+          echo "database_id=$DB_ID" >> "$GITHUB_OUTPUT"
+          echo "Using D1: $D1_NAME ($DB_ID)"
+
+      - name: Generate production Wrangler config
+        shell: bash
+        run: |
+          cat > wrangler.production.toml <<EOF
+          name = "tiem-tra-nho"
+          main = "src/worker.js"
+          compatibility_date = "2026-09-28"
+          workers_dev = true
+          preview_urls = true
+
+          [observability]
+          enabled = true
+
+          [assets]
+          directory = "./dist"
+          binding = "ASSETS"
+          run_worker_first = true
+
+          [vars]
+          ALLOWED_HOSTS = "tiemtranho.aunomay.com"
+
+          [[d1_databases]]
+          binding = "DB"
+          database_name = "tiem-tra-nho"
+          database_id = "${{ steps.d1.outputs.database_id }}"
+          migrations_dir = "migrations"
+          EOF
+          cat wrangler.production.toml
+
+      - name: Apply remote D1 migrations
+        run: npx wrangler d1 migrations apply DB --remote --config wrangler.production.toml
+
+      - name: Deploy Worker
+        run: npx wrangler deploy --config wrangler.production.toml
+
+      - name: Attach production custom domain
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/domain.json <<'JSON'
+          {
+            "hostname": "tiemtranho.aunomay.com",
+            "service": "tiem-tra-nho",
+            "zone_name": "aunomay.com"
+          }
+          JSON
+
+          HTTP_CODE="$(curl --silent --show-error --output /tmp/domain-response.json --write-out '%{http_code}'             "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains"             -X PUT             -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN"             -H "Content-Type: application/json"             --data-binary @/tmp/domain.json || true)"
+
+          if [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+            echo "Could not attach custom domain (HTTP $HTTP_CODE)"
+            node -e "try{const j=JSON.parse(require('fs').readFileSync('/tmp/domain-response.json','utf8'));for(const e of (j.errors||[]))console.error('Cloudflare:',e.code||'',e.message||'')}catch{}"
+            exit 1
+          fi
+
+          node -e "const j=JSON.parse(require('fs').readFileSync('/tmp/domain-response.json','utf8'));if(!j.success){console.error(j);process.exit(1)};console.log('Custom domain attached:',j.result?.hostname||'tiemtranho.aunomay.com')"
+
+      - name: Production health check
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in {1..20}; do
+            if curl -fsS "https://$PROD_HOST/api/health" | tee /tmp/health.json; then
+              node -e "const j=JSON.parse(require('fs').readFileSync('/tmp/health.json','utf8'));if(!j.ok||!j.database)process.exit(1)"
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Production health check failed"
+          exit 1
+\\n'/}"
+          NORMALIZED_TOKEN="${NORMALIZED_TOKEN#Bearer }"
+          NORMALIZED_TOKEN="${NORMALIZED_TOKEN#bearer }"
+          NORMALIZED_TOKEN="$(printf '%s' "$NORMALIZED_TOKEN" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          if [[ "$NORMALIZED_TOKEN" == \"*\" ]] || [[ "$NORMALIZED_TOKEN" == \'*\' ]]; then
+            NORMALIZED_TOKEN="${NORMALIZED_TOKEN:1:${#NORMALIZED_TOKEN}-2}"
+          fi
           test -n "$NORMALIZED_TOKEN" || { echo "CLOUDFLARE_API_TOKEN is empty after normalization"; exit 1; }
 
           echo "::add-mask::$NORMALIZED_TOKEN"
