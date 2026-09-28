@@ -1,2 +1,2 @@
-deploy: 2026-09-29T04:10:00+07:00
-reason: referral browser-to-PWA bridge + QR native photo share + tax threshold progress/forecast UX
+deploy: 2026-09-29T06:14:00+07:00
+reason: block self-referral + compact settings menu + desktop QR PNG download
