@@ -1,18 +1,62 @@
 (()=>{
 'use strict';
-const REWARD=300000,KEY='aunomay_pending_ref',FRIEND_KEY='aunomay_pending_friend',SHOWN='aunomay_ref_zero_shown';
+const REWARD=300000,KEY='aunomay_pending_ref',FRIEND_KEY='aunomay_pending_friend',SHOWN='aunomay_ref_zero_shown',BRIDGE='aunomay-referral-v2';
 const $=id=>document.getElementById(id);
 const money=v=>(Math.round(Number(v||0)/1000)).toLocaleString('vi-VN')+'k';
 const gameName=()=>/mì cay/i.test(document.title)?'Tiệm Mì Cay':'Tiệm Trà Nhỏ';
 const palette=()=>/mì cay/i.test(document.title)?{a:'#7A3346',b:'#EF4B3F',c:'#FFD6DC'}:{a:'#9A5A48',b:'#EF6F8E',c:'#FDE3B5'};
-let info=null,lastZero=false;
+let info=null,lastZero=false,landingRef=false,landingCode='',bridge=null;
 
 function cleanCode(v){return String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,16)}
+function getCookie(name){
+  try{
+    const part=document.cookie.split(';').map(x=>x.trim()).find(x=>x.startsWith(name+'='));
+    return part?decodeURIComponent(part.slice(name.length+1)):'';
+  }catch{return''}
+}
+function setCookie(name,value,maxAge=604800){
+  try{document.cookie=name+'='+encodeURIComponent(value)+'; Path=/; Max-Age='+maxAge+'; SameSite=Lax; Secure'}catch{}
+}
+function clearCookie(name){setCookie(name,'',0)}
+function isStandalone(){return !!(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true}
+function postBridge(payload){
+  try{if(!bridge&&'BroadcastChannel'in window)bridge=new BroadcastChannel(BRIDGE);bridge?.postMessage(payload)}catch{}
+  try{navigator.serviceWorker?.controller?.postMessage({type:'AUNOMAY_REFERRAL',...payload})}catch{}
+}
+function persistPending(code,friend=''){
+  code=cleanCode(code);
+  if(code){
+    try{localStorage.setItem(KEY,code)}catch{}
+    try{sessionStorage.setItem(KEY,code)}catch{}
+    setCookie(KEY,code);
+  }
+  if(friend){
+    try{localStorage.setItem(FRIEND_KEY,friend)}catch{}
+    try{sessionStorage.setItem(FRIEND_KEY,friend)}catch{}
+  }
+  if(code||friend)postBridge({code,friend});
+}
+function pendingCode(){
+  let code='';
+  try{code=cleanCode(localStorage.getItem(KEY))}catch{}
+  if(!code)try{code=cleanCode(sessionStorage.getItem(KEY))}catch{}
+  if(!code)code=cleanCode(getCookie(KEY));
+  return code;
+}
+function clearPending(){
+  try{localStorage.removeItem(KEY);sessionStorage.removeItem(KEY)}catch{}
+  clearCookie(KEY);
+}
+function acceptBridge(data){
+  if(!data||(!data.code&&!data.friend))return;
+  persistPending(data.code||'',String(data.friend||'').slice(0,512));
+  if(isStandalone())setTimeout(()=>claimPending({take:true}),200);
+}
 function captureRef(){
   const u=new URL(location.href),code=cleanCode(u.searchParams.get('ref'));
   const friend=String(u.searchParams.get('friend')||'').trim().slice(0,512);
-  if(code){try{localStorage.setItem(KEY,code)}catch{}}
-  if(friend){try{localStorage.setItem(FRIEND_KEY,friend)}catch{}}
+  if(code){landingRef=true;landingCode=code}
+  if(code||friend)persistPending(code,friend);
   if(!code&&!friend)return;
   u.searchParams.delete('ref');
   u.searchParams.delete('friend');
@@ -37,10 +81,12 @@ async function api(path,opt={}){
 function ensureDlg(){
   let d=$('aunoReferralDlg');if(d)return d;
   d=document.createElement('dialog');d.id='aunoReferralDlg';
-  d.innerHTML='<div class="arBox"><div class="arHead"><div class="arIcon">🎁</div><div><h2>Hết vốn? Rủ bạn cùng chơi</h2><p>Chia sẻ link giới thiệu để cứu két và kéo thêm bạn vào quán.</p></div></div><div class="arReward"><b>+300k cho cả hai</b><small>Bạn và người được mời đều nhận thưởng sau khi người mới đăng nhập và nhận lời mời.</small></div><div id="arGuest" class="arGuest" hidden>Đăng nhập hoặc tạo tài khoản để có link giới thiệu riêng và nhận thưởng.</div><div id="arSigned" hidden><div class="arLink"><input id="arLink" readonly aria-label="Link giới thiệu"><button class="arSecondary" id="arCopy" type="button">Chép</button></div><div class="arBtns"><button class="arPrimary" id="arShare" type="button">Chia sẻ link</button><button class="arSecondary" id="arQr" type="button">Tải QR chia sẻ</button></div><div class="arPreview" id="arPreview"></div></div><div class="arBtns" id="arGuestBtns" hidden><button class="arPrimary" id="arLogin" type="button">Đăng nhập / Tạo tài khoản</button><button class="arSecondary" id="arLater" type="button">Để sau</button></div><div class="arStatus" id="arStatus"></div><button class="arClose" id="arClose" type="button">Đóng</button></div>';
+  d.innerHTML='<div class="arBox"><div class="arHead"><div class="arIcon">🎁</div><div><h2>Hết vốn? Rủ bạn cùng chơi</h2><p>Chia sẻ link giới thiệu để cứu két và kéo thêm bạn vào quán.</p></div></div><div class="arReward"><b>+300k cho cả hai</b><small>Bạn và người được mời đều nhận thưởng sau khi người mới đăng nhập và nhận lời mời.</small></div><div id="arInvite" class="arGuest" hidden></div><div id="arGuest" class="arGuest" hidden>Đăng nhập hoặc tạo tài khoản để có link giới thiệu riêng và nhận thưởng.</div><div id="arSigned" hidden><div class="arLink"><input id="arLink" readonly aria-label="Link giới thiệu"><button class="arSecondary" id="arCopy" type="button">Chép</button></div><div class="arBtns"><button class="arPrimary" id="arShare" type="button">Chia sẻ link</button><button class="arSecondary" id="arQr" type="button">Lưu / chia sẻ QR</button></div><div class="arPreview" id="arPreview" hidden></div></div><div class="arBtns" id="arGuestBtns" hidden><button class="arPrimary" id="arLogin" type="button">Đăng nhập / Tạo tài khoản</button><button class="arSecondary" id="arLater" type="button">Để sau</button></div><div class="arBtns" id="arInviteBtns" hidden><button class="arPrimary" id="arUseHere" type="button">Nhận +300k tại đây</button><button class="arSecondary" id="arCopyInvite" type="button">Chép mã lời mời</button></div><div class="arStatus" id="arStatus"></div><button class="arClose" id="arClose" type="button">Đóng</button></div>';
   document.body.appendChild(d);
   $('arClose').onclick=()=>d.close();$('arLater').onclick=()=>d.close();
   $('arLogin').onclick=()=>{d.close();document.getElementById('cloudAccountBtn')?.click()};
+  $('arUseHere').onclick=async()=>{await claimPending({take:false});await takeRewards();status('Đã nhận thưởng trên phiên game này.');};
+  $('arCopyInvite').onclick=async()=>{const code=pendingCode()||landingCode;if(!code)return;try{await navigator.clipboard.writeText(code);status('Đã chép mã '+code+'. Nếu app màn hình chính chưa nhận tự động, mở app và đăng nhập cùng tài khoản.')}catch{status('Mã lời mời: '+code)}};
   $('arCopy').onclick=()=>shareLink(false);$('arShare').onclick=()=>shareLink(true);$('arQr').onclick=()=>makeQrCard();
   return d;
 }
@@ -51,14 +97,28 @@ async function auth(){
 async function referralInfo(){
   const r=await api('/api/referral/me',{method:'GET'});if(!r.ok)return null;info=r.j;return info
 }
-async function claimPending(){
-  let code='';try{code=cleanCode(localStorage.getItem(KEY))}catch{}
+async function claimPending({take=true}={}){
+  const code=pendingCode();
   const user=await auth();if(!user)return false;
   if(code){
     const r=await api('/api/referral/claim',{method:'POST',body:JSON.stringify({code})});
-    if(r.ok||r.status===409){try{localStorage.removeItem(KEY)}catch{}}
+    if(r.ok||r.status===409)clearPending();
+    else return false;
   }
-  await takeRewards();
+  if(take)await takeRewards();
+  return true;
+}
+async function showLandingInvite(){
+  if(!landingRef||isStandalone())return false;
+  const d=ensureDlg(),user=await auth(),code=pendingCode()||landingCode;
+  $('arInvite').hidden=false;
+  $('arInvite').innerHTML='<b>🎁 Đã nhận link mời '+code+'</b><br>Link đang mở trong trình duyệt. Nếu bạn đã thêm Tiệm Trà Nhỏ ra màn hình chính, đăng nhập cùng tài khoản ở đây rồi mở app; thưởng sẽ chờ trên tài khoản và tự đồng bộ vào app.';
+  $('arInviteBtns').hidden=!user;
+  $('arGuest').hidden=!!user;$('arGuestBtns').hidden=!!user;
+  $('arSigned').hidden=true;
+  if(user){await claimPending({take:false});status('Lời mời đã gắn vào tài khoản. Mở app trên màn hình chính để nhận +300k, hoặc nhận ngay tại trình duyệt này.')}
+  else status('Đăng nhập / tạo tài khoản để giữ lời mời khi chuyển từ trình duyệt sang app màn hình chính.');
+  if(!d.open)d.showModal();
   return true;
 }
 async function takeRewards(){
@@ -122,7 +182,7 @@ async function makeQrCard(linkOverride='',codeOverride=''){
   if(!info)await referralInfo();if(!info)return status('Chưa có link giới thiệu.');
   const shareUrl=linkOverride||info.link;
   const shareCode=codeOverride||info.code;
-  status('Đang tạo ảnh QR chia sẻ…');
+  status('Đang tạo ảnh QR…');
   try{
     const qr=await qrCanvas(shareUrl),p=palette(),c=document.createElement('canvas');c.width=900;c.height=1200;const x=c.getContext('2d');
     const g=x.createLinearGradient(0,0,900,1200);g.addColorStop(0,p.a);g.addColorStop(1,p.b);x.fillStyle=g;x.fillRect(0,0,900,1200);
@@ -137,11 +197,29 @@ async function makeQrCard(linkOverride='',codeOverride=''){
     x.fillStyle=p.c;x.fillRect(250,1075,400,6);
     const blob=await new Promise(r=>c.toBlob(r,'image/png',.95));
     if(!blob)throw new Error('Không tạo được ảnh');
-    const url=URL.createObjectURL(blob),im=new Image();im.src=url;im.alt='QR giới thiệu '+gameName();$('arPreview')?.replaceChildren(im);
     const fileName='tiem-tra-nho-ref-'+String(shareCode||'share').replace(/[^A-Za-z0-9_-]/g,'')+'.png';
-    const a=document.createElement('a');a.href=url;a.download=fileName;document.body.appendChild(a);a.click();a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url),30000);
-    status('Đã tạo và tải QR chia sẻ. Bạn có thể gửi ảnh QR cho bạn bè.');
+    const file=new File([blob],fileName,{type:'image/png'});
+    const shareData={files:[file],title:gameName()+' — QR +300k',text:'Quét QR để chơi cùng mình. Mỗi người cùng nhận +300k vốn 🎁'};
+    let canFileShare=false;
+    try{canFileShare=!!navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))}catch{}
+    if(canFileShare){
+      try{
+        await navigator.share(shareData);
+        status('Đã mở bảng Chia sẻ. Trên iPhone chọn “Lưu hình ảnh / Save Image”; trên Android chọn Photos/Gallery hoặc ứng dụng muốn gửi.');
+        return true;
+      }catch(e){if(e?.name==='AbortError'){status('Đã đóng bảng Chia sẻ.');return false}}
+    }
+    try{
+      if(navigator.clipboard&&window.ClipboardItem){
+        await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);
+        status('Trình duyệt chưa hỗ trợ chia sẻ ảnh trực tiếp. Ảnh QR đã được chép vào clipboard để bạn dán vào Tin nhắn/Zalo.');
+        return true;
+      }
+    }catch{}
+    const url=URL.createObjectURL(blob),im=new Image();im.src=url;im.alt='QR giới thiệu '+gameName();
+    const preview=$('arPreview');if(preview){preview.hidden=false;preview.replaceChildren(im)}
+    status('Thiết bị này chưa hỗ trợ lưu ảnh qua Share Sheet. Nhấn giữ ảnh QR bên dưới để lưu/chia sẻ.');
+    setTimeout(()=>URL.revokeObjectURL(url),120000);
     return true;
   }catch(e){status('Không tạo được ảnh QR trên trình duyệt này.');return false}
 }
@@ -161,7 +239,11 @@ function monitorMoney(){
   lastZero=z;
 }
 captureRef();
-addEventListener('DOMContentLoaded',()=>{ensureDlg();setTimeout(()=>{redeemPendingFriend();claimPending()},1200);setInterval(monitorMoney,1600);setInterval(()=>claimPending(),20000)});
-addEventListener('visibilitychange',()=>{if(!document.hidden)claimPending()});
-window.AunomayReferral={open,claimPending,takeRewards,shareFriendCode,downloadFriendQr,redeemPendingFriend};
+try{
+  if('BroadcastChannel'in window){bridge=new BroadcastChannel(BRIDGE);bridge.onmessage=e=>acceptBridge(e.data)}
+}catch{}
+navigator.serviceWorker?.addEventListener?.('message',e=>{if(e.data?.type==='AUNOMAY_REFERRAL')acceptBridge(e.data)});
+addEventListener('DOMContentLoaded',()=>{ensureDlg();setTimeout(async()=>{redeemPendingFriend();if(!(await showLandingInvite()))await claimPending({take:true})},900);setInterval(monitorMoney,1600);setInterval(()=>{if(!(landingRef&&!isStandalone()))claimPending({take:true})},20000)});
+addEventListener('visibilitychange',()=>{if(!document.hidden&&!(landingRef&&!isStandalone()))claimPending({take:true})});
+window.AunomayReferral={open,claimPending,takeRewards,shareFriendCode,downloadFriendQr,redeemPendingFriend,pendingCode};
 })();
