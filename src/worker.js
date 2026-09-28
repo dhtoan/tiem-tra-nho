@@ -34,7 +34,7 @@ function hostAllowed(hostname,env){
 
 async function handleApi(request,env,url){
   const p=url.pathname.replace(/\/+$/,'');
-  if(p==='/api/health'&&request.method==='GET')return json({ok:true,app:'tiem-tra-nho',version:'12.47.11-aunomay',database:Boolean(env.DB)});
+  if(p==='/api/health'&&request.method==='GET')return json({ok:true,app:'tiem-tra-nho',version:'1.0.0',database:Boolean(env.DB)});
   if(!env.DB){
     if(p==='/api/auth/me'&&request.method==='GET'){
       return json({ok:true,authenticated:false,user:null,cloudAvailable:false});
