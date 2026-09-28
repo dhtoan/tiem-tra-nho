@@ -1317,7 +1317,9 @@
               </div>
               ${sharedLink ? `<div style="font-size:.78rem;color:#64748b;word-break:break-all;margin:6px 0 2px;">${esc(sharedLink)}</div><small style="color:#64748b;">Đã sao chép link Mã Bạn Bè + thưởng 300k.</small>` : '<small style="color:#64748b;">Đăng nhập để gắn thưởng giới thiệu 300k vào link chia sẻ.</small>'}
             </div>
-          `, [['Đóng', () => {}], ['📋 Sao chép lại', async () => {
+          `, [['Đóng', () => {}], ['⬇️ Tải QR', async () => {
+            if (window.AunomayReferral && typeof window.AunomayReferral.downloadFriendQr === 'function') await window.AunomayReferral.downloadFriendQr(code);
+          }], ['📋 Sao chép lại', async () => {
             if (window.AunomayReferral && typeof window.AunomayReferral.shareFriendCode === 'function') await window.AunomayReferral.shareFriendCode(code, false);
             else copyText(code, '📋 Đã sao chép lại!');
           }]]);
