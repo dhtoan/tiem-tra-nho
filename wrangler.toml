@@ -13,7 +13,7 @@ binding = "ASSETS"
 run_worker_first = true
 
 [vars]
-ALLOWED_HOSTS = "tiemtranho.aunomay.com"
+ALLOWED_HOSTS = "tiemtranho.aunomay.com,tiem-tra-nho.aunomay.workers.dev"
 
 [[d1_databases]]
 binding = "DB"
