@@ -1167,3 +1167,12 @@ body:not(.selling)::before{content:'';position:fixed;inset:0;z-index:-1;backgrou
 
 
 
+
+/* Đưa game ra màn hình chính */
+.hsbox{display:flex;flex-direction:column;gap:8px;text-align:left;margin-top:8px}
+.hsr{display:grid;grid-template-columns:40px minmax(0,1fr);gap:10px;align-items:center;background:#fbf6f4;border-radius:14px;padding:8px 10px}
+.hsr b{display:block;font-size:13.5px}
+.hsr small{display:block;font-size:12px;line-height:1.35;color:#765c50}
+.hsr small b{display:inline;font-size:12px;color:#3a2317}
+.hsi{width:40px;height:40px;border-radius:12px;background:#fff;display:grid;place-items:center;box-shadow:0 2px 0 #f1d5ca,inset 0 0 0 1.5px #f6e1d9;font-size:20px}
+.hsi svg{width:22px;height:22px}
