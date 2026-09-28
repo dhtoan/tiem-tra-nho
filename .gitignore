@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.wrangler/
+.dev.vars
+wrangler.d1.toml
+.DS_Store
+
+public/img/
