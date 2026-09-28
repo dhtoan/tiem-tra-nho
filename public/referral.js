@@ -23,7 +23,7 @@ function postBridge(payload){
   try{if(!bridge&&'BroadcastChannel'in window)bridge=new BroadcastChannel(BRIDGE);bridge?.postMessage(payload)}catch{}
   try{navigator.serviceWorker?.controller?.postMessage({type:'AUNOMAY_REFERRAL',...payload})}catch{}
 }
-function persistPending(code,friend=''){
+function persistPending(code,friend='',broadcast=true){
   code=cleanCode(code);
   if(code){
     try{localStorage.setItem(KEY,code)}catch{}
@@ -34,7 +34,7 @@ function persistPending(code,friend=''){
     try{localStorage.setItem(FRIEND_KEY,friend)}catch{}
     try{sessionStorage.setItem(FRIEND_KEY,friend)}catch{}
   }
-  if(code||friend)postBridge({code,friend});
+  if(broadcast&&(code||friend))postBridge({code,friend});
 }
 function pendingCode(){
   let code='';
@@ -49,7 +49,7 @@ function clearPending(){
 }
 function acceptBridge(data){
   if(!data||(!data.code&&!data.friend))return;
-  persistPending(data.code||'',String(data.friend||'').slice(0,512));
+  persistPending(data.code||'',String(data.friend||'').slice(0,512),false);
   if(isStandalone())setTimeout(()=>claimPending({take:true}),200);
 }
 function captureRef(){
@@ -132,6 +132,7 @@ async function takeRewards(){
 }
 async function open(reason='manual'){
   const d=ensureDlg();status('Đang lấy link giới thiệu…');
+  $('arInvite').hidden=true;$('arInviteBtns').hidden=true;
   const user=await auth();
   $('arGuest').hidden=!!user;$('arGuestBtns').hidden=!!user;$('arSigned').hidden=!user;
   if(!user){status('Tạo tài khoản một lần để dùng ref trên mọi thiết bị.');d.showModal();return}
