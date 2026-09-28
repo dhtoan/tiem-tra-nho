@@ -3736,6 +3736,8 @@ function restoreDlg(msg){$('card').onchange=null;
   $('rsGo').onclick=async()=>{const code=$('rsCode').value;if(isField(document.activeElement))document.activeElement.blur();let d;const c8=String(code||'').replace(/[\s.-]/g,'');try{if(/^\d{8}$/.test(c8)){$('rsGo').disabled=true;$('rsGo').textContent='Đang tải…';d=await cloudLoad(c8)}else d=await readBackup(code)}catch(e){restoreDlg(typeof e==='string'?e:'Mã không đọc được');return}
     ask(`<div class="pbig">${ico('reload')}</div><h2>Khôi phục tiến trình?</h2><p>Bản sao lưu: <b>${esc(d.shopName||'Tiệm Trà Mơ Ước')}</b> · Ngày ${d.day} · ${fmt(d.money||0)}</p><p>Tiến trình hiện tại (ngày ${S.day}) sẽ bị thay thế.</p>`,
       [['Huỷ',()=>restoreDlg()],['Khôi phục',()=>{closeSplash();applyRestore(d)},1]])}}
+const ttnInstallShareIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11M8 7l4-4 4 4" stroke="#3F7FBF" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 10H7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-1.5" stroke="#3F7FBF" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>';
+const ttnInstallMenuIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.2" fill="#3A1E2A"/><circle cx="12" cy="12" r="2.2" fill="#3A1E2A"/><circle cx="12" cy="19" r="2.2" fill="#3A1E2A"/></svg>';
 let ttnInstallPrompt=null;
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();ttnInstallPrompt=e});
 function showInstallHelp(){
@@ -3744,12 +3746,12 @@ function showInstallHelp(){
     ask('<h2>Đã đưa ra màn hình chính</h2><p>Tiệm Trà Nhỏ đang chạy như một ứng dụng độc lập trên thiết bị này.</p>',[['Đã hiểu',showSettings,1]]);
     return;
   }
-  const html=`<h2>Đưa game ra màn hình chính</h2>
-    <p>Thêm Tiệm Trà Nhỏ ra màn hình chính để mở nhanh như một app và có trải nghiệm toàn màn hình tốt hơn.</p>
-    <div style="text-align:left;display:grid;gap:10px;margin:12px 0">
-      <div><b>iPhone, iPad (Safari)</b><br><small>Bấm nút Chia sẻ → chọn <b>Thêm vào Màn hình chính</b> → bấm Thêm.</small></div>
-      <div><b>Android (Chrome)</b><br><small>Bấm menu ⋮ → chọn <b>Thêm vào màn hình chính</b> hoặc <b>Cài đặt ứng dụng</b>.</small></div>
-      <div><b>Máy tính (Chrome/Edge)</b><br><small>Nếu trình duyệt hỗ trợ, chọn <b>Cài ngay</b> bên dưới hoặc dùng biểu tượng cài đặt trên thanh địa chỉ.</small></div>
+  const html=`<h2>Chơi như app thật</h2>
+    <p>Thêm Tiệm Trà Nhỏ ra màn hình chính để mở toàn màn hình và truy cập nhanh như một ứng dụng.</p>
+    <div class="hsbox">
+      <div class="hsr"><span class="hsi">${ttnInstallShareIcon}</span><div><b>iPhone, iPad (Safari)</b><small>Bấm nút Chia sẻ ở thanh dưới → chọn <b>Thêm vào Màn hình chính</b> → bấm Thêm.</small></div></div>
+      <div class="hsr"><span class="hsi">${ttnInstallMenuIcon}</span><div><b>Android (Chrome)</b><small>Bấm dấu ba chấm ở góc trên → chọn <b>Thêm vào màn hình chính</b> hoặc <b>Cài đặt ứng dụng</b>.</small></div></div>
+      <div class="hsr"><span class="hsi">💻</span><div><b>Máy tính (Chrome/Edge)</b><small>Nếu trình duyệt hỗ trợ, chọn <b>Cài ngay</b> bên dưới hoặc dùng biểu tượng cài đặt trên thanh địa chỉ.</small></div></div>
     </div>`;
   const btns=[];
   if(ttnInstallPrompt)btns.push(['Cài ngay',async()=>{
