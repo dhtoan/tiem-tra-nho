@@ -82,14 +82,18 @@ async function captureSite(browser, source){
     return {title:document.title,interactive,headings,dialogs,media:[...new Set([...media,...backgrounds])],localStorageKeys:Object.keys(localStorage),sessionStorageKeys:Object.keys(sessionStorage)};
   });
 
-  for(const u of initial.media){
+  const fetchAsset = async (abs) => {
     try{
-      const abs=new URL(u,source.url).href;
-      if(!sameOrigin(abs,origin)) continue;
-      const res=await context.request.get(abs,{timeout:30000});
+      const res=await context.request.get(abs,{timeout:6000});
       if(res.ok()) await record(abs,await res.body(),res.headers()['content-type']||'',res.status());
     }catch{}
-  }
+  };
+  await Promise.all(initial.media.map(u => {
+    try{
+      const abs=new URL(u,source.url).href;
+      return sameOrigin(abs,origin) ? fetchAsset(abs) : Promise.resolve();
+    }catch{return Promise.resolve();}
+  }));
 
   const clickLog=[];
   const blocked=/delete|remove|reset|clear data|xoá dữ liệu|xóa dữ liệu|factory|sign out|đăng xuất/i;
@@ -111,10 +115,9 @@ async function captureSite(browser, source){
   await page.waitForTimeout(600);
   await Promise.allSettled([...pending]);
 
-  let discovered=true, rounds=0;
   const fetched=new Set(manifest.keys());
-  while(discovered && rounds++<5){
-    discovered=false;
+  for(let round=0; round<3; round++){
+    const candidates=[];
     const textFiles=[...manifest.values()].filter(x=>/javascript|css|html|json|manifest/i.test(x.contentType));
     for(const item of textFiles){
       let text='';
@@ -124,15 +127,14 @@ async function captureSite(browser, source){
         let ref=m[1].replace(/^[("'=:\s]+/,'');
         let abs; try{abs=new URL(ref,item.url).href}catch{continue}
         if(!sameOrigin(abs,origin)||fetched.has(abs)) continue;
-        fetched.add(abs);
-        try{
-          const res=await context.request.get(abs,{timeout:25000});
-          if(res.ok()){
-            await record(abs,await res.body(),res.headers()['content-type']||'',res.status());
-            discovered=true;
-          }
-        }catch{}
+        fetched.add(abs); candidates.push(abs);
+        if(candidates.length>=500) break;
       }
+      if(candidates.length>=500) break;
+    }
+    if(!candidates.length) break;
+    for(let i=0;i<candidates.length;i+=24){
+      await Promise.all(candidates.slice(i,i+24).map(fetchAsset));
     }
   }
 
