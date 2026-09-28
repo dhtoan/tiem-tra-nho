@@ -1299,20 +1299,28 @@
       // Sao chép mã bạn bè
       const copyFriendBtn = $('bbCopyFriendCodeBtn');
       if (copyFriendBtn) {
-        copyFriendBtn.onclick = () => {
+        copyFriendBtn.onclick = async () => {
           const code = this.genFriendCode();
-          copyText(code, '📋 Đã sao chép Mã Bạn Bè rút gọn!');
+          let sharedLink = '';
+          if (window.AunomayReferral && typeof window.AunomayReferral.shareFriendCode === 'function') {
+            sharedLink = await window.AunomayReferral.shareFriendCode(code, false) || '';
+          } else {
+            copyText(code, '📋 Đã sao chép Mã Bạn Bè rút gọn!');
+          }
           ask(`
             <div style="text-align:center;">
               <div style="font-size:3rem;">👑</div>
               <h2 style="color:#d97706;margin:6px 0;">Mã Bạn Bè Rút Gọn</h2>
-              <p>Gửi mã này cho bạn bè để xuất hiện làm khách VIP trong quán của họ:</p>
+              <p>Chia sẻ cho bạn bè để kết bạn trong game. Khi dùng link đã đăng nhập, <b>mỗi người cùng nhận thêm 300k vốn</b>.</p>
               <div style="background:#fef3c7;border:2px dashed #f59e0b;border-radius:12px;padding:10px;font-family:monospace;font-size:0.95rem;font-weight:900;word-break:break-all;color:#92400e;user-select:all;margin:10px 0;">
                 ${esc(code)}
               </div>
-              <small style="color:#64748b;">(Đã tự động sao chép vào bộ nhớ tạm!)</small>
+              ${sharedLink ? `<div style="font-size:.78rem;color:#64748b;word-break:break-all;margin:6px 0 2px;">${esc(sharedLink)}</div><small style="color:#64748b;">Đã sao chép link Mã Bạn Bè + thưởng 300k.</small>` : '<small style="color:#64748b;">Đăng nhập để gắn thưởng giới thiệu 300k vào link chia sẻ.</small>'}
             </div>
-          `, [['Đóng', () => {}], ['📋 Sao chép lại', () => copyText(code, '📋 Đã sao chép lại!')]]);
+          `, [['Đóng', () => {}], ['📋 Sao chép lại', async () => {
+            if (window.AunomayReferral && typeof window.AunomayReferral.shareFriendCode === 'function') await window.AunomayReferral.shareFriendCode(code, false);
+            else copyText(code, '📋 Đã sao chép lại!');
+          }]]);
         };
       }
 
