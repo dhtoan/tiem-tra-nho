@@ -3840,6 +3840,19 @@ function openAccountSettings(){
   if(window.TTNAccount&&typeof window.TTNAccount.open==='function')window.TTNAccount.open();
   else toast('Tài khoản đang khởi tạo, thử lại sau một chút.');
 }
+function showAunomayInfo(){
+  ask('<h2>Thông tin Aunomay</h2><p><b>Tiệm Trà Nhỏ</b> được Aunomay LLC phát hành và vận hành.</p><p>Tiến trình được lưu trên thiết bị; khi đăng nhập, bạn có thể đồng bộ Cloud Save qua hệ thống Aunomay.</p><p>Hỗ trợ: <b>support@aunomay.com</b></p>',[['Điều khoản chơi',showPlayTerms],['Quay lại Cài đặt',showSettings,1]]);
+}
+function showPlayTerms(){
+  ask('<h2>Điều khoản chơi</h2><p>Tiệm Trà Nhỏ là game miễn phí do <b>Aunomay LLC</b> phát hành.</p><p>Không sửa dữ liệu lưu, can thiệp mã game, tự động hoá thao tác gian lận hoặc gửi dữ liệu giả. Tài khoản và Cloud Save chỉ dùng để vận hành tính năng đồng bộ và online của game.</p><p>Nếu dưới 16 tuổi, hãy chơi với sự đồng ý của bố mẹ hoặc người giám hộ.</p>',[['Thông tin Aunomay',showAunomayInfo],['Quay lại Cài đặt',showSettings,1]]);
+}
+async function toggleFullscreen(){
+  try{
+    if(document.fullscreenElement)await document.exitFullscreen();
+    else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();
+  }catch(e){toast('Trình duyệt này không hỗ trợ toàn màn hình.')}
+  setTimeout(showSettings,150);
+}
 function showSettings(){
   $('card').onchange=null;
   $('card').innerHTML=`<h2>${ico('set')} Cài đặt</h2><div class="setl">
@@ -3848,6 +3861,9 @@ function showSettings(){
     <button class="setb" id="sUpdate" style="background:linear-gradient(135deg,#e3f7ed,#d1f2e1);border-color:#5aae86"><span>🔄</span><b>Cập nhật bản mới</b><small>Tải lại web & Xoá cache</small></button>
     <button class="setb" id="sAccount"><span>☁️</span><b>Tài khoản & Cloud Save</b><small>Đăng nhập · tự động đồng bộ tiến trình</small></button>
     <button class="setb" id="sInstall"><span>📲</span><b>Đưa game ra màn hình chính</b><small>Chơi như ứng dụng trên điện thoại và máy tính</small></button>
+    <button class="setb" id="sFull"><span>⛶</span><b>Toàn màn hình</b><small>${document.fullscreenElement?'Đang bật':'Mở game toàn màn hình'}</small></button>
+    <button class="setb" id="sTerms"><span>📜</span><b>Điều khoản chơi</b><small>Aunomay · tài khoản · dữ liệu · chơi công bằng</small></button>
+    <button class="setb" id="sAunomay"><span>Ⓐ</span><b>Thông tin Aunomay</b><small>Nhà phát hành · hỗ trợ</small></button>
     <button class="setb" id="sZalo"><span>💬</span>Nhóm Zalo trà thủ<small>Quét mã QR</small></button>
     <button class="setb" id="sCoach"><span>${ico('book')}</span>Chỉ dẫn từng bước<small>${S.coach===true?'Luôn bật':S.coach===false?'Tắt':'Tự động'}</small></button>
     <button class="setb" id="sLen"><span>${ico('clock')}</span>Thời gian bán mỗi ngày<small>${S.dayLen||CFG.dayMin} phút${R.running?' · áp dụng từ ngày sau':''}</small></button>
@@ -3884,6 +3900,9 @@ function showSettings(){
   };
   $('sAccount').onclick=openAccountSettings;
   $('sInstall').onclick=showInstallHelp;
+  $('sFull').onclick=toggleFullscreen;
+  $('sTerms').onclick=showPlayTerms;
+  $('sAunomay').onclick=showAunomayInfo;
   $('sZalo').onclick=()=>{if($('modal'))$('modal').hidden=true;showZaloBanner()};
   $('sTheme').onclick=themeDlg;
   $('sLen').onclick=()=>{const L=[4,5,6],c=S.dayLen||CFG.dayMin;S.dayLen=L[(L.indexOf(c)+1)%L.length];save();toast('Mỗi ngày bán '+S.dayLen+' phút, khách tới nhiều hơn theo thời gian');showSettings()};
