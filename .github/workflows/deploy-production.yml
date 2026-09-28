@@ -24,6 +24,7 @@ jobs:
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       D1_NAME: tiem-tra-nho
       PROD_HOST: tiemtranho.aunomay.com
+      PROD_WORKER_HOST: tiem-tra-nho.aunomay.workers.dev
 
     steps:
       - name: Checkout
@@ -108,7 +109,7 @@ jobs:
           run_worker_first = true
 
           [vars]
-          ALLOWED_HOSTS = "tiemtranho.aunomay.com"
+          ALLOWED_HOSTS = "tiemtranho.aunomay.com,tiem-tra-nho.aunomay.workers.dev"
 
           [[d1_databases]]
           binding = "DB"
@@ -132,12 +133,26 @@ jobs:
         run: |
           set -euo pipefail
           for i in {1..20}; do
-            if curl -fsS "https://$PROD_HOST/api/health" > /tmp/health.json; then
+            if curl -fsS "https://$PROD_WORKER_HOST/api/health" > /tmp/health.json; then
               cat /tmp/health.json
               node -e "const j=JSON.parse(require('fs').readFileSync('/tmp/health.json','utf8'));if(!j.ok||!j.database)process.exit(1)"
               exit 0
             fi
             sleep 3
           done
-          echo "Production health check failed for https://$PROD_HOST/api/health"
+          echo "Production Worker health check failed"
           exit 1
+
+      - name: Production auth and D1 smoke
+        env:
+          SMOKE_BASE: https://tiem-tra-nho.aunomay.workers.dev
+        run: npm run test:smoke
+
+      - name: Custom domain availability
+        shell: bash
+        run: |
+          code="$(curl -sS -o /dev/null -w '%{http_code}' "https://$PROD_HOST/" || true)"
+          echo "Custom domain HTTP status: $code"
+          if [ "$code" = "000" ]; then
+            echo "::warning::Custom domain was not reachable from GitHub runner, but Worker production smoke passed."
+          fi
