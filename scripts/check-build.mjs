@@ -34,13 +34,18 @@ for(const marker of ['cloudAccountBtn','cloudAccountDlg','cloudSaveNudge']){
   if(!html.includes(marker))throw new Error('account UI missing '+marker);
 }
 const game=await readFile(join(root,'js/game.js'),'utf8');
-if(!game.includes("const GAME_VERSION='1.0.0'"))throw new Error('Aunomay runtime version 1.0.0 missing');
-if(!game.includes("const SAVE='tsShop2'"))throw new Error('expected tsShop2 save key missing');
+if(!/GAME_VERSION=["']1\.0\.0["']/.test(game))throw new Error('Aunomay runtime version 1.0.0 missing');
+if(!/SAVE=["']tsShop2["']/.test(game))throw new Error('expected tsShop2 save key missing');
 for(const [name,text] of [['index',html],['game',game]]){
   if(text.includes('Tiệm Trà Mơ Ước'))throw new Error('legacy brand leaked into production '+name);
 }
 const bc=await readFile(join(root,'js/baucua.js'),'utf8');
+const xd=await readFile(join(root,'js/xidach.js'),'utf8');
 for(const img of ['bau.png','ca.png','cua.png','tom.png','nai.png','ga.png'])if(!bc.includes(img))throw new Error('baucua missing '+img);
+for(const [name,text] of [['baucua',bc],['xidach',xd]]){
+  if(/[^\x00-\x7F]/.test(text))throw new Error(name+' production JS must be ASCII-safe to prevent charset mojibake');
+  if(/\/\*|\/\//.test(text.slice(0,500)))throw new Error(name+' production JS still contains source comments');
+}
 const account=await readFile(join(root,'account-sync.js'),'utf8');
 for(const ref of ['/api/auth/me','/api/auth/','/api/account/save'])if(!account.includes(ref))throw new Error('account sync missing '+ref);
 for(const mode of ['login','register'])if(!account.includes("auth('"+mode+"')"))throw new Error('account sync missing '+mode+' action');
