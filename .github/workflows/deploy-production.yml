@@ -101,10 +101,6 @@ jobs:
           database_name = "tiem-tra-nho"
           database_id = "${{ steps.d1.outputs.database_id }}"
           migrations_dir = "migrations"
-
-          [[routes]]
-          pattern = "tiemtranho.aunomay.com"
-          custom_domain = true
           EOF
           cat wrangler.production.toml
 
@@ -113,6 +109,28 @@ jobs:
 
       - name: Deploy Worker
         run: npx wrangler deploy --config wrangler.production.toml
+
+      - name: Attach production custom domain
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/domain.json <<'JSON'
+          {
+            "hostname": "tiemtranho.aunomay.com",
+            "service": "tiem-tra-nho",
+            "zone_name": "aunomay.com"
+          }
+          JSON
+
+          HTTP_CODE="$(curl --silent --show-error --output /tmp/domain-response.json --write-out '%{http_code}'             "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/domains"             -X PUT             -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN"             -H "Content-Type: application/json"             --data-binary @/tmp/domain.json || true)"
+
+          if [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+            echo "Could not attach custom domain (HTTP $HTTP_CODE)"
+            node -e "try{const j=JSON.parse(require('fs').readFileSync('/tmp/domain-response.json','utf8'));for(const e of (j.errors||[]))console.error('Cloudflare:',e.code||'',e.message||'')}catch{}"
+            exit 1
+          fi
+
+          node -e "const j=JSON.parse(require('fs').readFileSync('/tmp/domain-response.json','utf8'));if(!j.success){console.error(j);process.exit(1)};console.log('Custom domain attached:',j.result?.hostname||'tiemtranho.aunomay.com')"
 
       - name: Production health check
         shell: bash
