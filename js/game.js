@@ -3688,7 +3688,7 @@ async function readBackup(code){code=String(code||'').replace(/\s+/g,'');const m
   if(bakHash(m[1])!==m[2])throw 'Mã bị sai hoặc đã bị sửa';let u=b64d(m[1].slice(1));if(m[1][0]==='z'){u=await zipBytes(u,0);if(!u)throw 'Trình duyệt này quá cũ để đọc mã, thử Chrome hoặc Safari mới hơn'}
   const d=JSON.parse(new TextDecoder().decode(u));if(!d||!d.stock||!d.day)throw 'Mã không có dữ liệu game';return d}
 /* mã sao lưu 8 số: bản sao lưu cất trên máy chủ của game (Cloudflare), 8 số là chìa để lấy lại */
-const CLOUD='https://tiemtranho-api.trongnhi110266.workers.dev';
+const CLOUD='/api';
 async function cloudFetch(path,opt){const ac=new AbortController(),t=setTimeout(()=>ac.abort(),15000);
   try{const r=await fetch(CLOUD+path,{...opt,signal:ac.signal});const j=await r.json().catch(()=>({}));if(!r.ok)throw j.error||'Máy chủ báo lỗi';return j}
   catch(e){throw typeof e==='string'?e:'Không kết nối được máy chủ'}finally{clearTimeout(t)}}
