@@ -3900,14 +3900,24 @@ function restoreDlg(msg){$('card').onchange=null;
 const ttnInstallShareIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11M8 7l4-4 4 4" stroke="#3F7FBF" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 10H7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-1.5" stroke="#3F7FBF" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>';
 const ttnInstallMenuIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.2" fill="#3A1E2A"/><circle cx="12" cy="12" r="2.2" fill="#3A1E2A"/><circle cx="12" cy="19" r="2.2" fill="#3A1E2A"/></svg>';
 let ttnInstallPrompt=null;
-addEventListener('beforeinstallprompt',e=>{e.preventDefault();ttnInstallPrompt=e});
-function showInstallHelp(){
-  const installed=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();ttnInstallPrompt=e;setTimeout(maybeAutoInstall,1200)});
+function isInstalledApp(){return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}
+function isIOSWeb(){return /iPhone|iPad|iPod/i.test(navigator.userAgent||'')&&!isInstalledApp()}
+function maybeAutoInstall(){
+  if(isInstalledApp())return;
+  let seen='';try{seen=localStorage.getItem('ttnInstallAutoV2')||''}catch{}
+  if(seen)return;
+  if(!(ttnInstallPrompt||isIOSWeb()))return;
+  try{localStorage.setItem('ttnInstallAutoV2','1')}catch{}
+  showInstallHelp(true);
+}
+function showInstallHelp(auto=false){
+  const installed=isInstalledApp();
   if(installed){
     ask('<h2>Đã đưa ra màn hình chính</h2><p>Tiệm Trà Nhỏ đang chạy như một ứng dụng độc lập trên thiết bị này.</p>',[['Đã hiểu',showSettings,1]]);
     return;
   }
-  const html=`<h2>Chơi như app thật</h2>
+  const html=`<h2>${auto?'📲 Cài Tiệm Trà Nhỏ':'Chơi như app thật'}</h2>
     <p>Thêm Tiệm Trà Nhỏ ra màn hình chính để mở toàn màn hình và truy cập nhanh như một ứng dụng.</p>
     <div class="hsbox">
       <div class="hsr"><span class="hsi">${ttnInstallShareIcon}</span><div><b>iPhone, iPad (Safari)</b><small>Bấm nút Chia sẻ ở thanh dưới → chọn <b>Thêm vào Màn hình chính</b> → bấm Thêm.</small></div></div>
@@ -3947,7 +3957,7 @@ function showSettings(){
   $('card').onchange=null;
   const accountUser=window.TTNAccount&&typeof window.TTNAccount.me==='function'?window.TTNAccount.me():null;
   const accountLabel=accountUser?'Đã đăng nhập: '+(accountUser.displayName||accountUser.username):'Đăng nhập · tự động đồng bộ tiến trình';
-  $('card').innerHTML=`<h2>${ico('set')} Cài đặt</h2>
+  $('card').innerHTML=`<button class="settings-x" id="sX" aria-label="Đóng Cài đặt">✕</button><h2>${ico('set')} Cài đặt</h2>
     <div class="setsec"><div class="setsec-title">Tài khoản & chia sẻ</div><div class="setl">
       <button class="setb" id="sAccount"><span>☁️</span><b>Tài khoản & Cloud Save</b><small>${esc(accountLabel)}</small></button>
       <button class="setb" id="sZalo"><span>👥</span><b>Mã Bạn Bè & giới thiệu</b><small>Chia sẻ link/QR · cả hai nhận +300k</small></button>
@@ -3958,7 +3968,8 @@ function showSettings(){
     <div class="setsec"><div class="setsec-title">Trải nghiệm chơi</div><div class="setl">
       <button class="setb" id="sCoach"><span>${ico('book')}</span><b>Chỉ dẫn từng bước</b><small>${S.coach===true?'Luôn bật':S.coach===false?'Tắt':'Tự động'}</small></button>
       <button class="setb" id="sLen"><span>${ico('clock')}</span><b>Thời gian bán mỗi ngày</b><small>${S.dayLen||CFG.dayMin} phút${R.running?' · áp dụng từ ngày sau':''}</small></button>
-      <button class="setb" id="sTheme"><span>${ico('pen')}</span><b>Màu giao diện</b><small>${(THEMES.find(x=>x.id===THEME)||THEMES[0]).n}</small></button>
+      <button class="setb" id="sDecor"><span>🛍️</span><b>Trang trí quán</b><small>Mua thiết kế quán · quầy · ly bằng tiền trong két</small></button>
+      <button class="setb" id="sTheme"><span>${ico('pen')}</span><b>Màu giao diện</b><small>${(THEMES.find(x=>x.id===THEME)||THEMES[0]).n} · mở theo cấp</small></button>
       <button class="setb" id="sMus"><span>${ico('moon')}</span><b>Nhạc Lofi Quán Cafe</b><small>${AU.mus?'Bật':'Tắt'}</small></button>
       <button class="setb" id="sSnd"><span>${ico('pause')}</span><b>Âm thanh</b><small>${AU.on?'Bật':'Tắt'}</small></button>
       <button class="setb" id="sFull"><span>⛶</span><b>Toàn màn hình</b><small>${document.fullscreenElement?'Đang bật':'Mở game toàn màn hình'}</small></button>
@@ -3971,10 +3982,9 @@ function showSettings(){
       <button class="setb" id="sTerms"><span>📜</span><b>Điều khoản chơi</b><small>Aunomay · tài khoản · dữ liệu · chơi công bằng</small></button>
       <button class="setb" id="sAunomay"><span>Ⓐ</span><b>Thông tin Aunomay</b><small>Nhà phát hành · hỗ trợ</small></button>
     </div></div>
-    <div class="setsec setsec-danger"><div class="setl"><button class="setb warnb" id="sReset"><span>${ico('reload')}</span><b>Chơi lại từ đầu</b></button></div></div>
-    <button class="big" id="sClose" style="margin-top:8px">Đóng</button>`;
-  $('modal').hidden=false;
-  $('sClose').onclick=()=>{$('modal').hidden=true};
+    <div class="setsec setsec-danger"><div class="setl"><button class="setb warnb" id="sReset"><span>${ico('reload')}</span><b>Chơi lại từ đầu</b></button></div></div>`;
+  $('modal').hidden=false;$('modal').dataset.dismiss='settings';$('modal').onclick=e=>{if(e.target===$('modal')){$('modal').hidden=true;$('modal').dataset.dismiss=''}};
+  $('sX').onclick=()=>{$('modal').hidden=true;$('modal').dataset.dismiss=''};
   $('sGuide').onclick=()=>{$('modal').hidden=true;showTour(false,true)};
   $('sNews').onclick=()=>showNews(false);
   if($('sUpdate'))$('sUpdate').onclick=()=>{
@@ -4002,6 +4012,7 @@ function showSettings(){
   $('sTerms').onclick=showPlayTerms;
   $('sAunomay').onclick=showAunomayInfo;
   $('sZalo').onclick=()=>{if($('modal'))$('modal').hidden=true;showZaloBanner()};
+  $('sDecor').onclick=cosmeticShop;
   $('sTheme').onclick=themeDlg;
   $('sLen').onclick=()=>{const L=[4,5,6],c=S.dayLen||CFG.dayMin;S.dayLen=L[(L.indexOf(c)+1)%L.length];save();toast('Mỗi ngày bán '+S.dayLen+' phút, khách tới nhiều hơn theo thời gian');showSettings()};
   $('sMus').onclick=()=>{AU.mus=!AU.mus;saveAu();musSync();showSettings()};
@@ -4045,9 +4056,10 @@ $('pauseBtn').onclick=pauseGame;$('setBtn').onclick=showSettings;
 if($('bcBtn'))$('bcBtn').onclick=()=>{if(window.BauCua) window.BauCua.open()};
 if($('xdBtn'))$('xdBtn').onclick=()=>{if(window.openXiDach) window.openXiDach(); else if(window.XiDach) window.XiDach.open()};
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{})}catch(e){}
-window.tsHostOk = () => true;const had=load();if(S.sell.L>CFG.sizeCap)S.sell.L=CFG.sizeCap;R.today={stars:[]};document.title=shopName();renderPrep();
+window.tsHostOk = () => true;const had=load();applyCosmetics();if(S.sell.L>CFG.sizeCap)S.sell.L=CFG.sizeCap;R.today={stars:[]};document.title=shopName();renderPrep();
 let _lastVer=null;try{_lastVer=localStorage.getItem('tsVer');localStorage.setItem('tsVer',GAME_VERSION)}catch(e){}
 let _seenV11=false;try{_seenV11=localStorage.getItem('tsSeenV11_box')}catch(e){}
+setTimeout(maybeAutoInstall,9000);
 showSplash(had,()=>{
   if(!_seenV11 || _lastVer !== GAME_VERSION){
     showV11Announcement(()=>{
