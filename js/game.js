@@ -280,7 +280,7 @@ const rnd=a=>a[Math.floor(Math.random()*a.length)];
 const wpick=(arr,w)=>{let r=Math.random()*w.reduce((a,b)=>a+b,0);for(let i=0;i<arr.length;i++){r-=w[i];if(r<=0)return arr[i]}return arr[0]};
 const newRec=d=>({spoil:{n:0,v:0},day:d,sales:{},tips:0,onl:0,fee:0,equip:[],ing:{},waste:{},rent:0,util:0,tax:0,served:0,lost:0,starSum:0,starN:0});
 function fresh(){
-  const s={lifeV:2,off:{},badPlan:mkBadPlan(1),money:CFG.startMoney,day:1,stock:{},unlocked:{},upg:{},upgLv:{tra:0,huong:0,top:0,equip:0,staff:0,onl:0},sell:{...DEF_SELL},reviews:[],served:0,best:0,totalRev:0,totalProfit:0,online:false,shopName:'',history:[],cur:newRec(1),yearRev:0,taxYear:0,yearVatPaid:0,yearPitPaid:0,yearTaxableProfit:0,taxMethod:'revenue',gambleWon:0,gambleLost:0,gambleNet:0,friends:[],myCard:null,redeemedCodes:[],giftsReceivedToday:0,giftsDay:1,friendBuff:null,activeChallenge:null,trophies:[],bestDayRev:0};
+  const s={lifeV:2,off:{},badPlan:mkBadPlan(1),money:CFG.startMoney,day:1,stock:{},unlocked:{},upg:{},upgLv:{tra:0,huong:0,top:0,equip:0,staff:0,onl:0},sell:{...DEF_SELL},reviews:[],served:0,best:0,totalRev:0,totalProfit:0,online:false,shopName:'',history:[],cur:newRec(1),yearRev:0,taxYear:0,yearVatPaid:0,yearPitPaid:0,yearTaxableProfit:0,taxMethod:'revenue',cosmetics:{owned:['shop_classic','counter_classic','cup_classic'],active:{shop:'shop_classic',counter:'counter_classic',cup:'cup_classic'}},gambleWon:0,gambleLost:0,gambleNet:0,friends:[],myCard:null,redeemedCodes:[],giftsReceivedToday:0,giftsDay:1,friendBuff:null,activeChallenge:null,trophies:[],bestDayRev:0};
   Object.keys(ITEMS).forEach(k=>{s.stock[k]=[];s.unlocked[k]=ITEMS[k].unlock===0});
   return s;
 }
@@ -306,7 +306,7 @@ function migrate(d){const u=d.unlocked||{};
   Object.keys(refund).forEach(k=>{if(u[k])S.money+=refund[k]});
   ['khoaimon','dau','dao','tctrang','pudding','kemtrung','tradao','travai','chomchom','hatdac','hatchia','chanmeo','S'].forEach(k=>{delete S.stock[k];delete S.unlocked[k];delete S.sell[k]});
 }
-function loadFrom(d){const f=fresh();Object.keys(d.stock).forEach(k=>{if(typeof d.stock[k]==='number'){const q=d.stock[k];d.stock[k]=[];addStock(k,q,{day:d.day||1,stock:d.stock})}});S={...f,...d,stock:{...f.stock,...d.stock},sell:{...f.sell,...d.sell},unlocked:{...f.unlocked,...d.unlocked}};migrate(d);if(!d.cur)S.cur=newRec(S.day);if(S.seenLv==null)S.seenLv=levelOf(Math.max(1,S.day-1));if(S.evDay!==S.day)rollDay(S.day);S.hired=S.hired||{};STAFF.forEach(x=>{if(S.upg[x.id])S.hired[x.id]=true});if(S.upg.staff1&&S.upg.staff3)S.upg.staff1=false;if(S.upg.guard1&&S.upg.guard2)S.upg.guard1=false;if(S.online&&S.tablets==null)S.tablets=1;S.apps=S.apps||{};syncFlav();if(d.totalProfit==null)S.totalProfit=(S.history||[]).reduce((a,r)=>a+recRev(r)-recCost(r),0);if(!(d.lifeV>=2)){Object.keys(LIFE_OLD).forEach(k=>{const d=ITEMS[k].life-LIFE_OLD[k];(S.stock[k]||[]).forEach(b=>{if(b.exp<99999)b.exp+=d})});S.lifeV=2;save()}try{sanitize()}catch(e){}(S.reviews||[]).forEach(r=>{if(!r.k)r.k=(r.t||'').replace(/\p{Extended_Pictographic}|\uFE0F/gu,'').trim()});if(!d.badPlan){S.badPlan=mkBadPlan(S.day);save()};S.friends=S.friends||[];S.myCard=S.myCard||null;S.redeemedCodes=S.redeemedCodes||[];S.trophies=S.trophies||[];S.giftsReceivedToday=S.giftsReceivedToday||0;S.giftsDay=S.giftsDay||S.day;if(window.BanBe)window.BanBe.init();}
+function loadFrom(d){const f=fresh();Object.keys(d.stock).forEach(k=>{if(typeof d.stock[k]==='number'){const q=d.stock[k];d.stock[k]=[];addStock(k,q,{day:d.day||1,stock:d.stock})}});S={...f,...d,stock:{...f.stock,...d.stock},sell:{...f.sell,...d.sell},unlocked:{...f.unlocked,...d.unlocked}};migrate(d);if(!d.cur)S.cur=newRec(S.day);if(S.seenLv==null)S.seenLv=levelOf(Math.max(1,S.day-1));if(S.evDay!==S.day)rollDay(S.day);S.hired=S.hired||{};STAFF.forEach(x=>{if(S.upg[x.id])S.hired[x.id]=true});if(S.upg.staff1&&S.upg.staff3)S.upg.staff1=false;if(S.upg.guard1&&S.upg.guard2)S.upg.guard1=false;if(S.online&&S.tablets==null)S.tablets=1;S.apps=S.apps||{};syncFlav();if(d.totalProfit==null)S.totalProfit=(S.history||[]).reduce((a,r)=>a+recRev(r)-recCost(r),0);if(!(d.lifeV>=2)){Object.keys(LIFE_OLD).forEach(k=>{const d=ITEMS[k].life-LIFE_OLD[k];(S.stock[k]||[]).forEach(b=>{if(b.exp<99999)b.exp+=d})});S.lifeV=2;save()}try{sanitize()}catch(e){}(S.reviews||[]).forEach(r=>{if(!r.k)r.k=(r.t||'').replace(/\p{Extended_Pictographic}|\uFE0F/gu,'').trim()});if(!d.badPlan){S.badPlan=mkBadPlan(S.day);save()};S.friends=S.friends||[];S.myCard=S.myCard||null;S.redeemedCodes=S.redeemedCodes||[];S.trophies=S.trophies||[];S.giftsReceivedToday=S.giftsReceivedToday||0;S.giftsDay=S.giftsDay||S.day;S.cosmetics=S.cosmetics||{owned:['shop_classic','counter_classic','cup_classic'],active:{shop:'shop_classic',counter:'counter_classic',cup:'cup_classic'}};S.cosmetics.owned=Array.isArray(S.cosmetics.owned)?S.cosmetics.owned:['shop_classic','counter_classic','cup_classic'];S.cosmetics.active={shop:'shop_classic',counter:'counter_classic',cup:'cup_classic',...(S.cosmetics.active||{})};applyCosmetics();if(window.BanBe)window.BanBe.init();}
 function load(){let raw=null;try{raw=localStorage.getItem(SAVE)}catch(e){}
   if(raw){try{const d=JSON.parse(raw);if(d&&d.stock){loadFrom(d);return true}}catch(e){}
     /* đọc lỗi: cất bản cũ riêng, không ghi đè */try{localStorage.setItem(SAVE+'_rescue',raw)}catch(e){}R.loadErr=true}
@@ -1761,7 +1761,7 @@ function glassHTML(c,opt){opt=opt||{};
   if(!c.sealed&&!opt.mini)out+=`<line x1="${CX-halfAt(57)+4}" x2="${CX+halfAt(57)-4}" y1="57" y2="57" stroke="#2f8a63" stroke-width="2.2" stroke-dasharray="5 4"/>`;
   out+=`</svg><img src="${IMG}cup.png" alt="" onerror="this.style.display='none'"><img class="q3lid" src="${IMG}lid.png" alt=""${c.sealed?'':' hidden'} onerror="this.style.display='none'">`;
   if(!opt.mini&&c.size)out+=`<svg viewBox="0 0 110 155.6" preserveAspectRatio="none"><g transform="translate(86 118)"><circle r="9" fill="#fffaf0" stroke="${Q3INK}" stroke-width="1.6"/><text y="4.5" text-anchor="middle" font-family="Baloo 2,sans-serif" font-weight="800" font-size="12" fill="${Q3INK}">${c.size}</text></g></svg>`;
-  return `<div class="q3g">${out}</div>`}
+  return `<div class="q3g${cupSkinClass()}">${out}</div>`}
 function orderGlass(o){const ic={'Không đá':0,'Ít đá':1,'Đá thường':2}[o.ice]||0;
   return glassHTML({base:o.base,flav:o.flav,tops:o.tops,fill:.8,sealed:true,vt:o.tops.filter(t=>ITEMS[t]&&ITEMS[t].g!=='foam').map(k=>({k,pts:q3layer(k)})),vi:Array.from({length:ic===2?8:ic*3},(_,i)=>[Math.random()*2-1,4+Math.random()*22+i*3.5,Math.random()*40-20])},{mini:1})}
 const q3reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
@@ -1795,7 +1795,7 @@ function renderSell(){
     spr+=`<div class="q3spr" data-btl style="left:${x-31}px;top:1160px;width:62px;height:200px;background-position:${-(sx-31)}px -1160px"></div>`;
     h+=zone(`data-a="flav:${k}" id="q3b_${k}" data-s="${sx-29},1166" aria-label="Siro ${ITEMS[k].n}"`,x-29,1166,58,190);
     h+=`<div class="q3badge q3sm" style="left:${x+6}px;top:1206px" id="q3n_${k}"></div>`});
-  $('view').innerHTML=`<div id="q3"><div id="q3stage">
+  applyCosmetics();$('view').innerHTML=`<div id="q3"><div id="q3stage" class="${esc(S.cosmetics?.active?.counter||'counter_classic')}">
     <div id="gzWidget" class="gz-widget" style="display:none"></div>
     ${patch}<div id="q3tint" aria-hidden="true"></div>${(evIs('rain')||evIs('storm'))?'<div id="q3rain" aria-hidden="true"><i class="r1"></i><i class="r2"></i></div>':''}
     <div class="q3lane" id="lane"></div>
@@ -3402,6 +3402,42 @@ function themeDlg(){$('card').onchange=null;
   const lv=level();
   $('card').innerHTML=`<h2>Màu giao diện</h2><p>Màu mới được mở khi quán lên cấp. Hiện tại: <b>Cấp ${lv}</b>.</p><div class="thg">${THEMES.map(t=>`<button class="thb${t.id===THEME?' on':''}${t.lv>lv?' locked':''}" data-th="${t.id}" ${t.lv>lv?'disabled':''}><i style="background:linear-gradient(135deg,${t.bg} 0 50%,${t.acc} 50%)"></i>${t.n}<small>${t.lv>lv?'🔒 Cấp '+t.lv:'Đã mở'}</small></button>`).join('')}</div><button class="big" id="thClose" style="margin-top:12px">Xong</button>`;
   $('modal').hidden=false;$('card').querySelectorAll('[data-th]:not(:disabled)').forEach(b=>b.onclick=()=>{applyTheme(b.dataset.th);themeDlg()});$('thClose').onclick=showSettings}
+/* ---------- TRANG TRÍ QUÁN ---------- */
+const COSMETICS=[
+  {id:'shop_classic',type:'shop',n:'Tiệm Trà Cổ Điển',icon:'🏠',cost:0,lv:1},
+  {id:'shop_sakura',type:'shop',n:'Tiệm Hoa Anh Đào',icon:'🌸',cost:1200000,lv:1},
+  {id:'shop_matcha',type:'shop',n:'Tiệm Matcha Garden',icon:'🌿',cost:2800000,lv:2},
+  {id:'shop_neon',type:'shop',n:'Tiệm Neon Đêm',icon:'🌃',cost:6500000,lv:3},
+  {id:'counter_classic',type:'counter',n:'Quầy Gỗ Cổ Điển',icon:'🪵',cost:0,lv:1},
+  {id:'counter_white',type:'counter',n:'Quầy Trắng Tối Giản',icon:'🤍',cost:850000,lv:1},
+  {id:'counter_matcha',type:'counter',n:'Quầy Matcha',icon:'🍵',cost:2200000,lv:2},
+  {id:'counter_luxe',type:'counter',n:'Quầy Đá Sang Trọng',icon:'✨',cost:5000000,lv:3},
+  {id:'cup_classic',type:'cup',n:'Ly Trong Cổ Điển',icon:'🥤',cost:0,lv:1},
+  {id:'cup_hearts',type:'cup',n:'Ly Tim Hồng',icon:'💕',cost:450000,lv:1},
+  {id:'cup_leaf',type:'cup',n:'Ly Lá Trà',icon:'🍃',cost:1200000,lv:2},
+  {id:'cup_gold',type:'cup',n:'Ly Gold Edition',icon:'👑',cost:3500000,lv:3}
+];
+const cosmeticTypeName=t=>({shop:'Thiết kế quán',counter:'Giao diện quầy',cup:'Thiết kế in ly'})[t]||t;
+function ensureCosmetics(){
+  S.cosmetics=S.cosmetics||{owned:['shop_classic','counter_classic','cup_classic'],active:{shop:'shop_classic',counter:'counter_classic',cup:'cup_classic'}};
+  S.cosmetics.owned=Array.isArray(S.cosmetics.owned)?S.cosmetics.owned:['shop_classic','counter_classic','cup_classic'];
+  S.cosmetics.active={shop:'shop_classic',counter:'counter_classic',cup:'cup_classic',...(S.cosmetics.active||{})};
+}
+function applyCosmetics(){
+  if(typeof S==='undefined'||!S)return;ensureCosmetics();
+  document.body.dataset.shopSkin=S.cosmetics.active.shop||'shop_classic';
+  document.body.dataset.counterSkin=S.cosmetics.active.counter||'counter_classic';
+  document.body.dataset.cupSkin=S.cosmetics.active.cup||'cup_classic';
+}
+function cosmeticShop(){
+  ensureCosmetics();const lv=level(),types=['shop','counter','cup'];
+  $('card').onchange=null;
+  $('card').innerHTML=`<button class="settings-x" id="cosX" aria-label="Đóng">✕</button><h2>🛍️ Trang trí quán</h2><p>Dùng tiền trong két để mua thiết kế. Vật phẩm đã mua giữ vĩnh viễn trong bản lưu.</p><div class="cosmoney">Két hiện có: <b>${fmt(S.money)}</b></div>${types.map(type=>`<div class="cossec"><h3>${cosmeticTypeName(type)}</h3><div class="cosgrid">${COSMETICS.filter(x=>x.type===type).map(x=>{const own=S.cosmetics.owned.includes(x.id),active=S.cosmetics.active[type]===x.id,locked=x.lv>lv;return `<button class="cositem${active?' active':''}${locked?' locked':''}" data-cos="${x.id}" ${locked?'disabled':''}><span>${x.icon}</span><b>${x.n}</b><small>${locked?'🔒 Cấp '+x.lv:active?'✓ Đang dùng':own?'Đã mua · Chạm để dùng':fmt(x.cost)}</small></button>`}).join('')}</div></div>`).join('')}<button class="big" id="cosBack">Quay lại Cài đặt</button>`;
+  $('modal').hidden=false;$('modal').onclick=e=>{if(e.target===$('modal'))showSettings()};
+  $('cosX').onclick=showSettings;$('cosBack').onclick=showSettings;
+  $('card').querySelectorAll('[data-cos]:not(:disabled)').forEach(btn=>btn.onclick=()=>{const item=COSMETICS.find(x=>x.id===btn.dataset.cos);if(!item)return;const own=S.cosmetics.owned.includes(item.id);if(!own){if(S.money<item.cost)return toast('Két chưa đủ '+fmt(item.cost));S.money-=item.cost;S.cosmetics.owned.push(item.id);toast('Đã mua '+item.n+' · '+fmt(item.cost))}S.cosmetics.active[item.type]=item.id;applyCosmetics();save();head();cosmeticShop()});
+}
+function cupSkinClass(){if(!S||!S.cosmetics)return'';return ' '+(S.cosmetics.active?.cup||'cup_classic')}
 /* ---------- ÂM THANH (tự tạo bằng Web Audio, không cần file) ---------- */
 const AU={ctx:null,on:true,mus:true};
 try{const a=JSON.parse(localStorage.getItem('tsAudio'));if(a){AU.on=a.on!==false;AU.mus=a.mus!==false;AU.season=a.season||null}}catch(e){}
