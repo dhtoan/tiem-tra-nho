@@ -5,13 +5,13 @@
   "type": "module",
   "scripts": {
     "assets": "node scripts/generate-assets.mjs",
-    "build": "npm run assets && node scripts/build.mjs",
-    "check": "node --check src/worker.js && node --check public/baucua.js && node --check public/bootstrap.js && node --check scripts/build.mjs && node --check scripts/generate-assets.mjs && npm run build && node --check dist/game.js && node scripts/check-build.mjs",
+    "build": "node scripts/build.mjs",
+    "check": "node --check src/worker.js && node --check js/game.js && node --check js/baucua.js && node --check js/xidach.js && node --check public/account-sync.js && node --check public/bootstrap.js && node --check scripts/build.mjs && npm run build && node scripts/check-build.mjs",
     "dev": "npm run build && wrangler dev --local",
-    "deploy": "npm run build && wrangler deploy",
+    "deploy": "npm run check && wrangler deploy",
     "db:local": "wrangler d1 migrations apply DB --local --config wrangler.d1.toml",
     "db:remote": "wrangler d1 migrations apply DB --remote --config wrangler.d1.toml",
-    "deploy:d1": "npm run build && npm run db:remote && wrangler deploy --config wrangler.d1.toml"
+    "deploy:d1": "npm run check && npm run db:remote && wrangler deploy --config wrangler.d1.toml"
   },
   "devDependencies": {
     "wrangler": "4.141.0"
@@ -19,7 +19,7 @@
   "cloudflare": {
     "bindings": {
       "DB": {
-        "description": "Optional D1 database for 8-digit cloud backup codes. Core gameplay works without it."
+        "description": "D1 database for accounts, sessions, automatic cloud sync, and legacy backup codes."
       }
     }
   },
