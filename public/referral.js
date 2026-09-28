@@ -50,7 +50,7 @@ function clearPending(){
 function acceptBridge(data){
   if(!data||(!data.code&&!data.friend))return;
   persistPending(data.code||'',String(data.friend||'').slice(0,512),false);
-  if(isStandalone())setTimeout(()=>claimPending({take:true}),200);
+  if(isStandalone())setTimeout(()=>{redeemPendingFriend();claimPending({take:true})},200);
 }
 function captureRef(){
   const u=new URL(location.href),code=cleanCode(u.searchParams.get('ref'));
