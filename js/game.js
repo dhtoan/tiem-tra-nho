@@ -3776,7 +3776,7 @@ function showSettings(){
     <button class="setb" id="sNews"><span>${ico('gift')}</span>Có gì mới<small>v${GAME_VERSION}</small></button>
     <button class="setb" id="sUpdate" style="background:linear-gradient(135deg,#e3f7ed,#d1f2e1);border-color:#5aae86"><span>🔄</span><b>Cập nhật bản mới</b><small>Tải lại web & Xoá cache</small></button>
     <button class="setb" id="sAccount"><span>☁️</span><b>Tài khoản & Cloud Save</b><small>Đăng nhập · tự động đồng bộ tiến trình</small></button>
-    <button class="setb" id="sInstall"><span>📲</span><b>Đưa ra màn hình chính</b><small>Chơi như ứng dụng trên điện thoại và máy tính</small></button>
+    <button class="setb" id="sInstall"><span>📲</span><b>Đưa game ra màn hình chính</b><small>Chơi như ứng dụng trên điện thoại và máy tính</small></button>
     <button class="setb" id="sZalo"><span>💬</span>Nhóm Zalo trà thủ<small>Quét mã QR</small></button>
     <button class="setb" id="sCoach"><span>${ico('book')}</span>Chỉ dẫn từng bước<small>${S.coach===true?'Luôn bật':S.coach===false?'Tắt':'Tự động'}</small></button>
     <button class="setb" id="sLen"><span>${ico('clock')}</span>Thời gian bán mỗi ngày<small>${S.dayLen||CFG.dayMin} phút${R.running?' · áp dụng từ ngày sau':''}</small></button>
