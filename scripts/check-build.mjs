@@ -20,6 +20,13 @@ for(const file of required){
 }
 
 const html=await readFile(join(root,'index.html'),'utf8');
+const utf8Files=required.filter(file=>/\.(?:html?|css|js|mjs|json|webmanifest)$/i.test(file));
+const mojibake=/\uFFFD|đŸ|á»|áº|Ä‘|Æ°|Ã¡|Ã¢|Ãª|Ã´|Ã¹|â€™|â€œ|â€|Â /;
+for(const file of utf8Files){
+  const text=await readFile(join(root,file),'utf8');
+  if(mojibake.test(text))throw new Error('possible UTF-8/mojibake corruption in '+file);
+  if(file.endsWith('.css')&&!text.startsWith('@charset "UTF-8";'))throw new Error('CSS missing UTF-8 charset declaration: '+file);
+}
 for(const ref of ['/css/style.css','/css/baucua.css','/css/xidach.css','/css/banbe.css','/js/banbe.js','/js/game.js','/js/baucua.js','/js/xidach.js','/account-sync.css','/account-sync.js','/referral.css','/vendor/qrcode.min.js','/referral.js','/bootstrap.js','/manifest.webmanifest']){
   if(!html.includes(ref))throw new Error('index missing '+ref);
 }
