@@ -1,6 +1,6 @@
 (()=>{
 'use strict';
-const REWARD=300000,KEY='aunomay_pending_ref',SHOWN='aunomay_ref_zero_shown';
+const REWARD=300000,KEY='aunomay_pending_ref',FRIEND_KEY='aunomay_pending_friend',SHOWN='aunomay_ref_zero_shown';
 const $=id=>document.getElementById(id);
 const money=v=>(Math.round(Number(v||0)/1000)).toLocaleString('vi-VN')+'k';
 const gameName=()=>/mì cay/i.test(document.title)?'Tiệm Mì Cay':'Tiệm Trà Nhỏ';
@@ -10,10 +10,22 @@ let info=null,lastZero=false;
 function cleanCode(v){return String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,16)}
 function captureRef(){
   const u=new URL(location.href),code=cleanCode(u.searchParams.get('ref'));
-  if(!code)return;
-  try{localStorage.setItem(KEY,code)}catch{}
+  const friend=String(u.searchParams.get('friend')||'').trim().slice(0,512);
+  if(code){try{localStorage.setItem(KEY,code)}catch{}}
+  if(friend){try{localStorage.setItem(FRIEND_KEY,friend)}catch{}}
+  if(!code&&!friend)return;
   u.searchParams.delete('ref');
+  u.searchParams.delete('friend');
   try{history.replaceState({},document.title,u.pathname+(u.search||'')+u.hash)}catch{}
+}
+function redeemPendingFriend(){
+  let code='';try{code=String(localStorage.getItem(FRIEND_KEY)||'').trim()}catch{}
+  if(!code||!window.BanBe||typeof window.BanBe.redeem!=='function')return false;
+  try{
+    window.BanBe.redeem(code);
+    localStorage.removeItem(FRIEND_KEY);
+    return true;
+  }catch{return false}
 }
 async function api(path,opt={}){
   try{
@@ -76,6 +88,23 @@ async function shareLink(native){
   if(native&&navigator.share){try{await navigator.share({title,text,url:info.link});return}catch(e){if(e?.name==='AbortError')return}}
   try{await navigator.clipboard.writeText(info.link);status('Đã chép link giới thiệu.')}catch{status('Giữ vào ô link để chép thủ công.')}
 }
+async function shareFriendCode(friendCode,native=false){
+  const user=await auth();
+  if(!user){
+    open('manual');
+    status('Đăng nhập để gắn thưởng +300k vào Mã Bạn Bè.');
+    return null;
+  }
+  if(!info)await referralInfo();
+  if(!info)return status('Chưa tạo được link giới thiệu.');
+  const u=new URL(info.link,location.origin);
+  if(friendCode)u.searchParams.set('friend',String(friendCode).trim());
+  const link=u.toString();
+  const title=gameName()+' — Mã Bạn Bè';
+  const text='Kết bạn trong '+gameName()+' và mở quán cùng mình. Mỗi người cùng nhận thêm 300k vốn 🎁';
+  if(native&&navigator.share){try{await navigator.share({title,text,url:link});return link}catch(e){if(e?.name==='AbortError')return null}}
+  try{await navigator.clipboard.writeText(link);status('Đã chép link Mã Bạn Bè + thưởng 300k.');return link}catch{status('Không thể tự chép. Hãy sao chép link thủ công.');return link}
+}
 function qrCanvas(link){
   return new Promise((resolve,reject)=>{
     if(typeof QRCode==='undefined')return reject(new Error('QR chưa sẵn sàng'));
@@ -121,7 +150,7 @@ function monitorMoney(){
   lastZero=z;
 }
 captureRef();
-addEventListener('DOMContentLoaded',()=>{ensureDlg();setTimeout(()=>claimPending(),1200);setInterval(monitorMoney,1600);setInterval(()=>claimPending(),20000)});
+addEventListener('DOMContentLoaded',()=>{ensureDlg();setTimeout(()=>{redeemPendingFriend();claimPending()},1200);setInterval(monitorMoney,1600);setInterval(()=>claimPending(),20000)});
 addEventListener('visibilitychange',()=>{if(!document.hidden)claimPending()});
-window.AunomayReferral={open,claimPending,takeRewards};
+window.AunomayReferral={open,claimPending,takeRewards,shareFriendCode,redeemPendingFriend};
 })();
