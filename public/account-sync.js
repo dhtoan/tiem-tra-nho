@@ -31,8 +31,8 @@
   }
   async function me(){const r=await api('/api/auth/me',{method:'GET',headers:{}});user=r.ok&&r.j?.authenticated?r.j.user:null;render();if(user){startPeriodic();await reconcile()}else{stopPeriodic();scheduleNudge()}}
   async function auth(mode){
-    const raw=$('caUserInput').value.normalize('NFKC').trim(), username=raw.toLocaleLowerCase('vi-VN').replace(/s+/g,'_'), pass=$('caPassInput').value;
-    if(!/^[p{L}p{N}][p{L}p{N}._-]{2,31}$/u.test(username))return status('Tên đăng nhập cần 3–32 ký tự.');
+    const raw=$('caUserInput').value.normalize('NFKC').trim(), username=raw.toLocaleLowerCase('vi-VN').replace(/\s+/g,'_'), pass=$('caPassInput').value;
+    if(!/^[\p{L}\p{N}][\p{L}\p{N}._-]{2,31}$/u.test(username))return status('Tên đăng nhập cần 3–32 ký tự.');
     if(pass.length<8||pass.length>128)return status('Mật khẩu cần từ 8 đến 128 ký tự.');
     status('Đang xử lý…');
     const r=await api('/api/auth/'+mode,{method:'POST',body:JSON.stringify({username,password:pass,displayName:raw||username})});
