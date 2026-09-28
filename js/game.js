@@ -3694,7 +3694,18 @@ async function cloudFetch(path,opt){const ac=new AbortController(),t=setTimeout(
   catch(e){throw typeof e==='string'?e:'Không kết nối được máy chủ'}finally{clearTimeout(t)}}
 async function cloudSave(long){S.cloud=S.cloud||{};const j=await cloudFetch('/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:S.cloud.key,code:S.cloud.code||undefined,data:long})});
   if(!/^\d{8}$/.test(j.code||''))throw 'Máy chủ trả mã sai';S.cloud.code=j.code;save();return j.code}
-async function cloudLoad(code){const j=await cloudFetch('/load?code='+code,{method:'GET'});const d=await readBackup(j.data);d.cloud={key:(d.cloud||{}).key,code};return d}
+async function cloudLoad(code){
+  let j;
+  try{
+    j=await cloudFetch('/load?code='+code,{method:'GET'});
+  }catch(e){
+    S.cloud=S.cloud||{};
+    if(!S.cloud.key){const a=new Uint8Array(12);crypto.getRandomValues(a);S.cloud.key=[...a].map(x=>x.toString(36).padStart(2,'0')).join('').slice(0,24);save()}
+    j=await cloudFetch('/import/legacy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({provider:'trongnhi',code,key:S.cloud.key})});
+    if(j.code){S.cloud.code=j.code;save();toast('Đã nhập bản lưu cũ vào máy chủ Tiệm Trà Nhỏ',3500,1)}
+  }
+  const d=await readBackup(j.data);d.cloud={key:(d.cloud||{}).key||S.cloud?.key,code:j.code||code};return d
+}
 const fmtCode=c=>c.slice(0,4)+' '+c.slice(4);
 async function backupDlg(){$('card').onchange=null;S.bakDay=S.day;save();
   $('card').innerHTML=`<h2>Sao lưu tiến trình</h2><p>Đang tạo mã…</p>`;$('modal').hidden=false;
