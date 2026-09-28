@@ -1,0 +1,56 @@
+name: Import runtime audio
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/import-runtime-audio.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download exact runtime audio from reference game
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          bgm='Nhạc Chill Quán Cafe - Những Ca Khúc Lofi Nhẹ Nhàng Hay Nhất Dành Cho Quán Cafe - Nhạc Lofi 2026.mp3'
+          pour='Pouring water-liquid into a glass sound effect [HQ].mp3'
+
+          curl --fail --location --silent --show-error --retry 3             'https://tiemtramouoc.tensorship.tech/Nh%E1%BA%A1c%20Chill%20Qu%C3%A1n%20Cafe%20-%20Nh%E1%BB%AFng%20Ca%20Kh%C3%BAc%20Lofi%20Nh%E1%BA%B9%20Nh%C3%A0ng%20Hay%20Nh%E1%BA%A5t%20D%C3%A0nh%20Cho%20Qu%C3%A1n%20Cafe%20-%20Nh%E1%BA%A1c%20Lofi%202026.mp3'             -o "public/$bgm"
+
+          curl --fail --location --silent --show-error --retry 3             'https://tiemtramouoc.tensorship.tech/Pouring%20water-liquid%20into%20a%20glass%20sound%20effect%20%5BHQ%5D.mp3'             -o "public/$pour"
+
+          test -s "public/$bgm"
+          test -s "public/$pour"
+
+          echo "BGM bytes: $(stat -c%s "public/$bgm")"
+          echo "Pour bytes: $(stat -c%s "public/$pour")"
+
+          max=$((95 * 1024 * 1024))
+          test "$(stat -c%s "public/$bgm")" -lt "$max" || { echo "BGM exceeds GitHub single-file safety limit"; exit 1; }
+          test "$(stat -c%s "public/$pour")" -lt "$max" || { echo "Pour audio exceeds GitHub single-file safety limit"; exit 1; }
+
+      - name: Commit audio
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/*.mp3
+          if git diff --cached --quiet; then
+            echo "Audio already up to date"
+            exit 0
+          fi
+          git commit -m "assets: import missing runtime audio [skip ci]"
+          git push
