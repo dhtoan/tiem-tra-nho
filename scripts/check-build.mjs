@@ -1,0 +1,16 @@
+import { access, readFile, readdir } from 'node:fs/promises';
+import { join } from 'node:path';
+const root=new URL('../dist/',import.meta.url).pathname;
+const required=['index.html','game.js','baucua.js','baucua.css','bootstrap.js','manifest.webmanifest','sw.js','img/app-icon.svg','img/faces.svg','img/star.svg','img/ship.svg','img/bg.svg','img/bg2.svg','img/splash2.svg','img/kho.svg'];
+for(const f of required)await access(join(root,f));
+const index=await readFile(join(root,'index.html'),'utf8');
+for(const ref of ['/game.js','/baucua.js','/baucua.css','/bootstrap.js','/manifest.webmanifest'])if(!index.includes(ref))throw new Error(`index missing ${ref}`);
+const game=await readFile(join(root,'game.js'),'utf8');
+if(!game.startsWith('/*ts*/'))throw new Error('unexpected game bundle');
+if(!game.includes("const CLOUD='/api'"))throw new Error('cloud API was not switched to same-origin');
+if(!game.includes("const GAME_VERSION='4.0'"))throw new Error('game version patch missing');
+const brands=(await readdir(join(root,'img/brand'))).filter(x=>x.endsWith('.svg'));
+if(brands.length!==50)throw new Error(`expected 50 brand icons, got ${brands.length}`);
+const bad=[...game.matchAll(/(?:src=.?['"]?|IMG\+['"])([^'"\`]+\.(?:png|jpg|webp))/g)].map(x=>x[1]);
+if(bad.length)throw new Error(`binary image reference remains: ${bad.slice(0,5).join(', ')}`);
+console.log('build verification passed');
