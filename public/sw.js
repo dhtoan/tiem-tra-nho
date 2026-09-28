@@ -18,6 +18,10 @@ self.addEventListener('fetch',event=>{
   const req=event.request;if(req.method!=='GET')return;
   const url=new URL(req.url);if(url.origin!==location.origin)return;
   if(url.pathname.startsWith('/api/'))return;
+  if(url.pathname==='/version.json'){
+    event.respondWith(fetch(req,{cache:'no-store'}));
+    return;
+  }
   if(req.mode==='navigate'){
     event.respondWith(fetch(req).then(r=>{const copy=r.clone();caches.open(CACHE).then(c=>c.put('/index.html',copy));return r}).catch(()=>caches.match('/index.html')));
     return;
