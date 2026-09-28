@@ -2,6 +2,7 @@ import { access, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const root=new URL('../dist/',import.meta.url).pathname;
+const MAX_ASSET_BYTES=25*1024*1024;
 const required=[
   'index.html',
   'css/style.css','css/baucua.css','css/xidach.css',
@@ -13,6 +14,10 @@ const required=[
   'img/ga.png','img/bau.png','img/ca.png','img/cua.png','img/tom.png','img/nai.png','img/xocdia.png'
 ];
 for(const file of required)await access(join(root,file));
+for(const file of required){
+  const {size}=await import('node:fs/promises').then(m=>m.stat(join(root,file)));
+  if(size>MAX_ASSET_BYTES)throw new Error('Cloudflare static asset exceeds 25 MiB: '+file+' ('+size+' bytes)');
+}
 
 const html=await readFile(join(root,'index.html'),'utf8');
 for(const ref of ['/css/style.css','/css/baucua.css','/css/xidach.css','/js/game.js','/js/baucua.js','/js/xidach.js','/account-sync.css','/account-sync.js','/bootstrap.js','/manifest.webmanifest']){
