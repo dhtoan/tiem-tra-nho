@@ -35,13 +35,13 @@ jobs:
           before="$(stat -c%s "$src")"
           echo "Before: $before bytes"
 
-          ffmpeg -hide_banner -loglevel error -y -i "$src"             -codec:a libmp3lame -b:a 128k -ar 44100 "$tmp"
+          ffmpeg -hide_banner -loglevel error -y -i "$src"             -codec:a libmp3lame -b:a 96k -ar 44100 "$tmp"
 
           test -s "$tmp"
           after="$(stat -c%s "$tmp")"
           echo "After: $after bytes"
 
-          max=$((24 * 1024 * 1024))
+          max=$((23 * 1024 * 1024))
           test "$after" -lt "$max" || { echo "Compressed BGM is still too large"; exit 1; }
 
           mv "$tmp" "$src"
