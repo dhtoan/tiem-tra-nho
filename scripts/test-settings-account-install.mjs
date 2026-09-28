@@ -10,7 +10,12 @@ if(!game.includes('Đưa game ra màn hình chính'))throw new Error('Settings m
 if(!game.includes('beforeinstallprompt'))throw new Error('Game must capture beforeinstallprompt');
 if(!game.includes('Cài ngay'))throw new Error('Install dialog must offer native install when available');
 if(!game.includes('iPhone, iPad'))throw new Error('Install dialog must include iOS instructions');
+if(!game.includes('ttnInstallShareIcon'))throw new Error('Install dialog must include iOS Share icon');
+if(!game.includes('ttnInstallMenuIcon'))throw new Error('Install dialog must include Android menu icon');
+if(!game.includes('class="hsbox"'))throw new Error('Install dialog must render icon instruction cards');
 if(!game.includes('Android'))throw new Error('Install dialog must include Android instructions');
 if(!account.includes('window.TTNAccount'))throw new Error('Account module must expose a settings-callable API');
 if(!css.includes('#cloudAccountBtn{display:none'))throw new Error('Floating account button must be hidden');
+const style=await readFile(new URL('../css/style.css',import.meta.url),'utf8');
+if(!style.includes('.hsi svg'))throw new Error('Install instruction icons must be styled');
 console.log('settings account and install menu regression checks passed');
