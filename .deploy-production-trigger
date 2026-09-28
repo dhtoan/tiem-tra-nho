@@ -1,2 +1,2 @@
-deploy: 2026-09-28T15:12:00Z
-reason: fix referral take 500, UTF-8 headers/cache, friend referral +300k, account settings UI
+deploy: 2026-09-28T15:48:00Z
+reason: canonical referral + QR download + ASCII-safe UTF-8 JS + production hardening + 2026 household tax update
