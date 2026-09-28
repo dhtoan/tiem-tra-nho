@@ -3654,6 +3654,18 @@ document.addEventListener('click',e=>{if(e.target.closest('.big,.sbtn,.tab,.stab
 /* ---------- MÀN HÌNH CHÀO + HƯỚNG DẪN ---------- */
 function closeSplash(){const sp=$('splash');sp.hidden=true;sp.innerHTML='';if(R.mode==='prep')setTimeout(prepChecks,300)}
 const SP_MSG=['Đang nấu trân châu…','Đang ủ trà…','Đang lau quầy…','Đang xếp ly…','Sắp mở cửa…'];
+function currentFriendCode(){try{return window.BanBe&&typeof window.BanBe.genFriendCode==='function'?window.BanBe.genFriendCode():''}catch(e){return''}}
+async function shareCurrentFriendCode(native=false){
+  const code=currentFriendCode();
+  if(!code)return toast('Chưa tạo được Mã Bạn Bè.');
+  if(window.AunomayReferral&&typeof window.AunomayReferral.shareFriendCode==='function'){
+    const link=await window.AunomayReferral.shareFriendCode(code,native);
+    if(link)toast('Đã sao chép link Mã Bạn Bè + thưởng 300k!');
+    return link;
+  }
+  try{await navigator.clipboard.writeText(code);toast('Đã sao chép Mã Bạn Bè!')}catch(e){toast('Không thể tự sao chép.')}
+  return code;
+}
 function showSplash(had,after){
   const sp=$('splash');
   const stk=(n,x,y,w,d,dl)=>`<img class="sp4-f" src="${IMG}stk_${n}.png" alt="" style="left:${x}px;top:${y}px;width:${w}px;animation-duration:${d}s;animation-delay:-${dl}s">`;
@@ -3680,8 +3692,10 @@ function showSplash(had,after){
         <h2 class="sp-banner-title">Tiệm Trà Nhỏ</h2>
         <p class="sp-banner-text">Chào mừng bạn đến với Tiệm Trà Nhỏ do Aunomay phát hành. Game sẽ tiếp tục được cập nhật với nhiều tính năng quản lý quán, bạn bè và trải nghiệm mới.</p>
         <div class="sp-banner-qr-wrap">
-          <img src="img/qrzl.jpg" alt="Mã QR Nhóm Zalo" class="sp-banner-qr">
-          <span class="sp-banner-qr-caption">Quét mã QR bằng Zalo để tham gia nhóm!</span>
+          <div class="sp-banner-friend-label">Mã Bạn Bè Rút Gọn</div>
+          <div class="sp-banner-friend-code" id="spFriendCode">${esc(currentFriendCode())}</div>
+          <span class="sp-banner-qr-caption">Copy link chia sẻ bạn bè để mỗi người cùng nhận thêm tiền mở quán!</span>
+          <button class="sp-banner-share" id="spBannerShare" type="button">📋 Copy link chia sẻ +300k</button>
         </div>
         <button class="sp-banner-btn" id="spBannerBtn">Vào chơi ngay 🧋</button>
       </div>
@@ -3690,6 +3704,7 @@ function showSplash(had,after){
   sp.hidden=false;spFit();
   const dismissBanner=()=>{const b=$('spBanner');if(b)b.style.display='none';if($('spGo')&&!$('spGo').hidden)$('spGo').click()};
   if($('spBannerClose'))$('spBannerClose').onclick=()=>{const b=$('spBanner');if(b)b.style.display='none'};
+  if($('spBannerShare'))$('spBannerShare').onclick=()=>shareCurrentFriendCode(false);
   if($('spBannerBtn'))$('spBannerBtn').onclick=dismissBanner;
   const fitTag=()=>{const t=document.querySelector('.sp4-tag');if(!t)return;let f=26;t.style.fontSize=f+'px';while(t.scrollWidth>t.clientWidth+1&&f>16){f--;t.style.fontSize=f+'px'}};fitTag();if(document.fonts)document.fonts.ready.then(fitTag);
   $('spGo').onclick=()=>{if(had){closeSplash();after&&after()}else showTour(true)};
@@ -3855,16 +3870,18 @@ async function toggleFullscreen(){
 }
 function showSettings(){
   $('card').onchange=null;
+  const accountUser=window.TTNAccount&&typeof window.TTNAccount.me==='function'?window.TTNAccount.me():null;
+  const accountLabel=accountUser?'Đã đăng nhập: '+(accountUser.displayName||accountUser.username):'Đăng nhập · tự động đồng bộ tiến trình';
   $('card').innerHTML=`<h2>${ico('set')} Cài đặt</h2><div class="setl">
     <button class="setb" id="sGuide"><span>${ico('book')}</span>Hướng dẫn</button>
     <button class="setb" id="sNews"><span>${ico('gift')}</span>Có gì mới<small>v${GAME_VERSION}</small></button>
     <button class="setb" id="sUpdate" style="background:linear-gradient(135deg,#e3f7ed,#d1f2e1);border-color:#5aae86"><span>🔄</span><b>Cập nhật bản mới</b><small>Tải lại web & Xoá cache</small></button>
-    <button class="setb" id="sAccount"><span>☁️</span><b>Tài khoản & Cloud Save</b><small>Đăng nhập · tự động đồng bộ tiến trình</small></button>
+    <button class="setb" id="sAccount"><span>☁️</span><b>Tài khoản & Cloud Save</b><small>${esc(accountLabel)}</small></button>
     <button class="setb" id="sInstall"><span>📲</span><b>Đưa game ra màn hình chính</b><small>Chơi như ứng dụng trên điện thoại và máy tính</small></button>
     <button class="setb" id="sFull"><span>⛶</span><b>Toàn màn hình</b><small>${document.fullscreenElement?'Đang bật':'Mở game toàn màn hình'}</small></button>
     <button class="setb" id="sTerms"><span>📜</span><b>Điều khoản chơi</b><small>Aunomay · tài khoản · dữ liệu · chơi công bằng</small></button>
     <button class="setb" id="sAunomay"><span>Ⓐ</span><b>Thông tin Aunomay</b><small>Nhà phát hành · hỗ trợ</small></button>
-    <button class="setb" id="sZalo"><span>💬</span>Nhóm Zalo trà thủ<small>Quét mã QR</small></button>
+    <button class="setb" id="sZalo"><span>👥</span><b>Mã Bạn Bè Rút Gọn</b><small>Chia sẻ để cả hai cùng nhận +300k</small></button>
     <button class="setb" id="sCoach"><span>${ico('book')}</span>Chỉ dẫn từng bước<small>${S.coach===true?'Luôn bật':S.coach===false?'Tắt':'Tự động'}</small></button>
     <button class="setb" id="sLen"><span>${ico('clock')}</span>Thời gian bán mỗi ngày<small>${S.dayLen||CFG.dayMin} phút${R.running?' · áp dụng từ ngày sau':''}</small></button>
     <button class="setb" id="sTheme"><span>${ico('pen')}</span>Màu giao diện<small>${(THEMES.find(x=>x.id===THEME)||THEMES[0]).n}</small></button>
@@ -3924,8 +3941,10 @@ function showZaloBanner(){
         <h2 class="sp-banner-title">Tiệm Trà Nhỏ</h2>
         <p class="sp-banner-text">Hi mn, sau thành công của Tiệm Trà Nhỏ, để thoã lòng đam mê của các trà thủ, mình sẽ tiếp tục update phiên bản mới của game Tiệm Trà Nhỏ. Hiện game vẫn giữa cơ chế cũ, nhưng bổ sung các tính năng mới để mn đỡ chán nhé . Trân trọng</p>
         <div class="sp-banner-qr-wrap">
-          <img src="img/qrzl.jpg" alt="Mã QR Nhóm Zalo" class="sp-banner-qr">
-          <span class="sp-banner-qr-caption">Quét mã QR bằng Zalo để tham gia nhóm!</span>
+          <div class="sp-banner-friend-label">Mã Bạn Bè Rút Gọn</div>
+          <div class="sp-banner-friend-code" id="spFriendCode">${esc(currentFriendCode())}</div>
+          <span class="sp-banner-qr-caption">Copy link chia sẻ bạn bè để mỗi người cùng nhận thêm tiền mở quán!</span>
+          <button class="sp-banner-share" id="spBannerShare" type="button">📋 Copy link chia sẻ +300k</button>
         </div>
         <button class="sp-banner-btn" id="spBannerBtn">Đóng</button>
       </div>
@@ -3933,6 +3952,7 @@ function showZaloBanner(){
     document.body.appendChild(d.firstElementChild);
     b=$('spBanner');
     $('spBannerClose').onclick=()=>b.style.display='none';
+    $('spBannerShare').onclick=()=>shareCurrentFriendCode(false);
     $('spBannerBtn').onclick=()=>b.style.display='none';
   }
   b.style.display='flex';
