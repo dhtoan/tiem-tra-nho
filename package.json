@@ -1,0 +1,28 @@
+{
+  "name": "tiem-tra-nho",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "assets": "node scripts/generate-assets.mjs",
+    "build": "npm run assets && node scripts/build.mjs",
+    "check": "node --check src/worker.js && node --check public/baucua.js && node --check public/bootstrap.js && node --check scripts/build.mjs && node --check scripts/generate-assets.mjs && npm run build && node --check dist/game.js && node scripts/check-build.mjs",
+    "dev": "npm run build && wrangler dev --local",
+    "deploy": "npm run build && wrangler deploy",
+    "db:local": "wrangler d1 migrations apply DB --local --config wrangler.d1.toml",
+    "db:remote": "wrangler d1 migrations apply DB --remote --config wrangler.d1.toml",
+    "deploy:d1": "npm run build && npm run db:remote && wrangler deploy --config wrangler.d1.toml"
+  },
+  "devDependencies": {
+    "wrangler": "4.141.0"
+  },
+  "cloudflare": {
+    "bindings": {
+      "DB": {
+        "description": "Optional D1 database for 8-digit cloud backup codes. Core gameplay works without it."
+      }
+    }
+  },
+  "author": "Aunomay LLC <support@aunomay.com>",
+  "homepage": "https://aunomay.com"
+}
