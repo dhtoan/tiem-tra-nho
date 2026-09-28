@@ -1,7 +1,7 @@
 (() => {
   const KEY='tsShop2', TS='ttnCloudLocalChangedAt', NUDGE='ttnCloudNudgeAt';
   const AUTOSAVE_DELAY=2500, AUTOSAVE_INTERVAL=30000, NUDGE_FIRST=35000, NUDGE_COOLDOWN=20*60*1000;
-  let user=null, revision=0, lastUploaded='', dirty=false, syncing=false, conflict=false, timer=null, periodic=null, nudgeTimer=null;
+  let user=null, revision=0, lastUploaded='', dirty=false, syncing=false, conflict=false, timer=null, periodic=null, nudgeTimer=null, authBusy=false;
   const $=id=>document.getElementById(id);
   const api=async(path,opt={})=>{try{
     const r=await fetch(path,{credentials:'same-origin',headers:{'Content-Type':'application/json',...(opt.headers||{})},...opt});
@@ -30,14 +30,26 @@
     dirty=false;state('idle');
   }
   async function me(){const r=await api('/api/auth/me',{method:'GET',headers:{}});user=r.ok&&r.j?.authenticated?r.j.user:null;render();if(user){startPeriodic();await reconcile()}else{stopPeriodic();scheduleNudge()}}
+  function setAuthBusy(on,mode){
+    authBusy=on;
+    const login=$('caLogin'), register=$('caRegister');
+    if(login)login.disabled=on;
+    if(register){register.disabled=on;register.textContent=on&&mode==='register'?'Đang tạo…':'Tạo tài khoản'}
+  }
   async function auth(mode){
+    if(authBusy)return;
     const raw=$('caUserInput').value.normalize('NFKC').trim(), username=raw.toLocaleLowerCase('vi-VN').replace(/\s+/g,'_'), pass=$('caPassInput').value;
     if(!/^[\p{L}\p{N}][\p{L}\p{N}._-]{2,31}$/u.test(username))return status('Tên đăng nhập cần 3–32 ký tự.');
     if(pass.length<8||pass.length>128)return status('Mật khẩu cần từ 8 đến 128 ký tự.');
-    status('Đang xử lý…');
-    const r=await api('/api/auth/'+mode,{method:'POST',body:JSON.stringify({username,password:pass,displayName:raw||username})});
-    if(!r.ok)return status(r.j.error||'Không thực hiện được.');
-    user=r.j.user;revision=0;render();startPeriodic();status(mode==='register'?'Đã tạo tài khoản. Đang đồng bộ…':'Đăng nhập thành công. Đang đồng bộ…');await reconcile();
+    setAuthBusy(true,mode);
+    status(mode==='register'?'Đang tạo tài khoản…':'Đang đăng nhập…');
+    try{
+      const r=await api('/api/auth/'+mode,{method:'POST',body:JSON.stringify({username,password:pass,displayName:raw||username})});
+      if(!r.ok)return status(r.j.error||'Không thực hiện được.');
+      user=r.j.user;revision=0;render();startPeriodic();status(mode==='register'?'Đã tạo tài khoản. Đang đồng bộ…':'Đăng nhập thành công. Đang đồng bộ…');await reconcile();
+    }finally{
+      setAuthBusy(false,mode);
+    }
   }
   async function upload(silent=false,keepalive=false){
     if(!user||syncing||(!dirty&&localSave()===lastUploaded))return;
@@ -73,7 +85,17 @@
   function bind(){
     $('cloudAccountBtn').onclick=openAccount;
     $('caClose').onclick=()=>$('cloudAccountDlg').close();
-    $('caLogin').onclick=()=>auth('login');$('caRegister').onclick=()=>auth('register');$('caUpload').onclick=()=>upload(false);$('caDownload').onclick=downloadCloud;$('caLogout').onclick=logout;
+    const authForm=$('caAuthForm');
+    if(authForm){
+      authForm.addEventListener('submit',e=>{e.preventDefault();auth('register')});
+      authForm.addEventListener('keydown',e=>{
+        if(e.key==='Enter'&&!e.shiftKey&&!e.ctrlKey&&!e.metaKey){
+          e.preventDefault();
+          auth('register');
+        }
+      });
+    }
+    $('caLogin').onclick=()=>auth('login');$('caUpload').onclick=()=>upload(false);$('caDownload').onclick=downloadCloud;$('caLogout').onclick=logout;
     $('caNudgeOpen').onclick=()=>{hideNudge(false);$('cloudAccountDlg').showModal();status('Tạo tài khoản hoặc đăng nhập để bật tự động lưu cloud.')};
     $('caNudgeLater').onclick=()=>hideNudge(true);$('caNudgeClose').onclick=()=>hideNudge(true);
     $('cloudAccountDlg').onclick=e=>{if(e.target===$('cloudAccountDlg'))$('cloudAccountDlg').close()};
