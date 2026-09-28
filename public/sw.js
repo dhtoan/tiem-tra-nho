@@ -18,6 +18,7 @@ self.addEventListener('fetch',event=>{
   const req=event.request;if(req.method!=='GET')return;
   const url=new URL(req.url);if(url.origin!==location.origin)return;
   if(url.pathname.startsWith('/api/'))return;
+  if(req.headers.has('range'))return;
   if(url.pathname==='/version.json'){
     event.respondWith(fetch(req,{cache:'no-store'}));
     return;
@@ -26,5 +27,5 @@ self.addEventListener('fetch',event=>{
     event.respondWith(fetch(req).then(r=>{const copy=r.clone();caches.open(CACHE).then(c=>c.put('/index.html',copy));return r}).catch(()=>caches.match('/index.html')));
     return;
   }
-  event.respondWith(caches.match(req).then(hit=>hit||fetch(req).then(r=>{if(r.ok){const copy=r.clone();caches.open(CACHE).then(c=>c.put(req,copy))}return r})));
+  event.respondWith(caches.match(req).then(hit=>hit||fetch(req).then(r=>{if(r.ok&&r.status!==206){const copy=r.clone();caches.open(CACHE).then(c=>c.put(req,copy))}return r})));
 });
