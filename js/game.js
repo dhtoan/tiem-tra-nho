@@ -3380,27 +3380,28 @@ let tt,tPri=0;function toast(m,ms,pri){const now=performance.now();if(!pri&&now<
 
 /* ---------- MÀU GIAO DIỆN ---------- */
 const THEMES=[
-  {id:'kem',n:'Kem sữa',bg:'#fdf3e4',panel:'#fffaf2',line:'#ead7bd',ink:'#3a2317',soft:'#7a5a48',acc:'#ef6f8e',accd:'#c24c69',t:null},
-  {id:'nau',n:'Nâu cà phê',bg:'#ead9c4',panel:'#f7ecdf',line:'#cfae8a',ink:'#3a2317',soft:'#6b4a36',acc:'#9a6340',accd:'#6b3f22',t:['#8a5a3b',.32]},
-  {id:'socola',n:'Sô cô la',bg:'#d9c2ab',panel:'#efe2d4',line:'#b8916e',ink:'#2e1c12',soft:'#5e3f2b',acc:'#6b3f22',accd:'#4a2a14',t:['#5b3a26',.4]},
-  {id:'dau',n:'Hồng dâu',bg:'#fde8ee',panel:'#fff5f8',line:'#f3c7d4',ink:'#3a2330',soft:'#7a4a5c',acc:'#e85d8a',accd:'#b8406a',t:['#f48fb1',.2]},
-  {id:'dao',n:'Cam đào',bg:'#fdebdc',panel:'#fff6ef',line:'#f5cdb0',ink:'#3a2317',soft:'#7a5040',acc:'#f08a5d',accd:'#c0643c',t:['#ffab91',.22]},
-  {id:'thai',n:'Trà Thái',bg:'#fde6cf',panel:'#fff4e8',line:'#f3c595',ink:'#3a2317',soft:'#7a5030',acc:'#e8792f',accd:'#b55718',t:['#ffa726',.22]},
-  {id:'chanh',n:'Vàng chanh',bg:'#fbf6d6',panel:'#fffdf0',line:'#ebe097',ink:'#33301a',soft:'#6e6632',acc:'#c9a820',accd:'#977d0e',t:['#fff176',.25]},
-  {id:'matcha',n:'Xanh matcha',bg:'#eef4e2',panel:'#f8fbf1',line:'#cfe0b3',ink:'#25331a',soft:'#566b43',acc:'#6aa84f',accd:'#4b7f36',t:['#9ccc65',.22]},
-  {id:'bacha',n:'Bạc hà',bg:'#e3f5f0',panel:'#f4fcf9',line:'#b9e2d6',ink:'#1d3530',soft:'#4b6f66',acc:'#3fae90',accd:'#2b8069',t:['#80cbc4',.24]},
-  {id:'bien',n:'Xanh biển',bg:'#e6f2fa',panel:'#f5fbff',line:'#bfdcef',ink:'#1c2d3a',soft:'#4a6378',acc:'#3d8fd1',accd:'#2a6aa0',t:['#64b5f6',.22]},
-  {id:'khoaimon',n:'Tím khoai môn',bg:'#efe7f7',panel:'#faf6fd',line:'#d7c6ea',ink:'#2d2238',soft:'#62507a',acc:'#9b6bd1',accd:'#7147a3',t:['#b39ddb',.26]},
-  {id:'dem',n:'Đêm dịu',bg:'#2b2433',panel:'#3a3144',line:'#574a63',ink:'#f5ecf7',soft:'#cbbad3',acc:'#f08fb0',accd:'#b85f80',t:['#3b2d5c',.19]}
+  {id:'kem',n:'Kem sữa',lv:1,bg:'#fdf3e4',panel:'#fffaf2',line:'#ead7bd',ink:'#3a2317',soft:'#7a5a48',acc:'#ef6f8e',accd:'#c24c69',t:null},
+  {id:'nau',n:'Nâu cà phê',lv:1,bg:'#ead9c4',panel:'#f7ecdf',line:'#cfae8a',ink:'#3a2317',soft:'#6b4a36',acc:'#9a6340',accd:'#6b3f22',t:['#8a5a3b',.32]},
+  {id:'dau',n:'Hồng dâu',lv:1,bg:'#fde8ee',panel:'#fff5f8',line:'#f3c7d4',ink:'#3a2330',soft:'#7a4a5c',acc:'#e85d8a',accd:'#b8406a',t:['#f48fb1',.2]},
+  {id:'dao',n:'Cam đào',lv:2,bg:'#fdebdc',panel:'#fff6ef',line:'#f5cdb0',ink:'#3a2317',soft:'#7a5040',acc:'#f08a5d',accd:'#c0643c',t:['#ffab91',.22]},
+  {id:'thai',n:'Trà Thái',lv:2,bg:'#fde6cf',panel:'#fff4e8',line:'#f3c595',ink:'#3a2317',soft:'#7a5030',acc:'#e8792f',accd:'#b55718',t:['#ffa726',.22]},
+  {id:'chanh',n:'Vàng chanh',lv:2,bg:'#fbf6d6',panel:'#fffdf0',line:'#ebe097',ink:'#33301a',soft:'#6e6632',acc:'#c9a820',accd:'#977d0e',t:['#fff176',.25]},
+  {id:'matcha',n:'Xanh matcha',lv:2,bg:'#eef4e2',panel:'#f8fbf1',line:'#cfe0b3',ink:'#25331a',soft:'#566b43',acc:'#6aa84f',accd:'#4b7f36',t:['#9ccc65',.22]},
+  {id:'bacha',n:'Bạc hà',lv:3,bg:'#e3f5f0',panel:'#f4fcf9',line:'#b9e2d6',ink:'#1d3530',soft:'#4b6f66',acc:'#3fae90',accd:'#2b8069',t:['#80cbc4',.24]},
+  {id:'bien',n:'Xanh biển',lv:3,bg:'#e6f2fa',panel:'#f5fbff',line:'#bfdcef',ink:'#1c2d3a',soft:'#4a6378',acc:'#3d8fd1',accd:'#2a6aa0',t:['#64b5f6',.22]},
+  {id:'khoaimon',n:'Tím khoai môn',lv:3,bg:'#efe7f7',panel:'#faf6fd',line:'#d7c6ea',ink:'#2d2238',soft:'#62507a',acc:'#9b6bd1',accd:'#7147a3',t:['#b39ddb',.26]},
+  {id:'socola',n:'Sô cô la',lv:3,bg:'#d9c2ab',panel:'#efe2d4',line:'#b8916e',ink:'#2e1c12',soft:'#5e3f2b',acc:'#6b3f22',accd:'#4a2a14',t:['#5b3a26',.4]},
+  {id:'dem',n:'Đêm dịu',lv:3,bg:'#2b2433',panel:'#3a3144',line:'#574a63',ink:'#f5ecf7',soft:'#cbbad3',acc:'#f08fb0',accd:'#b85f80',t:['#3b2d5c',.19]}
 ];
 let THEME='kem';try{THEME=localStorage.getItem('tsTheme')||'kem'}catch(e){}
-function applyTheme(id){const t=THEMES.find(x=>x.id===id)||THEMES[0];THEME=t.id;try{localStorage.setItem('tsTheme',t.id)}catch(e){}
+function applyTheme(id){let t=THEMES.find(x=>x.id===id)||THEMES[0];if(typeof S!=='undefined'&&S&&t.lv>level()){toast('Màu '+t.n+' mở ở Cấp '+t.lv);t=THEMES.find(x=>x.lv<=level())||THEMES[0]}THEME=t.id;try{localStorage.setItem('tsTheme',t.id)}catch(e){}
   const r=document.documentElement.style;r.setProperty('--bg',t.bg);r.setProperty('--panel',t.panel);r.setProperty('--line',t.line);r.setProperty('--ink',t.ink);r.setProperty('--soft',t.soft);r.setProperty('--pink',t.acc);r.setProperty('--pink-d',t.accd);
   r.setProperty('--tint',t.t?t.t[0]:'transparent');r.setProperty('--tintm','#ffffff');r.setProperty('--tinta',t.t?t.t[1]:0);document.body.classList.toggle('dark',t.id==='dem');
   let m=document.querySelector('meta[name=theme-color]');if(!m){m=document.createElement('meta');m.name='theme-color';document.head.appendChild(m)}m.content=t.bg}
 function themeDlg(){$('card').onchange=null;
-  $('card').innerHTML=`<h2>Màu giao diện</h2><p>Chọn màu bạn thích, đổi lúc nào cũng được.</p><div class="thg">${THEMES.map(t=>`<button class="thb${t.id===THEME?' on':''}" data-th="${t.id}"><i style="background:linear-gradient(135deg,${t.bg} 0 50%,${t.acc} 50%)"></i>${t.n}</button>`).join('')}</div><button class="big" id="thClose" style="margin-top:12px">Xong</button>`;
-  $('modal').hidden=false;$('card').querySelectorAll('[data-th]').forEach(b=>b.onclick=()=>{applyTheme(b.dataset.th);themeDlg()});$('thClose').onclick=showSettings}
+  const lv=level();
+  $('card').innerHTML=`<h2>Màu giao diện</h2><p>Màu mới được mở khi quán lên cấp. Hiện tại: <b>Cấp ${lv}</b>.</p><div class="thg">${THEMES.map(t=>`<button class="thb${t.id===THEME?' on':''}${t.lv>lv?' locked':''}" data-th="${t.id}" ${t.lv>lv?'disabled':''}><i style="background:linear-gradient(135deg,${t.bg} 0 50%,${t.acc} 50%)"></i>${t.n}<small>${t.lv>lv?'🔒 Cấp '+t.lv:'Đã mở'}</small></button>`).join('')}</div><button class="big" id="thClose" style="margin-top:12px">Xong</button>`;
+  $('modal').hidden=false;$('card').querySelectorAll('[data-th]:not(:disabled)').forEach(b=>b.onclick=()=>{applyTheme(b.dataset.th);themeDlg()});$('thClose').onclick=showSettings}
 /* ---------- ÂM THANH (tự tạo bằng Web Audio, không cần file) ---------- */
 const AU={ctx:null,on:true,mus:true};
 try{const a=JSON.parse(localStorage.getItem('tsAudio'));if(a){AU.on=a.on!==false;AU.mus=a.mus!==false;AU.season=a.season||null}}catch(e){}
