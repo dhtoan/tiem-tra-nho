@@ -24,7 +24,9 @@
     "test:referral": "node scripts/test-referral.mjs"
   },
   "devDependencies": {
-    "wrangler": "4.141.0"
+    "wrangler": "4.141.0",
+    "html-minifier-terser": "^7.2.0",
+    "terser": "^5.44.0"
   },
   "cloudflare": {
     "bindings": {
