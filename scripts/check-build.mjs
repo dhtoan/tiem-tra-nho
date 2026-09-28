@@ -27,11 +27,11 @@ for(const marker of ['cloudAccountBtn','cloudAccountDlg','cloudSaveNudge']){
   if(!html.includes(marker))throw new Error('account UI missing '+marker);
 }
 const game=await readFile(join(root,'js/game.js'),'utf8');
-if(!game.includes("const GAME_VERSION='12.47.11'"))throw new Error('runtime version 12.47.11 missing');
+if(!game.includes("const GAME_VERSION='1.0.0'"))throw new Error('Aunomay runtime version 1.0.0 missing');
 if(!game.includes("const SAVE='tsShop2'"))throw new Error('expected tsShop2 save key missing');
 const bc=await readFile(join(root,'js/baucua.js'),'utf8');
 for(const img of ['bau.png','ca.png','cua.png','tom.png','nai.png','ga.png'])if(!bc.includes(img))throw new Error('baucua missing '+img);
 const account=await readFile(join(root,'account-sync.js'),'utf8');
 for(const ref of ['/api/auth/me','/api/auth/','/api/account/save'])if(!account.includes(ref))throw new Error('account sync missing '+ref);
 for(const mode of ['login','register'])if(!account.includes("auth('"+mode+"')"))throw new Error('account sync missing '+mode+' action');
-console.log('build verification passed: 12.47.11 + minigames + login + D1 auto-sync + PWA');
+console.log('build verification passed: 1.0.0 + minigames + login + D1 auto-sync + PWA');
