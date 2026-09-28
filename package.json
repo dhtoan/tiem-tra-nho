@@ -11,7 +11,8 @@
     "deploy": "npm run check && wrangler deploy",
     "db:local": "wrangler d1 migrations apply DB --local --config wrangler.d1.toml",
     "db:remote": "wrangler d1 migrations apply DB --remote --config wrangler.d1.toml",
-    "deploy:d1": "npm run check && npm run db:remote && wrangler deploy --config wrangler.d1.toml"
+    "deploy:d1": "npm run check && npm run db:remote && wrangler deploy --config wrangler.d1.toml",
+    "test:smoke": "node scripts/smoke.mjs"
   },
   "devDependencies": {
     "wrangler": "4.141.0"
