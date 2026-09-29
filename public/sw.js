@@ -1,4 +1,4 @@
-const CACHE='tiem-tra-nho-v105-jpg-skins';
+const CACHE='tiem-tra-nho-v106-q3-skins';
 const CORE=[
   '/','/index.html',
   '/assets/css/style.css','/assets/css/baucua.css','/assets/css/xidach.css','/assets/css/banbe.css',
