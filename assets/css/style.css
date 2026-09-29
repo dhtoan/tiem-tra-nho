@@ -1414,9 +1414,13 @@ body.dark .verdict-desc .highlight-success {
 
 body:not(.selling)[data-shop-skin="shop_sakura"]::before,
 body:not(.selling)[data-shop-skin="shop_matcha"]::before,
+body:not(.selling)[data-shop-skin="shop_halloween"]::before,
+body:not(.selling)[data-shop-skin="shop_christmas"]::before,
 body:not(.selling)[data-shop-skin="shop_neon"]::before{background:#f6ecd6 url(../img/kho.jpg) center top/cover no-repeat;filter:none}
 body[data-shop-skin="shop_sakura"] .sign button{background:#fff0f5;border-color:#d88aa2;color:#8e4260}
 body[data-shop-skin="shop_matcha"] .sign button{background:#eef6df;border-color:#88a85e;color:#476228}
+body[data-shop-skin="shop_halloween"] .sign button{background:#3b2418;border-color:#e58a2b;color:#ffd7a3;box-shadow:0 0 16px rgba(229,138,43,.28)}
+body[data-shop-skin="shop_christmas"] .sign button{background:#f7fff7;border-color:#b23a48;color:#7a1f2b;box-shadow:0 0 16px rgba(178,58,72,.2)}
 body[data-shop-skin="shop_neon"] .sign button{background:#2d2240;border-color:#a06ce0;color:#f3ddff;box-shadow:0 0 18px rgba(160,108,224,.35)}
 
 #q3counterSkin{display:none}
@@ -1434,5 +1438,7 @@ body.selling.skin-applying #q3stage,body.selling.skin-applying #q3counterSkin,bo
 /* Cosmetics use existing raster artwork; no generated skin SVGs. */
 body[data-counter-skin="counter_white"]:not(.selling) .board,
 body[data-counter-skin="counter_matcha"]:not(.selling) .board,
+body[data-counter-skin="counter_halloween"]:not(.selling) .board,
+body[data-counter-skin="counter_christmas"]:not(.selling) .board,
 body[data-counter-skin="counter_luxe"]:not(.selling) .board{box-shadow:none}
 .q3g.cup_hearts,.q3g.cup_leaf,.q3g.cup_gold{position:relative}
