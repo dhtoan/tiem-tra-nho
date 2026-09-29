@@ -1,30 +1,20 @@
 {
   "name": "Tiệm Trà Nhỏ",
-  "short_name": "Tiệm Trà",
-  "description": "Game quản lý tiệm trà Việt Nam — pha chế, bán hàng, nâng cấp quán, minigame và đồng bộ tiến trình.",
+  "short_name": "Tiệm Trà Nhỏ",
+  "description": "Trò chơi Tiệm Trà Nhỏ",
   "lang": "vi",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#fdf3e4",
-  "theme_color": "#ef6f8e",
+  "background_color": "#F7628E",
+  "theme_color": "#F7628E",
   "icons": [
-    {
-      "src": "/img/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/img/icon-180.png",
-      "sizes": "180x180",
-      "type": "image/png",
-      "purpose": "any"
-    }
+    {"src":"/android-chrome-192x192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"/android-chrome-512x512.png","sizes":"512x512","type":"image/png","purpose":"any"},
+    {"src":"/icons/maskable-192x192.png","sizes":"192x192","type":"image/png","purpose":"maskable"},
+    {"src":"/icons/maskable-512x512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
   ],
   "id": "/",
-  "launch_handler": {
-    "client_mode": "navigate-existing"
-  }
+  "launch_handler": {"client_mode":"navigate-existing"}
 }
