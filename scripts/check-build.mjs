@@ -16,8 +16,8 @@ const required=[
   'Nhạc Chill Quán Cafe - Những Ca Khúc Lofi Nhẹ Nhàng Hay Nhất Dành Cho Quán Cafe - Nhạc Lofi 2026.mp3',
   'Pouring water-liquid into a glass sound effect [HQ].mp3',
   'assets/img/ga.png','assets/img/bau.png','assets/img/ca.png','assets/img/cua.png','assets/img/tom.png','assets/img/nai.png','assets/img/xocdia.png',
-  'assets/img/bg-anhdao.jpg','assets/img/bg-matcha.jpg','assets/img/bg-neondem.jpg',
-  'assets/img/bg2-anhdao.jpg','assets/img/bg2-matcha.jpg','assets/img/bg2-neondem.jpg'
+  'assets/img/bg-anhdao.jpg','assets/img/bg-matcha.jpg','assets/img/bg-halloween.jpg','assets/img/bg-christmas.jpg','assets/img/bg-neondem.jpg',
+  'assets/img/bg2-anhdao.jpg','assets/img/bg2-matcha.jpg','assets/img/bg2-halloween.jpg','assets/img/bg2-christmas.jpg','assets/img/bg2-neondem.jpg'
 ];
 for(const file of required)await access(join(root,file));
 for(const file of required){
@@ -42,7 +42,7 @@ for(const marker of ['cloudAccountBtn','cloudAccountDlg','cloudSaveNudge']){
 const game=await readFile(join(root,'assets/js/game.js'),'utf8');
 if(!/GAME_VERSION=["']1\.0\.0["']/.test(game))throw new Error('Aunomay runtime version 1.0.0 missing');
 if(!/SAVE=["']tsShop2["']/.test(game))throw new Error('expected tsShop2 save key missing');
-for(const skin of ['bg-anhdao.jpg','bg-matcha.jpg','bg-neondem.jpg','bg2-anhdao.jpg','bg2-matcha.jpg','bg2-neondem.jpg'])if(!game.includes(skin))throw new Error('skin mapping missing '+skin);
+for(const skin of ['bg-anhdao.jpg','bg-matcha.jpg','bg-halloween.jpg','bg-christmas.jpg','bg-neondem.jpg','bg2-anhdao.jpg','bg2-matcha.jpg','bg2-halloween.jpg','bg2-christmas.jpg','bg2-neondem.jpg'])if(!game.includes(skin))throw new Error('skin mapping missing '+skin);
 if(!game.includes("owned.has(shop)")||!game.includes("owned.has(counter)"))throw new Error('purchased-skin ownership guard missing');
 for(const [name,text] of [['index',html],['game',game]]){
   if(/reference\//i.test(text)||/\/img\/skins\//i.test(text))throw new Error('non-production asset namespace leaked into '+name);
