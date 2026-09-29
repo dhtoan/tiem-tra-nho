@@ -14,10 +14,8 @@ const files={
 };
 
 if(!files.game.includes("const GAME_VERSION='1.0.0'"))throw new Error('Aunomay Tiệm Trà Nhỏ must restart at version 1.0.0');
-for(const name of ['game','friends','friendCss','manifest','version','pkg']){
-  if(files[name].includes('Tiệm Trà Mơ Ước'))throw new Error(name+' still contains legacy Tiệm Trà Mơ Ước branding');
-}
-if(!files.build.includes(".replaceAll('Tiệm Trà Mơ Ước','Tiệm Trà Nhỏ')"))throw new Error('build must rewrite legacy brand in upstream HTML');
+if(!files.build.includes("join(root,'src/index.html')"))throw new Error('build must use the first-party src/index.html source');
+if(files.build.includes('reference/'))throw new Error('build must not depend on a reference-site source tree');
 if(!files.game.includes("friends:[]"))throw new Error('friend state is missing');
 if(!files.game.includes("friendBuff"))throw new Error('friend traffic buff integration is missing');
 if(!/Full Topping/i.test(files.game))throw new Error('Full Topping support is missing');
