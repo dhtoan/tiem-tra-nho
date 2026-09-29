@@ -3424,21 +3424,21 @@ function ensureCosmetics(){
   S.cosmetics.active={shop:'shop_classic',counter:'counter_classic',cup:'cup_classic',...(S.cosmetics.active||{})};
 }
 const STATIC_SKIN_ART={
-  shop_sakura:'/assets/img/bg-anhdao.png',shop_matcha:'/assets/img/bg-matcha.png',shop_neon:'/assets/img/bg-neondem.png',
-  counter_white:'/assets/img/bg2-anhdao.png',counter_matcha:'/assets/img/bg2-matcha.png',counter_luxe:'/assets/img/bg2-neondem.png',
+  shop_sakura:'/assets/img/bg-anhdao.jpg',shop_matcha:'/assets/img/bg-matcha.jpg',shop_neon:'/assets/img/bg-neondem.jpg',
+  counter_white:'/assets/img/bg2-anhdao.jpg',counter_matcha:'/assets/img/bg2-matcha.jpg',counter_luxe:'/assets/img/bg2-neondem.jpg',
   cup_hearts:'/assets/img/stk_heart.png',cup_leaf:'/assets/img/stk_leaf.png',cup_gold:'/assets/img/stk_star.png'
 };
 const Q3_SHOP_SKIN_BG={
   shop_classic:'/assets/img/bg2.jpg',
-  shop_sakura:'/assets/img/bg2-anhdao.png',
-  shop_matcha:'/assets/img/bg2-matcha.png',
-  shop_neon:'/assets/img/bg2-neondem.png'
+  shop_sakura:'/assets/img/bg2-anhdao.jpg',
+  shop_matcha:'/assets/img/bg2-matcha.jpg',
+  shop_neon:'/assets/img/bg2-neondem.jpg'
 };
 const Q3_COUNTER_SKIN_BG={
   counter_classic:'none',
-  counter_white:'/assets/img/bg-anhdao.png',
-  counter_matcha:'/assets/img/bg-matcha.png',
-  counter_luxe:'/assets/img/bg-neondem.png'
+  counter_white:'/assets/img/bg-anhdao.jpg',
+  counter_matcha:'/assets/img/bg-matcha.jpg',
+  counter_luxe:'/assets/img/bg-neondem.jpg'
 };
 function applyCosmetics(animate=false){
   if(typeof S==='undefined'||!S)return;ensureCosmetics();
@@ -3830,7 +3830,7 @@ function showSplash(had,after){
   const fitTag=()=>{const t=document.querySelector('.sp4-tag');if(!t)return;let f=26;t.style.fontSize=f+'px';while(t.scrollWidth>t.clientWidth+1&&f>16){f--;t.style.fontSize=f+'px'}};fitTag();if(document.fonts)document.fonts.ready.then(fitTag);
   $('spGo').onclick=()=>{if(had){closeSplash();after&&after()}else showTour(true)};
   $('spHelp').onclick=had?()=>showTour(false,false,after):()=>restoreDlg();
-  const files=['splash2.jpg','cathead.png','bg2.jpg','bg.jpg','bg-anhdao.png','bg-matcha.png','bg-neondem.png','bg2-anhdao.png','bg2-matcha.png','bg2-neondem.png','faces.webp','ship.webp','star.webp','cup.png','lid.png','kho.jpg','ic_box.png','ic_tools.png','ic_price.png','ic_star.png','ic_chart.png','lanL.png','lanR.png'];let done=0,shown=0;const t0=performance.now();
+  const files=['splash2.jpg','cathead.png','bg2.jpg','bg.jpg','bg-anhdao.jpg','bg-matcha.jpg','bg-neondem.jpg','bg2-anhdao.jpg','bg2-matcha.jpg','bg2-neondem.jpg','faces.webp','ship.webp','star.webp','cup.png','lid.png','kho.jpg','ic_box.png','ic_tools.png','ic_price.png','ic_star.png','ic_chart.png','lanL.png','lanR.png'];let done=0,shown=0;const t0=performance.now();
   files.forEach(f=>{const im=new Image();im.onload=im.onerror=()=>done++;im.src=IMG+f});
   const step=()=>{if(!$('spBar'))return;const want=Math.min(done/files.length,(performance.now()-t0)/1600);shown+=(want-shown)*.16;if(want>=1&&shown>.985)shown=1;
     const pc_=Math.round(shown*100);$('spBar').style.width=pc_+'%';$('spPct').textContent=pc_+'%';$('spMsg').textContent=SP_MSG[Math.min(SP_MSG.length-1,Math.floor(shown*SP_MSG.length))];
