@@ -3369,7 +3369,7 @@ function ask(html,btns){
   $('card').onchange=null;
   $('card').innerHTML=html+`<div class="askbtns">${btns.map((b,i)=>`<button class="${b[2]?'big':'sbtn ghost'}" data-ask="${i}">${b[0]}</button>`).join('')}</div>`;
   $('modal').hidden=false;
-  $('card').querySelectorAll('[data-ask]').forEach(el=>el.onclick=async()=>{const b=btns[+el.dataset.ask];const keep=el.closest('.card').querySelector('#pin')?$('pin').value:null;if(isField(document.activeElement))document.activeElement.blur();const result=await b[1](keep);if(result!==false)$('modal').hidden=true});
+  $('card').querySelectorAll('[data-ask]').forEach(el=>el.onclick=async()=>{const b=btns[+el.dataset.ask];const keep=el.closest('.card').querySelector('#pin')?$('pin').value:null;if(isField(document.activeElement))document.activeElement.blur();$('modal').hidden=true;const result=await b[1](keep);if(result===false)$('modal').hidden=false});
 }
 
 /* ---------- FX ---------- */
