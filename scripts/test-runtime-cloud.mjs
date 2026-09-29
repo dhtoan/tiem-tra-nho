@@ -9,8 +9,8 @@ if(!sw.includes("r.status!==206")&&!sw.includes("r.status !== 206")){
 }
 
 const game=await readFile(new URL('../assets/js/game.js',import.meta.url),'utf8');
-if(game.includes('tiemtranho-api.trongnhi110266.workers.dev')){
-  throw new Error('Game must not call legacy external save host directly');
+if(game.includes('/import/legacy')){
+  throw new Error('Game must not use an external legacy-import fallback');
 }
 if(!game.includes("const CLOUD='/api'")){
   throw new Error('Game cloud API must be same-origin /api');
