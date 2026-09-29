@@ -1411,19 +1411,24 @@ body.dark .verdict-desc .highlight-success {
 .skin-buy-fx i:nth-child(2){transform:translate(-92px,-78px)}.skin-buy-fx i:nth-child(3){transform:translate(96px,-62px)}.skin-buy-fx i:nth-child(4){transform:translate(-78px,84px)}.skin-buy-fx i:nth-child(5){transform:translate(88px,88px)}
 @keyframes skinFxFade{0%,72%{opacity:1}to{opacity:0}}@keyframes skinFxPop{0%{transform:scale(.72);opacity:0}55%{transform:scale(1.08)}to{transform:scale(1)}}@keyframes skinSpark{from{opacity:0;scale:.3}35%{opacity:1;scale:1.25}to{opacity:0;scale:.8}}
 
-body:not(.selling)[data-shop-skin="shop_sakura"]::before{background-image:linear-gradient(rgba(255,240,246,.18),rgba(255,240,246,.18)),url(../img/skins/shop_sakura.svg),url(../img/kho.jpg);background-size:cover,cover,cover;background-position:center top;filter:saturate(1.08)}
-body:not(.selling)[data-shop-skin="shop_matcha"]::before{background-image:linear-gradient(rgba(232,244,222,.16),rgba(232,244,222,.16)),url(../img/skins/shop_matcha.svg),url(../img/kho.jpg);background-size:cover,cover,cover;background-position:center top;filter:saturate(.98)}
-body:not(.selling)[data-shop-skin="shop_neon"]::before{background-image:linear-gradient(rgba(28,18,45,.18),rgba(28,18,45,.18)),url(../img/skins/shop_neon.svg),url(../img/kho.jpg);background-size:cover,cover,cover;background-position:center top;filter:saturate(1.12) brightness(.9)}
+body:not(.selling)[data-shop-skin="shop_sakura"]::before{background-image:linear-gradient(rgba(255,225,236,.22),rgba(255,240,246,.1)),url(../img/bg.jpg);background-size:cover,cover;background-position:center top;filter:saturate(1.18) hue-rotate(326deg) brightness(1.04)}
+body:not(.selling)[data-shop-skin="shop_matcha"]::before{background-image:linear-gradient(rgba(218,239,199,.18),rgba(238,246,223,.08)),url(../img/bg2.jpg);background-size:cover,cover;background-position:center top;filter:saturate(.92) hue-rotate(42deg) brightness(1.02)}
+body:not(.selling)[data-shop-skin="shop_neon"]::before{background-image:linear-gradient(rgba(31,18,48,.3),rgba(42,22,60,.16)),url(../img/splash2.jpg);background-size:cover,cover;background-position:center top;filter:saturate(1.28) hue-rotate(250deg) brightness(.72) contrast(1.08)}
 body[data-shop-skin="shop_sakura"] .sign button{background:#fff0f5;border-color:#d88aa2;color:#8e4260}
 body[data-shop-skin="shop_matcha"] .sign button{background:#eef6df;border-color:#88a85e;color:#476228}
 body[data-shop-skin="shop_neon"] .sign button{background:#2d2240;border-color:#a06ce0;color:#f3ddff;box-shadow:0 0 18px rgba(160,108,224,.35)}
 
-#q3counterSkin{position:absolute;inset:330px 0 0;pointer-events:none;z-index:0;opacity:.28}
-#q3stage.counter_white #q3counterSkin{background-image:linear-gradient(180deg,rgba(255,255,255,.12),rgba(235,235,235,.12)),url(../img/skins/counter_white.svg);background-size:cover;mix-blend-mode:normal;opacity:.52}
-#q3stage.counter_matcha #q3counterSkin{background-image:linear-gradient(180deg,rgba(115,155,85,.08),rgba(75,110,55,.12)),url(../img/skins/counter_matcha.svg);background-size:cover;mix-blend-mode:normal;opacity:.50}
-#q3stage.counter_luxe #q3counterSkin{background-image:url(../img/skins/counter_luxe.svg);background-size:cover;mix-blend-mode:normal;opacity:.48}
+#q3counterSkin{position:absolute;inset:330px 0 0;pointer-events:none;z-index:0;opacity:.28;background-repeat:no-repeat}
+#q3stage.counter_white #q3counterSkin{background-image:linear-gradient(rgba(255,255,255,.58),rgba(244,239,231,.58)),url(../img/kho.jpg);background-size:cover,cover;background-position:center,center 58%;mix-blend-mode:screen;opacity:.62;filter:grayscale(.72) brightness(1.14)}
+#q3stage.counter_matcha #q3counterSkin{background-image:linear-gradient(rgba(186,219,152,.36),rgba(113,151,83,.32)),url(../img/bg2.jpg);background-size:cover,cover;background-position:center,center 72%;mix-blend-mode:multiply;opacity:.46;filter:saturate(.9) hue-rotate(45deg)}
+#q3stage.counter_luxe #q3counterSkin{background-image:linear-gradient(rgba(255,244,218,.22),rgba(103,76,52,.18)),url(../img/bg.jpg);background-size:cover,cover;background-position:center,center 76%;mix-blend-mode:soft-light;opacity:.58;filter:sepia(.38) saturate(1.12) contrast(1.04)}
 
-.q3g.cup_hearts::after,.q3g.cup_leaf::after,.q3g.cup_gold::after{content:"";position:absolute;left:26%;right:26%;top:44%;bottom:22%;pointer-events:none;z-index:5;border-radius:10px}
-.q3g.cup_hearts::after{background-image:url(../img/skins/cup_hearts.svg);background-size:cover}
-.q3g.cup_leaf::after{background-image:url(../img/skins/cup_leaf.svg);background-size:cover}
-.q3g.cup_gold::after{border:2px solid rgba(196,151,47,.9);box-shadow:inset 0 0 0 2px rgba(255,244,196,.7);background-image:url(../img/skins/cup_gold.svg);background-size:cover}
+.q3g.cup_hearts::after,.q3g.cup_leaf::after,.q3g.cup_gold::after{content:"";position:absolute;left:28%;right:28%;top:46%;bottom:24%;pointer-events:none;z-index:5;border-radius:9px;background-repeat:repeat;background-position:center;mix-blend-mode:multiply}
+.q3g.cup_hearts::after{background-image:url(../img/stk_heart.png);background-size:22px 22px;opacity:.58}
+.q3g.cup_leaf::after{background-image:url(../img/stk_leaf.png);background-size:25px 25px;opacity:.55}
+.q3g.cup_gold::after{border:1px solid rgba(196,151,47,.7);box-shadow:inset 0 0 0 1px rgba(255,244,196,.55);background-image:url(../img/stk_star.png);background-size:24px 24px;opacity:.58;filter:sepia(.3) saturate(1.35)}
+
+body.skin-applying:not(.selling)::before{animation:skinSceneIn .72s cubic-bezier(.2,.9,.25,1)}
+body.selling.skin-applying #q3counterSkin,body.selling.skin-applying .q3g::after{animation:skinLayerIn .72s cubic-bezier(.2,.9,.25,1)}
+@keyframes skinSceneIn{0%{opacity:.28;transform:scale(1.025);filter:brightness(1.18) saturate(1.3)}100%{opacity:1;transform:scale(1)}}
+@keyframes skinLayerIn{0%{opacity:0;transform:scale(.94)}60%{opacity:.82;transform:scale(1.015)}100%{transform:scale(1)}}
