@@ -3,6 +3,8 @@ import { join } from 'node:path';
 import { minify as minifyHtml } from 'html-minifier-terser';
 import { minify as minifyJs } from 'terser';
 import CleanCSS from 'clean-css';
+import sharp from 'sharp';
+import toIco from 'to-ico';
 
 const root=new URL('../',import.meta.url).pathname;
 const out=join(root,'dist');
@@ -18,6 +20,27 @@ await cp(join(root,'public'),out,{recursive:true});
 for(const dir of ['css','js','img']){
   await cp(join(root,dir),join(out,dir),{recursive:true});
 }
+
+// Generate the exact favicon / iOS / Android filenames from the supplied app icon.
+// This keeps the repository lightweight while shipping optimized raster icons in production.
+const iconSource=join(root,'assets/uploaded-icon-192.png');
+const iconJobs=[
+  ['favicon-16x16.png',16],['favicon-32x32.png',32],
+  ['apple-touch-icon-120x120.png',120],['apple-touch-icon-152x152.png',152],
+  ['apple-touch-icon-167x167.png',167],['apple-touch-icon.png',180],
+  ['android-chrome-192x192.png',192],['android-chrome-512x512.png',512]
+];
+for(const [name,size] of iconJobs){
+  await sharp(iconSource).resize(size,size,{fit:'cover'}).png({compressionLevel:9,palette:true,quality:88}).toFile(join(out,name));
+}
+await mkdir(join(out,'icons'),{recursive:true});
+for(const size of [192,512]){
+  await sharp(iconSource).resize(size,size,{fit:'cover'}).png({compressionLevel:9,palette:true,quality:88}).toFile(join(out,'icons',`maskable-${size}x${size}.png`));
+}
+await sharp(iconSource).resize(192,192,{fit:'cover'}).png({compressionLevel:9,palette:true,quality:88}).toFile(join(out,'img','icon-192.png'));
+await sharp(iconSource).resize(512,512,{fit:'cover'}).png({compressionLevel:9,palette:true,quality:88}).toFile(join(out,'img','icon-512.png'));
+const icoPng=await sharp(iconSource).resize(32,32,{fit:'cover'}).png().toBuffer();
+await writeFile(join(out,'favicon.ico'),await toIco([icoPng]));
 
 let html=await readFile(join(root,'reference/tiemtramouoc/index.html'),'utf8');
 html=html
