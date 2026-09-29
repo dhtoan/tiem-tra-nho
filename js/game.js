@@ -3375,7 +3375,7 @@ function ask(html,btns){
 /* ---------- FX ---------- */
 function fl(el,t,bad){if(!el)return;const r=el.getBoundingClientRect(),f=document.createElement('div');f.className='float'+(bad?' bad':'');f.textContent=t;
   document.body.appendChild(f);f.style.left=Math.max(6,Math.min(vpW()-f.offsetWidth-6,(r.left+r.width/2)/ZM-f.offsetWidth/2))+'px';f.style.top=(r.top/ZM+8)+'px';setTimeout(()=>f.remove(),1100)}
-let tt,tPri=0;function toast(m,ms,pri){const now=performance.now();if(!pri&&now<tPri)return;const t=$('toast');t.innerHTML=m;t.classList.toggle('sell',R.mode==='sell');t.classList.toggle('pri',!!pri);t.classList.add('show');clearTimeout(tt);ms=ms||(R.mode==='sell'?3000:2500);tPri=pri?now+ms:0;tt=setTimeout(()=>{t.classList.remove('show');tPri=0},ms)}
+let tt,tPri=0;function toast(m,ms,pri){const now=performance.now();if(!pri&&now<tPri)return;const t=$('toast');t.innerHTML=m;t.classList.toggle('sell',R.mode==='sell');t.classList.toggle('pri',!!pri);t.classList.toggle('copy',/sao chép|đã chép|clipboard|bộ nhớ tạm/i.test(String(m)));t.classList.add('show');clearTimeout(tt);ms=ms||(R.mode==='sell'?3000:2500);tPri=pri?now+ms:0;tt=setTimeout(()=>{t.classList.remove('show','copy');tPri=0},ms)}
 
 
 /* ---------- MÀU GIAO DIỆN ---------- */
