@@ -46,7 +46,15 @@
     try{
       const r=await api('/api/auth/'+mode,{method:'POST',body:JSON.stringify({username,password:pass,displayName:raw||username})});
       if(!r.ok)return status(r.j.error||'Không thực hiện được.');
-      user=r.j.user;revision=0;render();startPeriodic();status(mode==='register'?'Đã tạo tài khoản. Đang đồng bộ…':'Đăng nhập thành công. Đang đồng bộ…');await reconcile();
+      user=r.j.user;revision=0;render();startPeriodic();status(mode==='register'?'Đã tạo tài khoản. Đang đồng bộ…':'Đăng nhập thành công. Đang đồng bộ…');
+      try{
+        if(window.AunomayReferral&&typeof window.AunomayReferral.claimPending==='function'){
+          const claimed=await window.AunomayReferral.claimPending({take:false});
+          if(claimed)status('Đã gắn lời mời vào tài khoản. Mở Tiệm Trà Nhỏ từ màn hình chính bằng cùng tài khoản để nhận +300k.');
+        }
+      }catch{}
+      try{dispatchEvent(new CustomEvent('ttn:auth-changed',{detail:{user}}))}catch{}
+      await reconcile();
     }finally{
       setAuthBusy(false,mode);
     }
