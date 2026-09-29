@@ -3409,9 +3409,9 @@ const COSMETICS=[
   {id:'shop_matcha',type:'shop',n:'Tiệm Matcha Garden',icon:'🌿',cost:2800000,lv:2},
   {id:'shop_neon',type:'shop',n:'Tiệm Neon Đêm',icon:'🌃',cost:6500000,lv:3},
   {id:'counter_classic',type:'counter',n:'Quầy Gỗ Cổ Điển',icon:'🪵',cost:0,lv:1},
-  {id:'counter_white',type:'counter',n:'Quầy Trắng Tối Giản',icon:'🤍',cost:850000,lv:1},
-  {id:'counter_matcha',type:'counter',n:'Quầy Matcha',icon:'🍵',cost:2200000,lv:2},
-  {id:'counter_luxe',type:'counter',n:'Quầy Đá Sang Trọng',icon:'✨',cost:5000000,lv:3},
+  {id:'counter_white',type:'counter',n:'Quầy Hoa Anh Đào',icon:'🌸',cost:850000,lv:1},
+  {id:'counter_matcha',type:'counter',n:'Quầy Matcha Garden',icon:'🌿',cost:2200000,lv:2},
+  {id:'counter_luxe',type:'counter',n:'Quầy Neon Đêm',icon:'🌃',cost:5000000,lv:3},
   {id:'cup_classic',type:'cup',n:'Ly Trong Cổ Điển',icon:'🥤',cost:0,lv:1},
   {id:'cup_hearts',type:'cup',n:'Ly Tim Hồng',icon:'💕',cost:450000,lv:1},
   {id:'cup_leaf',type:'cup',n:'Ly Lá Trà',icon:'🍃',cost:1200000,lv:2},
@@ -3424,19 +3424,40 @@ function ensureCosmetics(){
   S.cosmetics.active={shop:'shop_classic',counter:'counter_classic',cup:'cup_classic',...(S.cosmetics.active||{})};
 }
 const STATIC_SKIN_ART={
-  shop_sakura:'/assets/img/bg.jpg',shop_matcha:'/assets/img/bg2.jpg',shop_neon:'/assets/img/splash2.jpg',
-  counter_white:'/assets/img/kho.jpg',counter_matcha:'/assets/img/bg2.jpg',counter_luxe:'/assets/img/bg.jpg',
+  shop_sakura:'/assets/img/bg-anhdao.png',shop_matcha:'/assets/img/bg-matcha.png',shop_neon:'/assets/img/bg-neondem.png',
+  counter_white:'/assets/img/bg2-anhdao.png',counter_matcha:'/assets/img/bg2-matcha.png',counter_luxe:'/assets/img/bg2-neondem.png',
   cup_hearts:'/assets/img/stk_heart.png',cup_leaf:'/assets/img/stk_leaf.png',cup_gold:'/assets/img/stk_star.png'
+};
+const SHOP_SKIN_BG={
+  shop_classic:'/assets/img/bg.jpg',
+  shop_sakura:'/assets/img/bg-anhdao.png',
+  shop_matcha:'/assets/img/bg-matcha.png',
+  shop_neon:'/assets/img/bg-neondem.png'
+};
+const COUNTER_SKIN_BG={
+  counter_classic:'/assets/img/bg2.jpg',
+  counter_white:'/assets/img/bg2-anhdao.png',
+  counter_matcha:'/assets/img/bg2-matcha.png',
+  counter_luxe:'/assets/img/bg2-neondem.png'
 };
 function applyCosmetics(animate=false){
   if(typeof S==='undefined'||!S)return;ensureCosmetics();
-  document.body.dataset.shopSkin=S.cosmetics.active.shop||'shop_classic';
-  document.body.dataset.counterSkin=S.cosmetics.active.counter||'counter_classic';
-  document.body.dataset.cupSkin=S.cosmetics.active.cup||'cup_classic';
+  const owned=new Set(S.cosmetics.owned||[]);
+  let shop=S.cosmetics.active.shop||'shop_classic';
+  let counter=S.cosmetics.active.counter||'counter_classic';
+  let cup=S.cosmetics.active.cup||'cup_classic';
+  if(shop!=='shop_classic'&&!owned.has(shop))shop='shop_classic';
+  if(counter!=='counter_classic'&&!owned.has(counter))counter='counter_classic';
+  if(cup!=='cup_classic'&&!owned.has(cup))cup='cup_classic';
+  document.body.dataset.shopSkin=shop;
+  document.body.dataset.counterSkin=counter;
+  document.body.dataset.cupSkin=cup;
+  document.documentElement.style.setProperty('--shop-skin-bg',`url("${SHOP_SKIN_BG[shop]||SHOP_SKIN_BG.shop_classic}")`);
+  document.documentElement.style.setProperty('--counter-skin-bg',`url("${COUNTER_SKIN_BG[counter]||COUNTER_SKIN_BG.counter_classic}")`);
   const st=document.getElementById('q3stage');
   if(st){
     [...st.classList].filter(x=>x.startsWith('counter_')).forEach(x=>st.classList.remove(x));
-    st.classList.add(S.cosmetics.active.counter||'counter_classic');
+    st.classList.add(counter);
   }
   if(animate){
     document.body.classList.remove('skin-applying');
@@ -3807,7 +3828,7 @@ function showSplash(had,after){
   const fitTag=()=>{const t=document.querySelector('.sp4-tag');if(!t)return;let f=26;t.style.fontSize=f+'px';while(t.scrollWidth>t.clientWidth+1&&f>16){f--;t.style.fontSize=f+'px'}};fitTag();if(document.fonts)document.fonts.ready.then(fitTag);
   $('spGo').onclick=()=>{if(had){closeSplash();after&&after()}else showTour(true)};
   $('spHelp').onclick=had?()=>showTour(false,false,after):()=>restoreDlg();
-  const files=['splash2.jpg','cathead.png','bg2.jpg','bg.jpg','faces.webp','ship.webp','star.webp','cup.png','lid.png','kho.jpg','ic_box.png','ic_tools.png','ic_price.png','ic_star.png','ic_chart.png','lanL.png','lanR.png'];let done=0,shown=0;const t0=performance.now();
+  const files=['splash2.jpg','cathead.png','bg2.jpg','bg.jpg','bg-anhdao.png','bg-matcha.png','bg-neondem.png','bg2-anhdao.png','bg2-matcha.png','bg2-neondem.png','faces.webp','ship.webp','star.webp','cup.png','lid.png','kho.jpg','ic_box.png','ic_tools.png','ic_price.png','ic_star.png','ic_chart.png','lanL.png','lanR.png'];let done=0,shown=0;const t0=performance.now();
   files.forEach(f=>{const im=new Image();im.onload=im.onerror=()=>done++;im.src=IMG+f});
   const step=()=>{if(!$('spBar'))return;const want=Math.min(done/files.length,(performance.now()-t0)/1600);shown+=(want-shown)*.16;if(want>=1&&shown>.985)shown=1;
     const pc_=Math.round(shown*100);$('spBar').style.width=pc_+'%';$('spPct').textContent=pc_+'%';$('spMsg').textContent=SP_MSG[Math.min(SP_MSG.length-1,Math.floor(shown*SP_MSG.length))];
