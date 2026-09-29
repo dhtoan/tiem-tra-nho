@@ -1,4 +1,4 @@
-const CACHE='tiem-tra-nho-v104-skins';
+const CACHE='tiem-tra-nho-v105-jpg-skins';
 const CORE=[
   '/','/index.html',
   '/assets/css/style.css','/assets/css/baucua.css','/assets/css/xidach.css','/assets/css/banbe.css',
@@ -6,7 +6,7 @@ const CORE=[
   '/account-sync.css','/account-sync.js','/referral.css','/referral.js','/vendor/qrcode.min.js','/bootstrap.js',
   '/manifest.webmanifest',
   '/assets/img/ga.png','/assets/img/bau.png','/assets/img/ca.png','/assets/img/cua.png','/assets/img/tom.png','/assets/img/nai.png','/assets/img/xocdia.png',
-  '/assets/img/cup.png','/assets/img/bg.jpg','/assets/img/bg2.jpg','/assets/img/bg-anhdao.png','/assets/img/bg-matcha.png','/assets/img/bg-neondem.png','/assets/img/bg2-anhdao.png','/assets/img/bg2-matcha.png','/assets/img/bg2-neondem.png','/assets/img/kho.jpg','/assets/img/splash2.jpg','/assets/img/faces.webp','/assets/img/ship.webp','/assets/img/star.webp'
+  '/assets/img/cup.png','/assets/img/bg.jpg','/assets/img/bg2.jpg','/assets/img/bg-anhdao.jpg','/assets/img/bg-matcha.jpg','/assets/img/bg-neondem.jpg','/assets/img/bg2-anhdao.jpg','/assets/img/bg2-matcha.jpg','/assets/img/bg2-neondem.jpg','/assets/img/kho.jpg','/assets/img/splash2.jpg','/assets/img/faces.webp','/assets/img/ship.webp','/assets/img/star.webp'
 ];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()));
