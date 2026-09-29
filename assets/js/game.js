@@ -3408,10 +3408,14 @@ const COSMETICS=[
   {id:'shop_classic',type:'shop',n:'Tiệm Trà Cổ Điển',icon:'🏠',cost:0,lv:1},
   {id:'shop_sakura',type:'shop',n:'Tiệm Hoa Anh Đào',icon:'🌸',cost:1200000,lv:1},
   {id:'shop_matcha',type:'shop',n:'Tiệm Matcha Garden',icon:'🌿',cost:2800000,lv:2},
+  {id:'shop_halloween',type:'shop',n:'Tiệm Halloween',icon:'🎃',cost:4200000,lv:2},
+  {id:'shop_christmas',type:'shop',n:'Tiệm Giáng Sinh',icon:'🎄',cost:5200000,lv:3},
   {id:'shop_neon',type:'shop',n:'Tiệm Neon Đêm',icon:'🌃',cost:6500000,lv:3},
   {id:'counter_classic',type:'counter',n:'Quầy Gỗ Cổ Điển',icon:'🪵',cost:0,lv:1},
   {id:'counter_white',type:'counter',n:'Quầy Hoa Anh Đào',icon:'🌸',cost:850000,lv:1},
   {id:'counter_matcha',type:'counter',n:'Quầy Matcha Garden',icon:'🌿',cost:2200000,lv:2},
+  {id:'counter_halloween',type:'counter',n:'Quầy Halloween',icon:'🎃',cost:3200000,lv:2},
+  {id:'counter_christmas',type:'counter',n:'Quầy Giáng Sinh',icon:'🎄',cost:4000000,lv:3},
   {id:'counter_luxe',type:'counter',n:'Quầy Neon Đêm',icon:'🌃',cost:5000000,lv:3},
   {id:'cup_classic',type:'cup',n:'Ly Trong Cổ Điển',icon:'🥤',cost:0,lv:1},
   {id:'cup_hearts',type:'cup',n:'Ly Tim Hồng',icon:'💕',cost:450000,lv:1},
@@ -3431,23 +3435,35 @@ function ensureCosmetics(){
   if(!hadCup){const x=owned.filter(id=>id!=='cup_classic'&&COSMETICS.some(c=>c.id===id&&c.type==='cup'));if(x.length)active.cup=x[x.length-1]}
   S.cosmetics={...prev,owned,active};
 }
-const SKIN_ASSET_VER='20260929c';
+const SKIN_ASSET_VER='20260929d';
 const skinAsset=p=>p+'?v='+SKIN_ASSET_VER;
 const STATIC_SKIN_ART={
-  shop_sakura:skinAsset('/assets/img/bg2-anhdao.jpg'),shop_matcha:skinAsset('/assets/img/bg2-matcha.jpg'),shop_neon:skinAsset('/assets/img/bg2-neondem.jpg'),
-  counter_white:skinAsset('/assets/img/bg-anhdao.jpg'),counter_matcha:skinAsset('/assets/img/bg-matcha.jpg'),counter_luxe:skinAsset('/assets/img/bg-neondem.jpg'),
+  shop_sakura:skinAsset('/assets/img/bg2-anhdao.jpg'),
+  shop_matcha:skinAsset('/assets/img/bg2-matcha.jpg'),
+  shop_halloween:skinAsset('/assets/img/bg2-halloween.jpg'),
+  shop_christmas:skinAsset('/assets/img/bg2-christmas.jpg'),
+  shop_neon:skinAsset('/assets/img/bg2-neondem.jpg'),
+  counter_white:skinAsset('/assets/img/bg-anhdao.jpg'),
+  counter_matcha:skinAsset('/assets/img/bg-matcha.jpg'),
+  counter_halloween:skinAsset('/assets/img/bg-halloween.jpg'),
+  counter_christmas:skinAsset('/assets/img/bg-christmas.jpg'),
+  counter_luxe:skinAsset('/assets/img/bg-neondem.jpg'),
   cup_hearts:'/assets/img/stk_heart.png',cup_leaf:'/assets/img/stk_leaf.png',cup_gold:'/assets/img/stk_star.png'
 };
 const Q3_SHOP_SKIN_BG={
   shop_classic:'/assets/img/bg2.jpg',
   shop_sakura:skinAsset('/assets/img/bg2-anhdao.jpg'),
   shop_matcha:skinAsset('/assets/img/bg2-matcha.jpg'),
+  shop_halloween:skinAsset('/assets/img/bg2-halloween.jpg'),
+  shop_christmas:skinAsset('/assets/img/bg2-christmas.jpg'),
   shop_neon:skinAsset('/assets/img/bg2-neondem.jpg')
 };
 const Q3_COUNTER_SKIN_BG={
   counter_classic:'/assets/img/bg.jpg',
   counter_white:skinAsset('/assets/img/bg-anhdao.jpg'),
   counter_matcha:skinAsset('/assets/img/bg-matcha.jpg'),
+  counter_halloween:skinAsset('/assets/img/bg-halloween.jpg'),
+  counter_christmas:skinAsset('/assets/img/bg-christmas.jpg'),
   counter_luxe:skinAsset('/assets/img/bg-neondem.jpg')
 };
 function applyCosmetics(animate=false){
@@ -3840,7 +3856,7 @@ function showSplash(had,after){
   const fitTag=()=>{const t=document.querySelector('.sp4-tag');if(!t)return;let f=26;t.style.fontSize=f+'px';while(t.scrollWidth>t.clientWidth+1&&f>16){f--;t.style.fontSize=f+'px'}};fitTag();if(document.fonts)document.fonts.ready.then(fitTag);
   $('spGo').onclick=()=>{if(had){closeSplash();after&&after()}else showTour(true)};
   $('spHelp').onclick=had?()=>showTour(false,false,after):()=>restoreDlg();
-  const files=['splash2.jpg','cathead.png','bg2.jpg','bg.jpg','bg-anhdao.jpg','bg-matcha.jpg','bg-neondem.jpg','bg2-anhdao.jpg','bg2-matcha.jpg','bg2-neondem.jpg','faces.webp','ship.webp','star.webp','cup.png','lid.png','kho.jpg','ic_box.png','ic_tools.png','ic_price.png','ic_star.png','ic_chart.png','lanL.png','lanR.png'];let done=0,shown=0;const t0=performance.now();
+  const files=['splash2.jpg','cathead.png','bg2.jpg','bg.jpg','bg-anhdao.jpg','bg-matcha.jpg','bg-halloween.jpg','bg-christmas.jpg','bg-neondem.jpg','bg2-anhdao.jpg','bg2-matcha.jpg','bg2-halloween.jpg','bg2-christmas.jpg','bg2-neondem.jpg','faces.webp','ship.webp','star.webp','cup.png','lid.png','kho.jpg','ic_box.png','ic_tools.png','ic_price.png','ic_star.png','ic_chart.png','lanL.png','lanR.png'];let done=0,shown=0;const t0=performance.now();
   files.forEach(f=>{const im=new Image();im.onload=im.onerror=()=>done++;im.src=IMG+f});
   const step=()=>{if(!$('spBar'))return;const want=Math.min(done/files.length,(performance.now()-t0)/1600);shown+=(want-shown)*.16;if(want>=1&&shown>.985)shown=1;
     const pc_=Math.round(shown*100);$('spBar').style.width=pc_+'%';$('spPct').textContent=pc_+'%';$('spMsg').textContent=SP_MSG[Math.min(SP_MSG.length-1,Math.floor(shown*SP_MSG.length))];
