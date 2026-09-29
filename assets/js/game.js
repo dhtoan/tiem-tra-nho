@@ -668,7 +668,7 @@ function showV11Announcement(onDone){
   const html = `
     <div style="text-align:left;max-height:68vh;overflow-y:auto;padding-right:4px;">
       <h2 style="font-size:17px;color:#c04800;line-height:1.35;margin-bottom:12px;text-align:center;">
-        📢 BẢN CẬP NHẬT SIÊU TO KHỔNG LỒ V1.1 - TIỆM TRÀ MƠ ƯỚC<br>
+        📢 BẢN CẬP NHẬT SIÊU TO KHỔNG LỒ V1.1 - TIỆM TRÀ NHỎ<br>
         <span style="font-size:13px;color:#e86422;font-weight:700;display:inline-block;margin-top:4px;">✨ VÀO CÀI ĐẶT ĐỂ CẬP NHẬT ✨</span>
       </h2>
       
