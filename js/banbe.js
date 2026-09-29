@@ -1321,7 +1321,8 @@
             if (window.AunomayReferral && typeof window.AunomayReferral.downloadFriendQr === 'function') await window.AunomayReferral.downloadFriendQr(code);
           }], ['📋 Sao chép lại', async () => {
             if (window.AunomayReferral && typeof window.AunomayReferral.shareFriendCode === 'function') await window.AunomayReferral.shareFriendCode(code, false);
-            else copyText(code, '📋 Đã sao chép lại!');
+            else copyText(code, '✅ Đã sao chép!');
+            return false;
           }]]);
         };
       }
@@ -1397,7 +1398,7 @@
                     </div>
                     <small style="color:#64748b;">(Đã tự động sao chép vào bộ nhớ tạm! Gửi cho bạn bè nhé!)</small>
                   </div>
-                `, [['Đóng', () => {}], ['📋 Sao chép lại', () => copyText(code, '📋 Đã sao chép lại!')]]);
+                `, [['Đóng', () => {}], ['📋 Sao chép lại', () => {copyText(code, '✅ Đã sao chép!');return false}]]);
               }, 1]
             ]);
           } else {
@@ -1416,7 +1417,7 @@
                     </div>
                     <small style="color:#64748b;">(Đã tự động sao chép vào bộ nhớ tạm! Gửi cho bạn bè nhé!)</small>
                   </div>
-                `, [['Đóng', () => {}], ['📋 Sao chép lại', () => copyText(code, '📋 Đã sao chép lại!')]]);
+                `, [['Đóng', () => {}], ['📋 Sao chép lại', () => {copyText(code, '✅ Đã sao chép!');return false}]]);
               }, 1]
             ]);
           }
@@ -1439,7 +1440,7 @@
               </div>
               <small style="color:#64748b;">(Đã tự động sao chép vào bộ nhớ tạm!)</small>
             </div>
-          `, [['Đóng', () => {}], ['📋 Sao chép lại', () => copyText(code, '📋 Đã sao chép lại!')]]);
+          `, [['Đóng', () => {}], ['📋 Sao chép lại', () => {copyText(code, '✅ Đã sao chép!');return false}]]);
         };
       }
 
@@ -1469,7 +1470,7 @@
               </div>
               <small style="color:#64748b;">(Đã tự động sao chép vào bộ nhớ tạm!)</small>
             </div>
-          `, [['Đóng', () => {}], ['📋 Sao chép lại', () => copyText(code, '📋 Đã sao chép lại!')]]);
+          `, [['Đóng', () => {}], ['📋 Sao chép lại', () => {copyText(code, '✅ Đã sao chép!');return false}]]);
         };
       }
     }
