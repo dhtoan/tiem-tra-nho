@@ -28,7 +28,9 @@
     "wrangler": "4.141.0",
     "html-minifier-terser": "^7.2.0",
     "terser": "^5.44.0",
-    "clean-css": "^5.3.3"
+    "clean-css": "^5.3.3",
+    "sharp": "^0.34.4",
+    "to-ico": "^1.1.5"
   },
   "cloudflare": {
     "bindings": {
