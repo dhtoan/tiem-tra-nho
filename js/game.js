@@ -4053,6 +4053,12 @@ function showZaloBanner(){
 /* ---------- BOOT ---------- */
 applyTheme(THEME);
 $('pauseBtn').onclick=pauseGame;$('setBtn').onclick=showSettings;
+if($('hRatebox'))$('hRatebox').onclick=()=>{
+  if(R.mode==='sell'){toast('Đánh giá mở sau khi kết thúc ca bán hàng');return}
+  if(R.tab!=='danhgia')switchTab('danhgia');
+  const tab=document.querySelector('#view .tabs [data-tab="danhgia"]');
+  if(tab)tab.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+};
 if($('bcBtn'))$('bcBtn').onclick=()=>{if(window.BauCua) window.BauCua.open()};
 if($('xdBtn'))$('xdBtn').onclick=()=>{if(window.openXiDach) window.openXiDach(); else if(window.XiDach) window.XiDach.open()};
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{})}catch(e){}
