@@ -15,7 +15,9 @@ const required=[
   'icons/maskable-192x192.png','icons/maskable-512x512.png',
   'Nhạc Chill Quán Cafe - Những Ca Khúc Lofi Nhẹ Nhàng Hay Nhất Dành Cho Quán Cafe - Nhạc Lofi 2026.mp3',
   'Pouring water-liquid into a glass sound effect [HQ].mp3',
-  'assets/img/ga.png','assets/img/bau.png','assets/img/ca.png','assets/img/cua.png','assets/img/tom.png','assets/img/nai.png','assets/img/xocdia.png'
+  'assets/img/ga.png','assets/img/bau.png','assets/img/ca.png','assets/img/cua.png','assets/img/tom.png','assets/img/nai.png','assets/img/xocdia.png',
+  'assets/img/bg-anhdao.png','assets/img/bg-matcha.png','assets/img/bg-neondem.png',
+  'assets/img/bg2-anhdao.png','assets/img/bg2-matcha.png','assets/img/bg2-neondem.png'
 ];
 for(const file of required)await access(join(root,file));
 for(const file of required){
@@ -40,6 +42,8 @@ for(const marker of ['cloudAccountBtn','cloudAccountDlg','cloudSaveNudge']){
 const game=await readFile(join(root,'assets/js/game.js'),'utf8');
 if(!/GAME_VERSION=["']1\.0\.0["']/.test(game))throw new Error('Aunomay runtime version 1.0.0 missing');
 if(!/SAVE=["']tsShop2["']/.test(game))throw new Error('expected tsShop2 save key missing');
+for(const skin of ['bg-anhdao.png','bg-matcha.png','bg-neondem.png','bg2-anhdao.png','bg2-matcha.png','bg2-neondem.png'])if(!game.includes(skin))throw new Error('skin mapping missing '+skin);
+if(!game.includes("owned.has(shop)")||!game.includes("owned.has(counter)"))throw new Error('purchased-skin ownership guard missing');
 for(const [name,text] of [['index',html],['game',game]]){
   if(/reference\//i.test(text)||/\/img\/skins\//i.test(text))throw new Error('non-production asset namespace leaked into '+name);
 }
