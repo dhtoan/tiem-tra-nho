@@ -1795,7 +1795,7 @@ function renderSell(){
     spr+=`<div class="q3spr" data-btl style="left:${x-31}px;top:1160px;width:62px;height:200px;background-position:${-(sx-31)}px -1160px"></div>`;
     h+=zone(`data-a="flav:${k}" id="q3b_${k}" data-s="${sx-29},1166" aria-label="Siro ${ITEMS[k].n}"`,x-29,1166,58,190);
     h+=`<div class="q3badge q3sm" style="left:${x+6}px;top:1206px" id="q3n_${k}"></div>`});
-  applyCosmetics();$('view').innerHTML=`<div id="q3"><div id="q3stage" class="${esc(S.cosmetics?.active?.counter||'counter_classic')}">
+  $('view').innerHTML=`<div id="q3"><div id="q3stage" class="${esc(S.cosmetics?.active?.counter||'counter_classic')}">
     <div id="gzWidget" class="gz-widget" style="display:none"></div>
     ${patch}<div id="q3counterSkin" aria-hidden="true"></div><div id="q3tint" aria-hidden="true"></div>${(evIs('rain')||evIs('storm'))?'<div id="q3rain" aria-hidden="true"><i class="r1"></i><i class="r2"></i></div>':''}
     <div class="q3lane" id="lane"></div>
@@ -1807,6 +1807,7 @@ function renderSell(){
     <div id="q3noCup">Lấy ly<br>M hoặc L</div><div id="q3cup" aria-hidden="true"></div>
     <div class="q3gauge"><div class="q3lv" id="q3gLv"></div><div class="q3ok"></div></div><div id="q3hint"></div><div id="q3coach" hidden></div>
   </div></div>`;
+  applyCosmetics();
   const st=$('q3stage');
   st.onclick=e=>{
     const dx=e.target.closest('[data-decl]');if(dx){const id=+dx.dataset.decl,i=R.slots.findIndex(c=>c&&c.id===id);if(i>=0){decline(i);toast('Đã mời khách về');renderPanel()}else{const j=R.online.findIndex(c=>c.id===id);if(j>=0){declineOnline(j);toast('Đã huỷ đơn online')}}return}
@@ -3419,26 +3420,35 @@ const COSMETICS=[
 ];
 const cosmeticTypeName=t=>({shop:'Thiết kế quán',counter:'Giao diện quầy',cup:'Thiết kế in ly'})[t]||t;
 function ensureCosmetics(){
-  S.cosmetics=S.cosmetics||{owned:['shop_classic','counter_classic','cup_classic'],active:{shop:'shop_classic',counter:'counter_classic',cup:'cup_classic'}};
-  S.cosmetics.owned=Array.isArray(S.cosmetics.owned)?S.cosmetics.owned:['shop_classic','counter_classic','cup_classic'];
-  S.cosmetics.active={shop:'shop_classic',counter:'counter_classic',cup:'cup_classic',...(S.cosmetics.active||{})};
+  const prev=S.cosmetics&&typeof S.cosmetics==='object'?S.cosmetics:{};
+  const prevOwned=Array.isArray(prev.owned)?prev.owned.slice():[];
+  const hadActive=prev.active&&typeof prev.active==='object';
+  const hadShop=!!(hadActive&&prev.active.shop),hadCounter=!!(hadActive&&prev.active.counter),hadCup=!!(hadActive&&prev.active.cup);
+  const owned=[...new Set(['shop_classic','counter_classic','cup_classic',...prevOwned])];
+  const active={shop:'shop_classic',counter:'counter_classic',cup:'cup_classic',...(hadActive?prev.active:{})};
+  if(!hadShop){const x=owned.filter(id=>id!=='shop_classic'&&COSMETICS.some(c=>c.id===id&&c.type==='shop'));if(x.length)active.shop=x[x.length-1]}
+  if(!hadCounter){const x=owned.filter(id=>id!=='counter_classic'&&COSMETICS.some(c=>c.id===id&&c.type==='counter'));if(x.length)active.counter=x[x.length-1]}
+  if(!hadCup){const x=owned.filter(id=>id!=='cup_classic'&&COSMETICS.some(c=>c.id===id&&c.type==='cup'));if(x.length)active.cup=x[x.length-1]}
+  S.cosmetics={...prev,owned,active};
 }
+const SKIN_ASSET_VER='20260929c';
+const skinAsset=p=>p+'?v='+SKIN_ASSET_VER;
 const STATIC_SKIN_ART={
-  shop_sakura:'/assets/img/bg-anhdao.jpg',shop_matcha:'/assets/img/bg-matcha.jpg',shop_neon:'/assets/img/bg-neondem.jpg',
-  counter_white:'/assets/img/bg2-anhdao.jpg',counter_matcha:'/assets/img/bg2-matcha.jpg',counter_luxe:'/assets/img/bg2-neondem.jpg',
+  shop_sakura:skinAsset('/assets/img/bg2-anhdao.jpg'),shop_matcha:skinAsset('/assets/img/bg2-matcha.jpg'),shop_neon:skinAsset('/assets/img/bg2-neondem.jpg'),
+  counter_white:skinAsset('/assets/img/bg-anhdao.jpg'),counter_matcha:skinAsset('/assets/img/bg-matcha.jpg'),counter_luxe:skinAsset('/assets/img/bg-neondem.jpg'),
   cup_hearts:'/assets/img/stk_heart.png',cup_leaf:'/assets/img/stk_leaf.png',cup_gold:'/assets/img/stk_star.png'
 };
 const Q3_SHOP_SKIN_BG={
   shop_classic:'/assets/img/bg2.jpg',
-  shop_sakura:'/assets/img/bg2-anhdao.jpg',
-  shop_matcha:'/assets/img/bg2-matcha.jpg',
-  shop_neon:'/assets/img/bg2-neondem.jpg'
+  shop_sakura:skinAsset('/assets/img/bg2-anhdao.jpg'),
+  shop_matcha:skinAsset('/assets/img/bg2-matcha.jpg'),
+  shop_neon:skinAsset('/assets/img/bg2-neondem.jpg')
 };
 const Q3_COUNTER_SKIN_BG={
-  counter_classic:'none',
-  counter_white:'/assets/img/bg-anhdao.jpg',
-  counter_matcha:'/assets/img/bg-matcha.jpg',
-  counter_luxe:'/assets/img/bg-neondem.jpg'
+  counter_classic:'/assets/img/bg.jpg',
+  counter_white:skinAsset('/assets/img/bg-anhdao.jpg'),
+  counter_matcha:skinAsset('/assets/img/bg-matcha.jpg'),
+  counter_luxe:skinAsset('/assets/img/bg-neondem.jpg')
 };
 function applyCosmetics(animate=false){
   if(typeof S==='undefined'||!S)return;ensureCosmetics();
@@ -3449,13 +3459,13 @@ function applyCosmetics(animate=false){
   if(shop!=='shop_classic'&&!owned.has(shop))shop='shop_classic';
   if(counter!=='counter_classic'&&!owned.has(counter))counter='counter_classic';
   if(cup!=='cup_classic'&&!owned.has(cup))cup='cup_classic';
+  S.cosmetics.active.shop=shop;S.cosmetics.active.counter=counter;S.cosmetics.active.cup=cup;
   document.body.dataset.shopSkin=shop;
   document.body.dataset.counterSkin=counter;
   document.body.dataset.cupSkin=cup;
   document.documentElement.style.setProperty('--shop-skin-bg','url("/assets/img/kho.jpg")');
   document.documentElement.style.setProperty('--q3-shop-skin-bg',`url("${Q3_SHOP_SKIN_BG[shop]||Q3_SHOP_SKIN_BG.shop_classic}")`);
-  const counterArt=Q3_COUNTER_SKIN_BG[counter]||'none';
-  document.documentElement.style.setProperty('--q3-counter-skin-bg',counterArt==='none'?'none':`url("${counterArt}")`);
+  document.documentElement.style.setProperty('--q3-counter-sprite-bg',`url("${Q3_COUNTER_SKIN_BG[counter]||Q3_COUNTER_SKIN_BG.counter_classic}")`);
   const st=document.getElementById('q3stage');
   if(st){
     [...st.classList].filter(x=>x.startsWith('counter_')).forEach(x=>st.classList.remove(x));
