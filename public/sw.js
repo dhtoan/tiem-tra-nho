@@ -1,12 +1,12 @@
-const CACHE='tiem-tra-nho-v102-ref-sync';
+const CACHE='tiem-tra-nho-v103-assets';
 const CORE=[
   '/','/index.html',
-  '/css/style.css','/css/baucua.css','/css/xidach.css','/css/banbe.css',
-  '/js/banbe.js','/js/game.js','/js/baucua.js','/js/xidach.js',
+  '/assets/css/style.css','/assets/css/baucua.css','/assets/css/xidach.css','/assets/css/banbe.css',
+  '/assets/js/banbe.js','/assets/js/game.js','/assets/js/baucua.js','/assets/js/xidach.js',
   '/account-sync.css','/account-sync.js','/referral.css','/referral.js','/vendor/qrcode.min.js','/bootstrap.js',
   '/manifest.webmanifest',
-  '/img/ga.png','/img/bau.png','/img/ca.png','/img/cua.png','/img/tom.png','/img/nai.png','/img/xocdia.png',
-  '/img/cup.png','/img/bg.jpg','/img/bg2.jpg','/img/kho.jpg','/img/splash2.jpg','/img/faces.webp','/img/ship.webp','/img/star.webp'
+  '/assets/img/ga.png','/assets/img/bau.png','/assets/img/ca.png','/assets/img/cua.png','/assets/img/tom.png','/assets/img/nai.png','/assets/img/xocdia.png',
+  '/assets/img/cup.png','/assets/img/bg.jpg','/assets/img/bg2.jpg','/assets/img/kho.jpg','/assets/img/splash2.jpg','/assets/img/faces.webp','/assets/img/ship.webp','/assets/img/star.webp'
 ];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()));

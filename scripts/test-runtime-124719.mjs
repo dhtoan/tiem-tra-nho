@@ -1,11 +1,11 @@
 import { readFile, access } from 'node:fs/promises';
 
-for (const p of ['../js/banbe.js','../css/banbe.css']) await access(new URL(p,import.meta.url));
+for (const p of ['../assets/js/banbe.js','../assets/css/banbe.css']) await access(new URL(p,import.meta.url));
 
 const files={
-  game:await readFile(new URL('../js/game.js',import.meta.url),'utf8'),
-  friends:await readFile(new URL('../js/banbe.js',import.meta.url),'utf8'),
-  friendCss:await readFile(new URL('../css/banbe.css',import.meta.url),'utf8'),
+  game:await readFile(new URL('../assets/js/game.js',import.meta.url),'utf8'),
+  friends:await readFile(new URL('../assets/js/banbe.js',import.meta.url),'utf8'),
+  friendCss:await readFile(new URL('../assets/css/banbe.css',import.meta.url),'utf8'),
   build:await readFile(new URL('../scripts/build.mjs',import.meta.url),'utf8'),
   manifest:await readFile(new URL('../public/manifest.webmanifest',import.meta.url),'utf8'),
   version:await readFile(new URL('../public/version.json',import.meta.url),'utf8'),

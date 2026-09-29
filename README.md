@@ -1,12 +1,12 @@
 # Tiệm Trà Nhỏ
 
-Web/PWA game quản lý tiệm trà, runtime gameplay **12.47.11**, tích hợp Bầu Cua, Xì Dách, tài khoản và Cloudflare D1 auto-sync.
+Web/PWA game quản lý tiệm trà, runtime gameplay **1.0.0**, tích hợp Bầu Cua, Xì Dách, tài khoản và Cloudflare D1 auto-sync.
 
 Production host: **https://tiemtranho.aunomay.com**
 
 ## Trạng thái hiện tại
 
-- Runtime Tiệm Trà 12.47.11.
+- Runtime Tiệm Trà Nhỏ 1.0.0.
 - CSS/JS và bộ ảnh runtime local trong repo.
 - Bầu Cua + Xì Dách.
 - Local save key: `tsShop2`.
@@ -81,7 +81,7 @@ npm run test:smoke
 GitHub Actions CI kiểm tra:
 
 1. Syntax của Worker/game/minigames/account sync.
-2. Build runtime 12.47.11.
+2. Build runtime 1.0.0.
 3. Asset Bầu Cua/Xì Dách/PWA.
 4. Tạo D1 local.
 5. Chạy toàn bộ migrations.
@@ -167,19 +167,21 @@ Worker vẫn cho phép `localhost` / `127.0.0.1` khi phát triển local.
 
 ## Cấu trúc runtime
 
-```text
-css/
-  style.css
-  baucua.css
-  xidach.css
-
-js/
-  game.js
-  baucua.js
-  xidach.js
-
-img/
-  ...
+\`\`\`text
+assets/
+  css/
+    style.css
+    baucua.css
+    xidach.css
+    banbe.css
+  js/
+    game.js
+    baucua.js
+    xidach.js
+    banbe.js
+  img/
+    ... ảnh gameplay gốc
+  uploaded-icon-192.png
 
 public/
   account-sync.css
@@ -188,22 +190,19 @@ public/
   manifest.webmanifest
   sw.js
 
-reference/
-  trongnhi/
-  tiemtramouoc/
-
 migrations/
   0001_cloud_saves.sql
   0002_auth_cloud_sync.sql
 
 src/
+  index.html
   worker.js
 
 scripts/
   build.mjs
   check-build.mjs
   smoke.mjs
-```
+\`\`\`
 
 ## Gameplay data
 
@@ -230,12 +229,12 @@ Nếu cloud và thiết bị cùng thay đổi, backend dùng `revision` và tr�
 
 Service worker hiện cache runtime mới:
 
-- `/css/style.css`
-- `/css/baucua.css`
-- `/css/xidach.css`
-- `/js/game.js`
-- `/js/baucua.js`
-- `/js/xidach.js`
+- `/assets/css/style.css`
+- `/assets/css/baucua.css`
+- `/assets/css/xidach.css`
+- `/assets/js/game.js`
+- `/assets/js/baucua.js`
+- `/assets/js/xidach.js`
 - `/account-sync.js`
 - `/account-sync.css`
 - các ảnh gameplay chính.
@@ -243,7 +242,7 @@ Service worker hiện cache runtime mới:
 Cache version hiện tại:
 
 ```text
-tiem-tra-nho-v124711-sync1
+tiem-tra-nho-v103-assets
 ```
 
 ## Brand & Support

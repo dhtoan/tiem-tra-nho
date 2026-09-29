@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 
-const game=await readFile(new URL('../js/game.js',import.meta.url),'utf8');
+const game=await readFile(new URL('../assets/js/game.js',import.meta.url),'utf8');
 
 const num=(re,label)=>{
   const m=game.match(re);

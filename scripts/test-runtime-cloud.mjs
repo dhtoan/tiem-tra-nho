@@ -8,7 +8,7 @@ if(!sw.includes("r.status!==206")&&!sw.includes("r.status !== 206")){
   throw new Error('Service worker must not cache HTTP 206 responses');
 }
 
-const game=await readFile(new URL('../js/game.js',import.meta.url),'utf8');
+const game=await readFile(new URL('../assets/js/game.js',import.meta.url),'utf8');
 if(game.includes('tiemtranho-api.trongnhi110266.workers.dev')){
   throw new Error('Game must not call legacy external save host directly');
 }

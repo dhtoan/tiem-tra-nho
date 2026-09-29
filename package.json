@@ -4,9 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "assets": "node scripts/generate-assets.mjs",
     "build": "node scripts/build.mjs",
-    "check": "node --check src/worker.js && node --check js/game.js && node --check js/baucua.js && node --check js/xidach.js && node --check public/account-sync.js && node --check public/bootstrap.js && node --check scripts/build.mjs && npm run test:no-db-auth && npm run test:runtime-cloud && npm run test:import-legacy && npm run test:account-ui && npm run test:settings-account-install && npm run test:wrangler-d1 && npm run test:auth-register-production && npm run test:runtime-124719 && npm run test:referral && npm run test:tax-model && npm run build && node scripts/check-build.mjs",
+    "check": "node --check src/worker.js && node --check assets/js/game.js && node --check assets/js/baucua.js && node --check assets/js/xidach.js && node --check public/account-sync.js && node --check public/bootstrap.js && node --check scripts/build.mjs && npm run test:no-db-auth && npm run test:runtime-cloud && npm run test:account-ui && npm run test:settings-account-install && npm run test:wrangler-d1 && npm run test:auth-register-production && npm run test:runtime-124719 && npm run test:referral && npm run test:tax-model && npm run build && node scripts/check-build.mjs",
     "dev": "npm run build && wrangler dev --local",
     "deploy": "npm run check && npm run db:remote && wrangler deploy",
     "db:local": "wrangler d1 migrations apply DB --local",
@@ -15,7 +14,6 @@
     "test:smoke": "node scripts/smoke.mjs",
     "test:no-db-auth": "node scripts/test-no-db-auth.mjs",
     "test:runtime-cloud": "node scripts/test-runtime-cloud.mjs",
-    "test:import-legacy": "node scripts/test-import-legacy.mjs",
     "test:account-ui": "node scripts/test-account-ui.mjs",
     "test:settings-account-install": "node scripts/test-settings-account-install.mjs",
     "test:wrangler-d1": "node scripts/test-wrangler-d1.mjs",

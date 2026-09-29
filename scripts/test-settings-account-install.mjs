@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 
-const game=await readFile(new URL('../js/game.js',import.meta.url),'utf8');
+const game=await readFile(new URL('../assets/js/game.js',import.meta.url),'utf8');
 const account=await readFile(new URL('../public/account-sync.js',import.meta.url),'utf8');
 const css=await readFile(new URL('../public/account-sync.css',import.meta.url),'utf8');
 
@@ -16,7 +16,7 @@ if(!game.includes('class="hsbox"'))throw new Error('Install dialog must render i
 if(!game.includes('Android'))throw new Error('Install dialog must include Android instructions');
 if(!account.includes('window.TTNAccount'))throw new Error('Account module must expose a settings-callable API');
 if(!css.includes('#cloudAccountBtn{display:none'))throw new Error('Floating account button must be hidden');
-const style=await readFile(new URL('../css/style.css',import.meta.url),'utf8');
+const style=await readFile(new URL('../assets/css/style.css',import.meta.url),'utf8');
 if(!style.includes('.hsi svg'))throw new Error('Install instruction icons must be styled');
 if(!game.includes('Thông tin Aunomay'))throw new Error('Settings must include Aunomay publisher info');
 if(!game.includes('Điều khoản chơi'))throw new Error('Settings must include play terms');
