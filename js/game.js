@@ -3423,39 +3423,23 @@ function ensureCosmetics(){
   S.cosmetics.owned=Array.isArray(S.cosmetics.owned)?S.cosmetics.owned:['shop_classic','counter_classic','cup_classic'];
   S.cosmetics.active={shop:'shop_classic',counter:'counter_classic',cup:'cup_classic',...(S.cosmetics.active||{})};
 }
-function skinArtKey(type,id){return 'ttnSkinArt:'+type+':'+id}
-function skinArtGet(type,id){try{return localStorage.getItem(skinArtKey(type,id))||''}catch(e){return''}}
-function skinArtSet(type,id,data){try{if(data)localStorage.setItem(skinArtKey(type,id),data)}catch(e){}}
-function applySkinArt(){
-  if(typeof S==='undefined'||!S)return;ensureCosmetics();
-  const root=document.documentElement.style;
-  const shop=skinArtGet('shop',S.cosmetics.active.shop),counter=skinArtGet('counter',S.cosmetics.active.counter),cup=skinArtGet('cup',S.cosmetics.active.cup);
-  root.setProperty('--ai-shop-art',shop?'url("'+shop+'")':'none');
-  root.setProperty('--ai-counter-art',counter?'url("'+counter+'")':'none');
-  root.setProperty('--ai-cup-art',cup?'url("'+cup+'")':'none');
-}
+const STATIC_SKIN_ART={
+  shop_sakura:'/img/skins/shop_sakura.svg',shop_matcha:'/img/skins/shop_matcha.svg',shop_neon:'/img/skins/shop_neon.svg',
+  counter_white:'/img/skins/counter_white.svg',counter_matcha:'/img/skins/counter_matcha.svg',counter_luxe:'/img/skins/counter_luxe.svg',
+  cup_hearts:'/img/skins/cup_hearts.svg',cup_leaf:'/img/skins/cup_leaf.svg',cup_gold:'/img/skins/cup_gold.svg'
+};
 function applyCosmetics(){
   if(typeof S==='undefined'||!S)return;ensureCosmetics();
   document.body.dataset.shopSkin=S.cosmetics.active.shop||'shop_classic';
   document.body.dataset.counterSkin=S.cosmetics.active.counter||'counter_classic';
   document.body.dataset.cupSkin=S.cosmetics.active.cup||'cup_classic';
-  applySkinArt();
 }
 function skinBuyFx(item){
   const old=document.querySelector('.skin-buy-fx');if(old)old.remove();
   const fx=document.createElement('div');fx.className='skin-buy-fx';
-  fx.innerHTML='<div>✨ '+esc(item.n)+' đã được mở khóa</div><i>✨</i><i>🧋</i><i>⭐</i><i>💖</i>';
-  document.body.appendChild(fx);setTimeout(()=>fx.remove(),1350);
-}
-async function generateSkinArt(item){
-  if(!item||item.cost<=0)return'';
-  const cached=skinArtGet(item.type,item.id);if(cached)return cached;
-  try{
-    const r=await fetch('/api/skin-art',{method:'POST',headers:{'content-type':'application/json'},credentials:'same-origin',body:JSON.stringify({skinId:item.id,type:item.type,name:item.n})});
-    if(!r.ok)return'';
-    const d=await r.json();if(!d||!d.image)return'';
-    const data='data:'+(d.mime||'image/webp')+';base64,'+d.image;skinArtSet(item.type,item.id,data);return data;
-  }catch(e){return''}
+  const art=STATIC_SKIN_ART[item.id];
+  fx.innerHTML='<div>'+(art?'<img src="'+art+'" alt="" style="width:86px;height:86px;object-fit:cover;border-radius:18px;display:block;margin:0 auto 8px">':'')+'✨ '+esc(item.n)+' đã được mở khóa</div><i>✨</i><i>🧋</i><i>⭐</i><i>💖</i>';
+  document.body.appendChild(fx);setTimeout(()=>fx.remove(),1500);
 }
 function cosmeticShop(){
   ensureCosmetics();const lv=level(),types=['shop','counter','cup'];
@@ -3463,7 +3447,7 @@ function cosmeticShop(){
   $('card').innerHTML=`<button class="settings-x" id="cosX" aria-label="Đóng">✕</button><h2>🛍️ Trang trí quán</h2><p>Dùng tiền trong két để mua thiết kế. Vật phẩm đã mua giữ vĩnh viễn trong bản lưu.</p><div class="cosmoney">Két hiện có: <b>${fmt(S.money)}</b></div>${types.map(type=>`<div class="cossec"><h3>${cosmeticTypeName(type)}</h3><div class="cosgrid">${COSMETICS.filter(x=>x.type===type).map(x=>{const own=S.cosmetics.owned.includes(x.id),active=S.cosmetics.active[type]===x.id,locked=x.lv>lv;return `<button class="cositem${active?' active':''}${locked?' locked':''}" data-cos="${x.id}" ${locked?'disabled':''}><span>${x.icon}</span><b>${x.n}</b><small>${locked?'🔒 Cấp '+x.lv:active?'✓ Đang dùng':own?'Đã mua · Chạm để dùng':fmt(x.cost)}</small></button>`}).join('')}</div></div>`).join('')}<button class="big" id="cosBack">Quay lại Cài đặt</button>`;
   $('modal').hidden=false;$('modal').onclick=e=>{if(e.target===$('modal'))showSettings()};
   $('cosX').onclick=showSettings;$('cosBack').onclick=showSettings;
-  $('card').querySelectorAll('[data-cos]:not(:disabled)').forEach(btn=>btn.onclick=async()=>{const item=COSMETICS.find(x=>x.id===btn.dataset.cos);if(!item)return;const own=S.cosmetics.owned.includes(item.id);if(!own){if(S.money<item.cost)return toast('Két chưa đủ '+fmt(item.cost));S.money-=item.cost;S.cosmetics.owned.push(item.id);S.cosmetics.active[item.type]=item.id;applyCosmetics();save();head();skinBuyFx(item);toast('✨ Đã mua '+item.n+' · '+fmt(item.cost),3200,1);const art=await generateSkinArt(item);if(art){applyCosmetics();toast('🎨 ChatGPT đã tạo hình ảnh mới cho '+item.n,3200,1)}cosmeticShop();return}S.cosmetics.active[item.type]=item.id;applyCosmetics();save();head();toast('Đã dùng '+item.n);cosmeticShop()});
+  $('card').querySelectorAll('[data-cos]:not(:disabled)').forEach(btn=>btn.onclick=()=>{const item=COSMETICS.find(x=>x.id===btn.dataset.cos);if(!item)return;const own=S.cosmetics.owned.includes(item.id);if(!own){if(S.money<item.cost)return toast('Két chưa đủ '+fmt(item.cost));S.money-=item.cost;S.cosmetics.owned.push(item.id);S.cosmetics.active[item.type]=item.id;applyCosmetics();save();head();skinBuyFx(item);toast('✨ Đã mua '+item.n+' · '+fmt(item.cost)+' · Đã áp dụng giao diện mới',3200,1);setTimeout(cosmeticShop,450);return}S.cosmetics.active[item.type]=item.id;applyCosmetics();save();head();skinBuyFx(item);toast('Đã dùng '+item.n);setTimeout(cosmeticShop,250)});
 }
 function cupSkinClass(){if(!S||!S.cosmetics)return'';return ' '+(S.cosmetics.active?.cup||'cup_classic')}
 /* ---------- ÂM THANH (tự tạo bằng Web Audio, không cần file) ---------- */
