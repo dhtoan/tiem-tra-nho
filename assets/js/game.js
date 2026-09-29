@@ -3428,17 +3428,17 @@ const STATIC_SKIN_ART={
   counter_white:'/assets/img/bg2-anhdao.png',counter_matcha:'/assets/img/bg2-matcha.png',counter_luxe:'/assets/img/bg2-neondem.png',
   cup_hearts:'/assets/img/stk_heart.png',cup_leaf:'/assets/img/stk_leaf.png',cup_gold:'/assets/img/stk_star.png'
 };
-const SHOP_SKIN_BG={
-  shop_classic:'/assets/img/bg.jpg',
-  shop_sakura:'/assets/img/bg-anhdao.png',
-  shop_matcha:'/assets/img/bg-matcha.png',
-  shop_neon:'/assets/img/bg-neondem.png'
+const Q3_SHOP_SKIN_BG={
+  shop_classic:'/assets/img/bg2.jpg',
+  shop_sakura:'/assets/img/bg2-anhdao.png',
+  shop_matcha:'/assets/img/bg2-matcha.png',
+  shop_neon:'/assets/img/bg2-neondem.png'
 };
-const COUNTER_SKIN_BG={
-  counter_classic:'/assets/img/bg2.jpg',
-  counter_white:'/assets/img/bg2-anhdao.png',
-  counter_matcha:'/assets/img/bg2-matcha.png',
-  counter_luxe:'/assets/img/bg2-neondem.png'
+const Q3_COUNTER_SKIN_BG={
+  counter_classic:'none',
+  counter_white:'/assets/img/bg-anhdao.png',
+  counter_matcha:'/assets/img/bg-matcha.png',
+  counter_luxe:'/assets/img/bg-neondem.png'
 };
 function applyCosmetics(animate=false){
   if(typeof S==='undefined'||!S)return;ensureCosmetics();
@@ -3452,8 +3452,10 @@ function applyCosmetics(animate=false){
   document.body.dataset.shopSkin=shop;
   document.body.dataset.counterSkin=counter;
   document.body.dataset.cupSkin=cup;
-  document.documentElement.style.setProperty('--shop-skin-bg',`url("${SHOP_SKIN_BG[shop]||SHOP_SKIN_BG.shop_classic}")`);
-  document.documentElement.style.setProperty('--counter-skin-bg',`url("${COUNTER_SKIN_BG[counter]||COUNTER_SKIN_BG.counter_classic}")`);
+  document.documentElement.style.setProperty('--shop-skin-bg','url("/assets/img/kho.jpg")');
+  document.documentElement.style.setProperty('--q3-shop-skin-bg',`url("${Q3_SHOP_SKIN_BG[shop]||Q3_SHOP_SKIN_BG.shop_classic}")`);
+  const counterArt=Q3_COUNTER_SKIN_BG[counter]||'none';
+  document.documentElement.style.setProperty('--q3-counter-skin-bg',counterArt==='none'?'none':`url("${counterArt}")`);
   const st=document.getElementById('q3stage');
   if(st){
     [...st.classList].filter(x=>x.startsWith('counter_')).forEach(x=>st.classList.remove(x));
