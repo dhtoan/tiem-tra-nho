@@ -600,8 +600,8 @@ body:not(.selling)::before{content:'';position:fixed;inset:0;z-index:-1;backgrou
 .q3patch{position:absolute;background:#faefd4;pointer-events:none}/* che vệt kệ dư; nằm dưới lớp phủ màu chung của quầy */
 .q3tem{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);z-index:4;pointer-events:none}
 #q3noCup{position:absolute;left:40px;top:760px;width:186px;text-align:center;font-weight:800;font-size:22px;color:#7a5530;line-height:1.15;pointer-events:none}
-.q3spr{position:absolute;background-image:url(../img/bg.jpg);background-repeat:no-repeat;background-size:768px 1376px;pointer-events:none}
-.q3pop{position:absolute;background-image:url(../img/bg.jpg);background-repeat:no-repeat;background-size:768px 1376px;transform-origin:50% 100%;pointer-events:none}
+.q3spr{position:absolute;background-image:var(--q3-counter-sprite-bg,url(../img/bg.jpg));background-repeat:no-repeat;background-size:768px 1376px;pointer-events:none}
+.q3pop{position:absolute;background-image:var(--q3-counter-sprite-bg,url(../img/bg.jpg));background-repeat:no-repeat;background-size:768px 1376px;transform-origin:50% 100%;pointer-events:none}
 .q3pop.wob{animation:q3wob .28s ease-in-out infinite alternate}
 .q3gauge{position:absolute;left:48px;top:878px;width:170px;height:18px;border-radius:9px;background:#5b3f25;padding:3px;box-sizing:border-box}
 .q3lv{height:100%;border-radius:6px;background:linear-gradient(90deg,#e2574c,#f4b73a 60%,#5aae86 80%);width:0}
@@ -1419,7 +1419,7 @@ body[data-shop-skin="shop_sakura"] .sign button{background:#fff0f5;border-color:
 body[data-shop-skin="shop_matcha"] .sign button{background:#eef6df;border-color:#88a85e;color:#476228}
 body[data-shop-skin="shop_neon"] .sign button{background:#2d2240;border-color:#a06ce0;color:#f3ddff;box-shadow:0 0 18px rgba(160,108,224,.35)}
 
-#q3counterSkin{position:absolute;inset:0;pointer-events:none;z-index:0;background-image:var(--q3-counter-skin-bg,none);background-size:768px 1376px;background-repeat:no-repeat;background-position:0 0;opacity:1}
+#q3counterSkin{display:none}
 
 .q3g.cup_hearts::after,.q3g.cup_leaf::after,.q3g.cup_gold::after{content:"";position:absolute;left:28%;right:28%;top:46%;bottom:24%;pointer-events:none;z-index:5;border-radius:9px;background-repeat:repeat;background-position:center;mix-blend-mode:multiply}
 .q3g.cup_hearts::after{background-image:url(../img/stk_heart.png);background-size:22px 22px;opacity:.58}
