@@ -68,6 +68,7 @@ async function handleApi(request,env,url){
   if(p==='/api/referral/claim')return referralClaim(request,env,url);
   if(p==='/api/referral/rewards/take')return referralTakeRewards(request,env,url);
   if(p==='/api/import/legacy')return importLegacySave(request,env,url);
+  if(p==='/api/skin-art')return generateSkinArtApi(request,env,url);
 
   // Legacy 8-digit backup API kept for backwards compatibility.
   if(p==='/api/save'&&request.method==='POST')return saveCloudCode(request,env);
@@ -104,6 +105,14 @@ async function ensureAuthSchema(db){
         revision INTEGER NOT NULL DEFAULT 1,
         client_updated_at INTEGER,
         updated_at INTEGER NOT NULL
+      )`),
+      db.prepare(`CREATE TABLE IF NOT EXISTS skin_art(
+        account_id TEXT NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+        skin_id TEXT NOT NULL,
+        mime TEXT NOT NULL,
+        image_b64 TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        PRIMARY KEY(account_id,skin_id)
       )`)
     ]).then(()=>{authSchemaReady=true}).catch(e=>{authSchemaInit=null;throw e});
   }
@@ -137,6 +146,41 @@ async function ensureReferralSchema(db){
   await referralSchemaInit;
 }
 
+const SKIN_ART_PROMPTS={
+  shop_sakura:'Cozy Vietnamese bubble tea shop interior in a charming hand-painted mobile game style, cherry blossom theme, pink wood accents, warm daylight, front counter visible, whimsical but practical, no text, no logos, no people.',
+  shop_matcha:'Cozy Vietnamese bubble tea shop interior in a charming hand-painted mobile game style, matcha garden theme, natural light wood, soft green plants, warm daylight, front counter visible, whimsical but practical, no text, no logos, no people.',
+  shop_neon:'Cozy Vietnamese bubble tea shop interior in a charming hand-painted mobile game style, tasteful night neon theme, violet and warm amber lighting, front counter visible, cozy not cyberpunk, no text, no logos, no people.',
+  counter_white:'Bubble tea service counter surface texture and backdrop for a cute hand-painted mobile management game, clean minimalist white stone and pale wood, soft warm lighting, no text, no logos, no people.',
+  counter_matcha:'Bubble tea service counter surface texture and backdrop for a cute hand-painted mobile management game, matcha green ceramic and natural wood details, soft warm lighting, no text, no logos, no people.',
+  counter_luxe:'Bubble tea service counter surface texture and backdrop for a cute hand-painted mobile management game, elegant cream marble and brushed brass accents, refined warm lighting, no text, no logos, no people.',
+  cup_hearts:'Seamless printable bubble tea cup pattern, cute tiny pink hearts, clean vector-like hand-painted game art, transparent-feeling light background, no text, no logo, no mockup.',
+  cup_leaf:'Seamless printable bubble tea cup pattern, elegant green tea leaves, clean vector-like hand-painted game art, transparent-feeling light background, no text, no logo, no mockup.',
+  cup_gold:'Seamless printable bubble tea cup pattern, elegant thin gold geometric accents and tiny stars, premium but playful hand-painted game art, light background, no text, no logo, no mockup.'
+};
+async function generateSkinArtApi(request,env,url){
+  await ensureAuthSchema(env.DB);
+  if(request.method!=='POST')return methodNotAllowed('POST');
+  if(!sameOrigin(request,url))return json({error:'Yêu cầu không hợp lệ.'},403);
+  const user=await sessionUser(env.DB,request);
+  if(!user)return json({error:'Đăng nhập để tạo hình ảnh skin bằng ChatGPT.'},401);
+  const b=await bodyJson(request);
+  const skinId=cleanText(b?.skinId||'',40);
+  const prompt=SKIN_ART_PROMPTS[skinId];
+  if(!prompt)return json({error:'Skin không hợp lệ.'},400);
+  const cached=await env.DB.prepare('SELECT mime,image_b64 FROM skin_art WHERE account_id=? AND skin_id=?').bind(user.id,skinId).first();
+  if(cached)return json({ok:true,mime:cached.mime,image:cached.image_b64,cached:true});
+  if(!env.OPENAI_API_KEY)return json({error:'Tính năng ảnh AI chưa được cấu hình.'},503);
+  const model=String(env.OPENAI_IMAGE_MODEL||'gpt-image-2');
+  const res=await fetch('https://api.openai.com/v1/images/generations',{method:'POST',headers:{'authorization':'Bearer '+env.OPENAI_API_KEY,'content-type':'application/json'},body:JSON.stringify({model,prompt,size:'1024x1024',quality:'low',output_format:'webp'})});
+  if(!res.ok){const msg=await res.text().catch(()=> '');console.error('OpenAI image generation failed',res.status,msg.slice(0,500));return json({error:'Chưa tạo được ảnh skin lúc này.'},502)}
+  const out=await res.json();
+  const image=out?.data?.[0]?.b64_json;
+  if(!image)return json({error:'Phản hồi tạo ảnh không hợp lệ.'},502);
+  if(image.length>1400000)return json({error:'Ảnh tạo ra vượt giới hạn lưu trữ.'},413);
+  const mime='image/webp',now=Date.now();
+  await env.DB.prepare('INSERT OR REPLACE INTO skin_art(account_id,skin_id,mime,image_b64,created_at) VALUES(?,?,?,?,?)').bind(user.id,skinId,mime,image,now).run();
+  return json({ok:true,mime,image,cached:false});
+}
 async function authRegister(request,env,url){
   await ensureAuthSchema(env.DB);
   if(request.method!=='POST')return methodNotAllowed('POST');
