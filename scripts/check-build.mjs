@@ -6,7 +6,7 @@ const MAX_ASSET_BYTES=25*1024*1024;
 const required=[
   'index.html',
   'assets/css/style.css','assets/css/baucua.css','assets/css/xidach.css','assets/css/banbe.css',
-  'assets/js/game.js','assets/js/baucua.js','assets/js/xidach.js','assets/js/banbe.js',
+  'assets/js/game.js','assets/js/frontshop.js','assets/js/baucua.js','assets/js/xidach.js','assets/js/banbe.js',
   'account-sync.css','account-sync.js','referral.css','referral.js','vendor/qrcode.min.js','bootstrap.js',
   'manifest.webmanifest','sw.js','version.json',
   'favicon-16x16.png','favicon-32x32.png','favicon.ico',
@@ -16,6 +16,8 @@ const required=[
   'Nhạc Chill Quán Cafe - Những Ca Khúc Lofi Nhẹ Nhàng Hay Nhất Dành Cho Quán Cafe - Nhạc Lofi 2026.mp3',
   'Pouring water-liquid into a glass sound effect [HQ].mp3',
   'assets/img/ga.png','assets/img/bau.png','assets/img/ca.png','assets/img/cua.png','assets/img/tom.png','assets/img/nai.png','assets/img/xocdia.png',
+  'assets/img/imbg.png','assets/img/9517-thanmeo_karin.png','assets/img/map.jpg','assets/img/shipper-map.png','assets/img/ic_upmega.png','assets/img/ic_phone.png',
+  'assets/img/nv/1.png','assets/img/nv/2.png','assets/img/nv/3.png','assets/img/nv/4.png','assets/img/nv/5.png','assets/img/nv/6.png',
   'assets/img/bg-anhdao.jpg','assets/img/bg-matcha.jpg','assets/img/bg-halloween.jpg','assets/img/bg-christmas.jpg','assets/img/bg-neondem.jpg',
   'assets/img/bg2-anhdao.jpg','assets/img/bg2-matcha.jpg','assets/img/bg2-halloween.jpg','assets/img/bg2-christmas.jpg','assets/img/bg2-neondem.jpg'
 ];
@@ -33,13 +35,16 @@ for(const file of utf8Files){
   if(mojibake.test(text))throw new Error('possible UTF-8/mojibake corruption in '+file);
   if(file.endsWith('.css')&&!text.startsWith('@charset "UTF-8";'))throw new Error('CSS missing UTF-8 charset declaration: '+file);
 }
-for(const ref of ['/assets/css/style.css','/assets/css/baucua.css','/assets/css/xidach.css','/assets/css/banbe.css','/assets/js/banbe.js','/assets/js/game.js','/assets/js/baucua.js','/assets/js/xidach.js','/account-sync.css','/account-sync.js','/referral.css','/vendor/qrcode.min.js','/referral.js','/bootstrap.js','/manifest.webmanifest','/favicon-32x32.png','/favicon-16x16.png','/favicon.ico','/apple-touch-icon.png','/apple-touch-icon-167x167.png','/apple-touch-icon-152x152.png','/apple-touch-icon-120x120.png']){
+for(const ref of ['/assets/css/style.css','/assets/css/baucua.css','/assets/css/xidach.css','/assets/css/banbe.css','/assets/js/banbe.js','/assets/js/game.js','/assets/js/frontshop.js','/assets/js/baucua.js','/assets/js/xidach.js','/account-sync.css','/account-sync.js','/referral.css','/vendor/qrcode.min.js','/referral.js','/bootstrap.js','/manifest.webmanifest','/favicon-32x32.png','/favicon-16x16.png','/favicon.ico','/apple-touch-icon.png','/apple-touch-icon-167x167.png','/apple-touch-icon-152x152.png','/apple-touch-icon-120x120.png']){
   if(!html.includes(ref))throw new Error('index missing '+ref);
 }
 for(const marker of ['cloudAccountBtn','cloudAccountDlg','cloudSaveNudge']){
   if(!html.includes(marker))throw new Error('account UI missing '+marker);
 }
 const game=await readFile(join(root,'assets/js/game.js'),'utf8');
+const frontshop=await readFile(join(root,'assets/js/frontshop.js'),'utf8');
+for(const marker of ['frontshop-modal','shippermap-modal','frontKarinBtn','shipperMapCanvas'])if(!html.includes(marker))throw new Error('street/map UI missing '+marker);
+for(const marker of ['openFrontShop','karinCheer','openShipperMap','SHIPPER_ROUTES','updateShipperPhoneBadge'])if(!frontshop.includes(marker))throw new Error('street/map runtime missing '+marker);
 if(!/GAME_VERSION=["']1\.0\.0["']/.test(game))throw new Error('Aunomay runtime version 1.0.0 missing');
 if(!/SAVE=["']tsShop2["']/.test(game))throw new Error('expected tsShop2 save key missing');
 for(const skin of ['bg-anhdao.jpg','bg-matcha.jpg','bg-halloween.jpg','bg-christmas.jpg','bg-neondem.jpg','bg2-anhdao.jpg','bg2-matcha.jpg','bg2-halloween.jpg','bg2-christmas.jpg','bg2-neondem.jpg'])if(!game.includes(skin))throw new Error('skin mapping missing '+skin);
