@@ -1798,16 +1798,16 @@ function renderSell(){
   $('view').innerHTML=`<div id="q3"><div id="q3stage" class="${esc(S.cosmetics?.active?.counter||'counter_classic')}">
     <div id="gzWidget" class="gz-widget" style="display:none"></div>
     ${patch}<div id="q3counterSkin" aria-hidden="true"></div><div id="q3tint" aria-hidden="true"></div>${(evIs('rain')||evIs('storm'))?'<div id="q3rain" aria-hidden="true"><i class="r1"></i><i class="r2"></i></div>':''}
-    <div class="q3lane" id="lane"></div>
+    <button id="q3FrontBtn" class="q3-front-btn" type="button" title="Xuống Phố">🏪 Xuống Phố</button>\n    <div class="q3lane" id="lane"></div>
     <div class="q3face" id="q3face" aria-hidden="true"></div>
     <div class="q3bub" id="q3bub"><div id="q3want" aria-hidden="true"></div><div id="q3say"></div><div class="q3pat"><span>KIÊN NHẪN</span><div class="q3bar"><i id="q3pat"></i></div></div></div>
     <div class="q3tag" style="left:30px;top:327px;width:108px;height:30px">QUẦY TRÀ</div>
-    <div class="q3tag" style="left:29px;top:603px;width:151px;height:34px;font-size:23px">PHA LY</div>
+    <div class="q3tag" style="left:29px;top:603px;width:151px;height:34px;font-size:23px">PHA LY</div>\n    <button type="button" id="q3PhoneBtn" class="q3-phone-btn" title="Bản đồ giao hàng Shipper"><img src="/assets/img/ic_phone.png" class="q3-phone-img" alt="Bản đồ Shipper"><span class="q3-phone-badge" id="q3PhoneBadge" style="display:none">0</span></button>
     <div id="q3sprs">${spr}</div><div id="q3pops"></div><div id="q3zones">${h}</div>
     <div id="q3noCup">Lấy ly<br>M hoặc L</div><div id="q3cup" aria-hidden="true"></div>
     <div class="q3gauge"><div class="q3lv" id="q3gLv"></div><div class="q3ok"></div></div><div id="q3hint"></div><div id="q3coach" hidden></div>
   </div></div>`;
-  applyCosmetics();
+  applyCosmetics();\n  if($('q3FrontBtn'))$('q3FrontBtn').onclick=openFrontShop;\n  if($('q3PhoneBtn'))$('q3PhoneBtn').onclick=openShipperMap;\n  updateShipperPhoneBadge();
   const st=$('q3stage');
   st.onclick=e=>{
     const dx=e.target.closest('[data-decl]');if(dx){const id=+dx.dataset.decl,i=R.slots.findIndex(c=>c&&c.id===id);if(i>=0){decline(i);toast('Đã mời khách về');renderPanel()}else{const j=R.online.findIndex(c=>c.id===id);if(j>=0){declineOnline(j);toast('Đã huỷ đơn online')}}return}
@@ -3093,9 +3093,9 @@ function tick(){
   if(onlineActive()){R.onT-=dt;if(R.onT<=0&&R.t>Math.max(8,dayLen()*60*30/660)){spawnOnline();const onlLvMul=1+((S.upgLv&&S.upgLv.onl)||0)*0.001;R.onT=36/(traffic()*onlLvMul)/onMul()*(evIs('rain')?.45:1)*(.7+Math.random()*.6)}
     if(R.bigQ&&R.bigQ.length&&R.t>8){const tot0=dayLen()*60;R.bigQ=R.bigQ.filter(q=>!(R.t<tot0*(1-q.at)&&spawnBig(q)))}}
   let ch=false,cho=false;
-  R.tk=(R.tk||0)+1;const upd=R.tk%5===0;
+  R.tk=(R.tk||0)+1;const upd=R.tk%5===0;const karinGuardRate=R.karinGuardBuff ? 0.75 : 1;
   R.slots.forEach(c=>{if(c&&c.brat==='doi'&&!c.changed&&c.pat<c.max*.72)bratChange(c)});
-  R.slots.forEach((c,i)=>{if(!c)return;c.pat-=dt;if(c.pat<=0){R.slots[i]=null;R.today.lost++;const st=Math.random()<.3?2:1;addReview(st,'timeout',false,c);if(c.vip){addReview(1,'timeout',false,c);addReview(1,'timeout',false,c)}ch=true;toast(c.star!=null?c.name+' phải đi rồi, vẫn để lại 5 sao':c.name+' bỏ về, để lại '+st+' sao')}else if(upd)updPat(c)});
+  R.slots.forEach((c,i)=>{if(!c)return;c.pat-=dt*karinGuardRate;if(c.pat<=0){R.slots[i]=null;R.today.lost++;const st=Math.random()<.3?2:1;addReview(st,'timeout',false,c);if(c.vip){addReview(1,'timeout',false,c);addReview(1,'timeout',false,c)}ch=true;toast(c.star!=null?c.name+' phải đi rồi, vẫn để lại 5 sao':c.name+' bỏ về, để lại '+st+' sao')}else if(upd)updPat(c)});
   R.online=R.online.filter(c=>{c.pat-=dt;if(c.pat<=0){R.today.lost++;addReview(1,'late',true,c);cho=true;if(R.sto&&R.sto.id===c.id)R.sto=null;toast('Tài xế '+appN(c)+' huỷ đơn #'+c.id);return false}if(upd)updPat(c);return true});
   if(ch)renderStreet();if(cho)renderOnline();
   staffTick(dt);staffOnTick(dt);staffGzTick(dt);
