@@ -57,16 +57,25 @@ function getStaffTrafficBuffTotal(){
   ensureAdvancedState();
   let v=0;
   STAFF.forEach(u=>{if(isStaffActive(u.id))v+=(S.staffKpi[u.id]?.trafficBuff||0)});
-  if(isStaffActive('staffMkt'))v+=.20;
   return v;
 }
-function getStaffSpeedBuff(){
+function getStaffSpeedBuff(id){
   ensureAdvancedState();
-  let v=0;
-  STAFF.forEach(u=>{if(isStaffActive(u.id))v+=(S.staffKpi[u.id]?.speedBuff||0)});
-  if(isStaffActive('staffMkt'))v+=.20;
-  if(isStaffActive('staffSv')&&R&&R.closing)v+=.25;
-  return Math.min(.75,v);
+  let kpi=0;
+  if(id&&S.staffKpi[id])kpi=S.staffKpi[id].speedBuff||0;
+  else {
+    const active=STAFF.filter(u=>isStaffActive(u.id)).map(u=>S.staffKpi[u.id]?.speedBuff||0);
+    if(active.length)kpi=Math.max(...active);
+  }
+  const tax=typeof getTaxSpeedBuff==='function'?getTaxSpeedBuff():0;
+  const mkt=isStaffActive('staffMkt')?.20:0;
+  const staffLv=((S.upgLv&&S.upgLv.staff)||0)*.02;
+  const equipLv=((S.upgLv&&S.upgLv.equip)||0)*.01;
+  const drama=(R&&R.staffDramaBuff&&id&&R.staffDramaBuff[id])||0;
+  const count=STAFF.filter(u=>isStaffActive(u.id)).length;
+  const synergy=count>1?(count-1)*.06:0;
+  const gz=id==='staffGz'?.25:0;
+  return Math.max(-.4,Math.min(2.5,kpi+tax+mkt+staffLv+equipLv+drama+synergy+gz));
 }
 function getStaffBillBonusTotal(){
   ensureAdvancedState();
