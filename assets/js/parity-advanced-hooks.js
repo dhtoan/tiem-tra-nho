@@ -29,6 +29,50 @@ renderSell=function(){baseRenderSell();renderAdvancedStaffBar();bindHeaderReview
 const baseRenderPanel=renderPanel;
 renderPanel=function(){baseRenderPanel();renderPartyWidget()};
 
+/* Buyer can rescue out-of-stock ingredients while the shop is open. */
+const baseUseCupAdvanced=useCup;
+useCup=function(){
+  if(qty('cup')<=0&&isStaffActive('staffBuyer')){staffBuyerTriggerInstant('cup');toast('🛵 Hết ly — nhân viên đi chợ đang nhập gấp.');return false}
+  return baseUseCupAdvanced();
+};
+const baseAddIngAdvanced=addIng;
+addIng=function(kind,k){
+  if(!qty(k)&&isStaffActive('staffBuyer')){staffBuyerTriggerInstant(k);toast('🛵 Hết '+(ITEMS[k]?.n||k)+' — nhân viên đi chợ đang nhập gấp.');return}
+  return baseAddIngAdvanced(kind,k);
+};
+
+/* Free trial staff: helps with tea + ice, but may dodge work or make mistakes. */
+const baseStaffHelpAdvanced=staffHelp;
+staffHelp=function(){
+  if(!isStaffActive('staff0')||isStaffActive('staff1')||isStaffActive('staff3'))return baseStaffHelpAdvanced();
+  if(!R.running||(!R.isNightShift&&R.t<=0))return;
+  const f=focusCust(),o=f&&f.order;if(!o||o.size!==cup.size||cup.base||!qty(o.base))return;
+  if(Math.random()<.20)return toast('📱 Nhân viên thử việc 0 lương đang trốn việc bấm điện thoại — bạn tự làm ly này nhé.',3200);
+  R.helping=true;
+  const mistake=Math.random()<.15,target=mistake?.62:.8;
+  setTimeout(()=>{
+    if(!R.running||!R.helping){R.helping=false;return}
+    addIng('base',o.base);if(cup.base!==o.base){R.helping=false;return}
+    cup.fill=target;
+    const want={'Không đá':0,'Ít đá':1,'Đá thường':2}[o.ice]||0;
+    let got=want;if(mistake&&level()>=2)got=want===2?1:2;
+    if(level()>=2){for(let i=0;i<got;i++){if(qty('ice'))consume('ice')}cup.iceN=got;cup.ice=got===0?'Không đá':got===1?'Ít đá':'Đá thường'}
+    R.helping=false;renderCup();renderPanel();coach();
+    if(mistake)toast('⚠️ Thử việc 0 lương vừa làm lệch công thức; kiểm tra lượng trà/đá trước khi giao.',3600,1);
+    else toast('🧑‍🍳 Thử việc 0 lương đã phụ rót trà và xúc đá.',1800);
+  },Math.max(180,Math.round(520/(1+getStaffSpeedBuff()))));
+};
+
+const baseGameClockAdvanced=gameClock;
+gameClock=function(){
+  if(R&&R.isNightShift){
+    const tot=R.nightTot||80,elapsed=Math.max(0,Math.min(1,1-(R.t||0)/tot));
+    const mins=(22*60+Math.floor(elapsed*480/5)*5)%(24*60);
+    return String(Math.floor(mins/60)).padStart(2,'0')+':'+String(mins%60).padStart(2,'0');
+  }
+  return baseGameClockAdvanced();
+};
+
 const baseStaffTickAdvanced=staffTick;
 staffTick=function(dt){return baseStaffTickAdvanced(dt*(1+window.getTotalWorkSpeedBuff()))};
 const baseStaffOnTickAdvanced=staffOnTick;
@@ -48,13 +92,20 @@ const baseTryOpen=tryOpen;
 tryOpen=function(){checkMktAutoPayTax();checkEquipBreakdown();checkStaffExcuses(()=>baseTryOpen())};
 
 const baseStartDay=startDay;
-startDay=function(){R.staffBuyerTrip=null;R.buyerTrips=0;R.svStealPending=null;R.svNightRolled=false;baseStartDay();renderAdvancedStaffBar()};
+startDay=function(){R.staffBuyerTrip=null;R.buyerTrips=0;R.svStealPending=null;R.svNightRolled=false;R.isNightShift=false;R.nightTot=0;baseStartDay();renderAdvancedStaffBar()};
 
 const baseTick=tick;
-tick=function(){baseTick();if(!R.running)return;staffBuyerTick();staffSvTick();if((R.tk||0)%10===0)renderAdvancedStaffBar()};
+tick=function(){baseTick();if(!R.running)return;staffBuyerTick();staffSvTick(.1);if((R.tk||0)%10===0)renderAdvancedStaffBar()};
 
 const baseEndDay=endDay;
-endDay=function(){settlePartyBeforeEnd();const restore=(R.staffExcusedRestore||[]).slice();baseEndDay();restore.forEach(id=>{if(S.hired&&S.hired[id])S.upg[id]=true});if(restore.length){R.staffExcusedRestore=[];save()}};
+endDay=function(){
+  if(!R.isNightShift&&R.closing&&isStaffActive('staffSv')&&startSvNightShift())return;
+  settlePartyBeforeEnd();
+  const restore=(R.staffExcusedRestore||[]).slice();
+  baseEndDay();
+  restore.forEach(id=>{if(S.hired&&S.hired[id])S.upg[id]=true});
+  if(restore.length){R.staffExcusedRestore=[];save()}
+};
 
 /* lightweight compatibility names used by the newer reference feature families */
 function renderGzHeadCup(){return null}
@@ -69,7 +120,7 @@ function gzQuitFromSpamCatch(){gzQuitFromSulk()}
 function catchGenZ(){onGzWidgetClick()}
 function finishEndDay(){settlePartyBeforeEnd()}
 
-Object.assign(window,{AP_VERSION,rollPartyContract,partyContractCard,acceptPartyContract,rejectPartyContract,getActiveStaffList,staffDramaCheck,getStaffTrafficBuffTotal,checkMktAutoPayTax,checkReset5StarRating,triggerFriendBadReview,getStaffSpeedBuff,getStaffBillBonusTotal,staffPersonName,staffFullName,genStaffAvatar,staffAvatarUrl,staffAvatarImg,applyMktAutoReplies,openSellReviewsModal,openReviews,openSellModal,hireOrCallStaff,fireStaff,isStaffActive,checkEquipBreakdown,checkStaffExcuses,renderGzHeadCup,renderCupHint,isPriorityStaffWorking,clearStaffPouring,gzWeatherComplain,onGzWidgetClick,gzFalseCatchAccusation,gzQuitFromSulk,gzQuitFromSpamCatch,catchGenZ,getBuyerBatch,findDepletedIngredient,staffBuyerStartTrip,staffBuyerCompleteTrip,staffBuyerTriggerInstant,staffBuyerTick,renderBuyerWidget,openBuyerDispatchModal,onBuyerWidgetClick,svTriggerStealIntent,svCheer,svStealFail,onSvWidgetClick,renderSvWidget,staffSvTick,staffSvStep,renderPartyWidget,packCupForParty,onCupServedProgress,finishEndDay,updateKarinPatrol,animLoop});
+Object.assign(window,{AP_VERSION,rollPartyContract,partyContractCard,acceptPartyContract,rejectPartyContract,getActiveStaffList,staffDramaCheck,getStaffTrafficBuffTotal,checkMktAutoPayTax,checkReset5StarRating,triggerFriendBadReview,getStaffSpeedBuff,getStaffBillBonusTotal,staffPersonName,staffFullName,genStaffAvatar,staffAvatarUrl,staffAvatarImg,applyMktAutoReplies,openSellReviewsModal,openReviews,openSellModal,hireOrCallStaff,fireStaff,isStaffActive,checkEquipBreakdown,checkStaffExcuses,renderGzHeadCup,renderCupHint,isPriorityStaffWorking,clearStaffPouring,gzWeatherComplain,onGzWidgetClick,gzFalseCatchAccusation,gzQuitFromSulk,gzQuitFromSpamCatch,catchGenZ,getBuyerBatch,findDepletedIngredient,staffBuyerStartTrip,staffBuyerCompleteTrip,staffBuyerTriggerInstant,staffBuyerTick,renderBuyerWidget,openBuyerDispatchModal,onBuyerWidgetClick,startSvNightShift,staffSvServeOne,svTriggerStealIntent,svCheer,svStealFail,onSvWidgetClick,renderSvWidget,staffSvTick,staffSvStep,renderPartyWidget,packCupForParty,onCupServedProgress,finishEndDay,updateKarinPatrol,animLoop});
 
 requestAnimationFrame(animLoop);
 setTimeout(()=>{ensurePartyForToday();renderPrep()},0);
