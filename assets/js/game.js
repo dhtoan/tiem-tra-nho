@@ -532,7 +532,7 @@ function traffic(){
   const friendBoost = (S.friendBuff && S.friendBuff.day === S.day) ? (1 + (S.friendBuff.boost || 0.15)) : 1.0;
   const boost=(1+(S.upg.sign?.2:0)+(S.upg.ads?.25:0)+(S.upg.mascot?.3:0)+Math.min(S.day,40)*.012)*gzBoost*traBoost*friendBoost;
   const avgIdx=BASE_KEYS.filter(k=>S.unlocked[k]).reduce((a,k)=>a+S.sell[k]/DEF_SELL[k],0)/BASE_KEYS.filter(k=>S.unlocked[k]).length;
-  const e=ev(),taxBoost=window.getTaxTrafficBoost?window.getTaxTrafficBoost():1;return rf*boost*taxBoost*(e?EVS[e.id].mul:1)/Math.max(.85,Math.min(1,avgIdx)**2);
+  const e=ev(),taxBoost=window.getTaxTrafficBoost?window.getTaxTrafficBoost():1,kpiBoost=window.getKpiTrafficBoost?window.getKpiTrafficBoost():1;return rf*boost*taxBoost*kpiBoost*(e?EVS[e.id].mul:1)/Math.max(.85,Math.min(1,avgIdx)**2);
 }
 const RX={fast:/nhanh|chưa tới 5 phút|đúng giờ|không phải đợi/,
   wait:/chờ|đợi|lâu|chậm|mỏi chân|xếp hàng|hàng dài|quán đông|đông quá|đông khách|đông kinh|kịp tay|đuối|bận|cao điểm|trễ/,
