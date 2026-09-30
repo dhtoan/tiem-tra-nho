@@ -2,10 +2,14 @@
 ensureAdvancedState();
 
 const baseKpiBoost=window.getKpiTrafficBoost;
-window.getKpiTrafficBoost=function(){const base=baseKpiBoost?baseKpiBoost():1;const kpiOnly=Math.max(0,base-1),mkt=isStaffActive('staffMkt')?.20:0;return 1+kpiOnly+mkt};
-const baseTaxSpeed=window.getTaxSpeedBuff;
+window.getKpiTrafficBoost=function(){
+  const base=baseKpiBoost?baseKpiBoost():1;
+  const mkt=isStaffActive('staffMkt')?1.20:1;
+  const party=(S.partyContract&&S.partyContract.day===S.day&&S.partyContract.accepted)?1.35:1;
+  return base*mkt*party;
+};
 window.getStaffSpeedBuff=getStaffSpeedBuff;
-window.getTotalWorkSpeedBuff=()=>Math.max(-.2,Math.min(1,(baseTaxSpeed?baseTaxSpeed():0)+getStaffSpeedBuff()));
+window.getTotalWorkSpeedBuff=()=>getStaffSpeedBuff();
 
 const baseParityEnd=window.parityEndDay;
 window.parityEndDay=function(rec){if(baseParityEnd)baseParityEnd(rec);ensureAdvancedState();S.kpiPeriodTotalRev=(S.kpiPeriodTotalRev||0)+(rec?recRev(rec):0);S.kpiPeriodTotalBills=(S.kpiPeriodTotalBills||0)+(rec?.served||0);if(typeof rating==='function'&&rating()>=4.95&&S._bankCapStarDayAdv!==S.day){S._bankCapStarDayAdv=S.day;S.bankSaving.cap=Math.min(1000000000,Math.round((S.bankSaving.cap||10000000)*1.10));}if(isStaffActive('staffMkt'))applyMktAutoReplies();save()};
