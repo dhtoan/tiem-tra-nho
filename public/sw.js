@@ -1,8 +1,8 @@
-const CACHE='tiem-tra-nho-v108-street-map';
+const CACHE='tiem-tra-nho-v109-kpi-tax';
 const CORE=[
   '/','/index.html',
   '/assets/css/style.css','/assets/css/baucua.css','/assets/css/xidach.css','/assets/css/banbe.css',
-  '/assets/js/banbe.js','/assets/js/game.js','/assets/js/frontshop.js','/assets/js/baucua.js','/assets/js/xidach.js',
+  '/assets/js/banbe.js','/assets/js/game.js','/assets/js/frontshop.js','/assets/js/parity.js','/assets/js/baucua.js','/assets/js/xidach.js',
   '/account-sync.css','/account-sync.js','/referral.css','/referral.js','/vendor/qrcode.min.js','/bootstrap.js',
   '/manifest.webmanifest',
   '/assets/img/ga.png','/assets/img/bau.png','/assets/img/ca.png','/assets/img/cua.png','/assets/img/tom.png','/assets/img/nai.png','/assets/img/xocdia.png',
