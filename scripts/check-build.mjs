@@ -6,7 +6,7 @@ const MAX_ASSET_BYTES=25*1024*1024;
 const required=[
   'index.html',
   'assets/css/style.css','assets/css/baucua.css','assets/css/xidach.css','assets/css/banbe.css',
-  'assets/js/game.js','assets/js/frontshop.js','assets/js/baucua.js','assets/js/xidach.js','assets/js/banbe.js',
+  'assets/js/game.js','assets/js/frontshop.js','assets/js/parity.js','assets/js/baucua.js','assets/js/xidach.js','assets/js/banbe.js',
   'account-sync.css','account-sync.js','referral.css','referral.js','vendor/qrcode.min.js','bootstrap.js',
   'manifest.webmanifest','sw.js','version.json',
   'favicon-16x16.png','favicon-32x32.png','favicon.ico',
@@ -35,7 +35,7 @@ for(const file of utf8Files){
   if(mojibake.test(text))throw new Error('possible UTF-8/mojibake corruption in '+file);
   if(file.endsWith('.css')&&!text.startsWith('@charset "UTF-8";'))throw new Error('CSS missing UTF-8 charset declaration: '+file);
 }
-for(const ref of ['/assets/css/style.css','/assets/css/baucua.css','/assets/css/xidach.css','/assets/css/banbe.css','/assets/js/banbe.js','/assets/js/game.js','/assets/js/frontshop.js','/assets/js/baucua.js','/assets/js/xidach.js','/account-sync.css','/account-sync.js','/referral.css','/vendor/qrcode.min.js','/referral.js','/bootstrap.js','/manifest.webmanifest','/favicon-32x32.png','/favicon-16x16.png','/favicon.ico','/apple-touch-icon.png','/apple-touch-icon-167x167.png','/apple-touch-icon-152x152.png','/apple-touch-icon-120x120.png']){
+for(const ref of ['/assets/css/style.css','/assets/css/baucua.css','/assets/css/xidach.css','/assets/css/banbe.css','/assets/js/banbe.js','/assets/js/game.js','/assets/js/frontshop.js','/assets/js/parity.js','/assets/js/baucua.js','/assets/js/xidach.js','/account-sync.css','/account-sync.js','/referral.css','/vendor/qrcode.min.js','/referral.js','/bootstrap.js','/manifest.webmanifest','/favicon-32x32.png','/favicon-16x16.png','/favicon.ico','/apple-touch-icon.png','/apple-touch-icon-167x167.png','/apple-touch-icon-152x152.png','/apple-touch-icon-120x120.png']){
   if(!html.includes(ref))throw new Error('index missing '+ref);
 }
 for(const marker of ['cloudAccountBtn','cloudAccountDlg','cloudSaveNudge']){
@@ -43,6 +43,9 @@ for(const marker of ['cloudAccountBtn','cloudAccountDlg','cloudSaveNudge']){
 }
 const game=await readFile(join(root,'assets/js/game.js'),'utf8');
 const frontshop=await readFile(join(root,'assets/js/frontshop.js'),'utf8');
+const parity=await readFile(join(root,'assets/js/parity.js'),'utf8');
+for(const marker of ['paneKpi','paneThue','executePayTax','openBankDepositDlg','parityEndDay'])if(!parity.includes(marker))throw new Error('parity runtime missing '+marker);
+for(const marker of ['KPI nhân viên','Đóng thuế'])if(!game.includes(marker))throw new Error('prep menu missing '+marker);
 for(const marker of ['frontshop-modal','shippermap-modal','frontKarinBtn','shipperMapCanvas'])if(!html.includes(marker))throw new Error('street/map UI missing '+marker);
 for(const marker of ['openFrontShop','karinCheer','openShipperMap','SHIPPER_ROUTES','updateShipperPhoneBadge'])if(!frontshop.includes(marker))throw new Error('street/map runtime missing '+marker);
 if(!/GAME_VERSION=["']1\.0\.0["']/.test(game))throw new Error('Aunomay runtime version 1.0.0 missing');
