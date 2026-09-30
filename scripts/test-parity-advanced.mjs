@@ -16,7 +16,7 @@ for(const marker of [
   'staffSvTick','renderSvWidget','checkMktAutoPayTax','getStaffSpeedBuff',
   'getStaffBillBonusTotal','openSellReviewsModal','updateKarinPatrol',
   'Nhân viên đi chợ','Sinh viên cuối tháng','Nhân viên Me két tinh',
-  'ĐÓNG THUẾ TRỰC TUYẾN 72H','getTotalWorkSpeedBuff'
+  'ĐÓNG THUẾ TRỰC TUYẾN 72H','getTotalWorkSpeedBuff','startSvNightShift','staffSvServeOne','checkReset5StarRating','triggerFriendBadReview','baseStaffHelpAdvanced'
 ]){
   if(!js.includes(marker))throw new Error('missing advanced parity marker: '+marker);
 }
