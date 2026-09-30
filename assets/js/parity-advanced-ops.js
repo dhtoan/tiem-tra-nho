@@ -72,8 +72,34 @@ function onSvWidgetClick(){svCheer()}
 function applyMktAutoReplies(){
   if(!isStaffActive('staffMkt'))return 0;let n=0;S.reviews.slice(0,20).forEach(r=>{if(!r.rp){r.rp=r.s<=2?'Quán đã ghi nhận góp ý và sẽ kiểm tra lại quy trình pha chế. Cảm ơn bạn đã phản hồi để tiệm cải thiện.':'Cảm ơn bạn đã ghé Tiệm Trà Nhỏ và để lại đánh giá. Hẹn gặp lại bạn ở ly tiếp theo!';if(r.s<5&&Math.random()<.55)r.s++;n++}});if(n)save();return n;
 }
-function checkReset5StarRating(){return false}
-function triggerFriendBadReview(){return false}
+function checkReset5StarRating(){
+  ensureAdvancedState();
+  if(!S.reviews||S.reviews.length<10||typeof rating!=='function'||rating()<4.95)return false;
+  const stamp=Date.now();S.star5Count=(S.star5Count||0)+1;
+  S.bankSaving.cap=Math.min(1000000000,Math.round((S.bankSaving.cap||10000000)*1.10));
+  const notes=[
+    ['Mai Anh','Đồ uống ổn, đóng gói kỹ; mình để 4 sao để tiệm còn động lực cải thiện.'],
+    ['Khách quen','Giờ cao điểm phải chờ thêm một chút nhưng vị trà vẫn dễ uống.'],
+    ['Minh Khoa','Menu nhiều lựa chọn và phục vụ thân thiện, lần sau mình sẽ ghé tiếp.'],
+    ['Thuỳ Linh','Ly hôm nay hơi ngọt với khẩu vị của mình nhưng tổng thể vẫn ổn.']
+  ];
+  const cycle=Array.from({length:20},(_,i)=>({s:i%2?4:3,t:notes[i%notes.length][1],n:notes[i%notes.length][0],k:'rating_cycle_'+stamp+'_'+i,d:S.day,f:'🙂'}));
+  S.reviews=[...cycle,...S.reviews];if(S.reviews.length>2500)S.reviews.length=2500;
+  save();head();toast('⭐ Tiệm vừa chạm mốc 5 sao! Hạn mức tiết kiệm tăng 10% và chu kỳ đánh giá mới đã bắt đầu.',4200,1);return true;
+}
+function triggerFriendBadReview(origRev){
+  if(!origRev||origRev._friendCalled)return false;origRev._friendCalled=true;
+  const names=['Linh','Trang','Huy','Khánh','Ngân','Bảo','Vy','Khoa'];
+  const name=names[Math.floor(Math.random()*names.length)],base=origRev.n||'một người bạn';
+  const texts=[
+    'Bạn mình vừa kể trải nghiệm không tốt ở quán nên mình vào góp thêm một đánh giá để tiệm chú ý hơn.',
+    'Nghe bạn thân phản ánh đơn bị xử lý chưa ổn; mong quán kiểm tra lại quy trình phục vụ.',
+    'Mình đi cùng nhóm bạn và cũng thấy trải nghiệm hôm nay chưa đạt kỳ vọng. Hy vọng lần sau tốt hơn.'
+  ];
+  const r={s:1,t:texts[Math.floor(Math.random()*texts.length)],k:'friend_chime_'+Date.now()+'_'+Math.random(),d:S.day,o:false,n:name+' (bạn của '+base+')',f:'👥',tg:'Bạn bè góp ý',isFriendChimeIn:true,targetFriendName:base};
+  S.reviews.unshift(r);S.revTotal=Math.max(S.revTotal||0,S.reviews.length-1)+1;if(S.reviews.length>2500)S.reviews.length=2500;
+  if(R&&R.today&&R.today.stars)R.today.stars.push(1);save();head();toast('👥 Một người bạn của '+base+' vừa để lại thêm đánh giá 1★.',3600,1);return true;
+}
 
 /* ---------- SELL MODALS / HUD ---------- */
 function openSellReviewsModal(){
