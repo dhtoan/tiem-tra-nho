@@ -50,16 +50,25 @@ jobs:
           test -s assets/img/9517-thanmeo_karin.png
           test -s assets/img/map.jpg
 
-      - name: Commit imported assets
+      - name: Save source snapshots for porting
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .audit-source
+          cp /tmp/ttm-source/game.js .audit-source/source-game.js
+          cp /tmp/ttm-source/style.css .audit-source/source-style.css
+          cp /tmp/ttm-source/banbe.js .audit-source/source-banbe.js
+
+      - name: Commit imported assets and audit snapshots
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add assets/img/imbg.png assets/img/9517-thanmeo_karin.png assets/img/map.jpg
+          git add assets/img/imbg.png assets/img/9517-thanmeo_karin.png assets/img/map.jpg .audit-source/
           if git diff --cached --quiet; then
-            echo 'No asset changes'
+            echo 'No source snapshot or asset changes'
             exit 0
           fi
-          git commit -m 'assets: import missing front shop and shipper map artwork'
+          git commit -m 'chore: refresh source audit snapshots'
           git push origin HEAD:main
