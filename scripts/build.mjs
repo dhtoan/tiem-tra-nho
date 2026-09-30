@@ -72,7 +72,7 @@ for(const rel of ['assets/css/style.css','assets/css/baucua.css','assets/css/xid
 }
 
 const productionJs=[
-  'assets/js/banbe.js','assets/js/game.js','assets/js/baucua.js','assets/js/xidach.js',
+  'assets/js/banbe.js','assets/js/game.js','assets/js/frontshop.js','assets/js/parity.js','assets/js/baucua.js','assets/js/xidach.js',
   'account-sync.js','referral.js','bootstrap.js','sw.js'
 ];
 for(const rel of productionJs){
