@@ -3189,6 +3189,7 @@ function endDay(){
   /* bảo vệ thu lại tiền của khách trả giá / quỵt trước khi tổng kết */
   const gMac=T.gMac||0,gRun=T.gRun||0;r.guard=gMac+gRun;S.money+=r.guard;
   const cost=recCost(r),profit=rev-cost,avg=r.starN?r.starSum/r.starN:0,wv=waste.reduce((a,x)=>a+x.v,0);
+  if(window.parityEndDay)window.parityEndDay(r);
   S.history.push(r);if(S.history.length>400)S.history.shift();S.totalProfit=(S.totalProfit||0)+profit;
   const broke=S.money<0;
   let justOnline=false;if(!broke){S.best=Math.max(S.best||0,S.day);S.day++;S.cur=newRec(S.day);rollDay(S.day);if(!S.online&&onlineCheck().every(x=>x.ok)){S.online=true;justOnline=true}}
