@@ -61,7 +61,7 @@ html=await minifyHtml(html,{
 await writeFile(join(out,'index.html'),html,'utf8');
 
 // Light production CSS minification: preserve UTF-8 declaration and readable source files in repo.
-for(const rel of ['assets/css/style.css','assets/css/baucua.css','assets/css/xidach.css','assets/css/banbe.css','account-sync.css','referral.css']){
+for(const rel of ['assets/css/style.css','assets/css/baucua.css','assets/css/xidach.css','assets/css/banbe.css','assets/css/parity-advanced.css','account-sync.css','referral.css']){
   const file=join(out,rel);
   const source=await readFile(file,'utf8');
   const min=new CleanCSS({level:1,format:false}).minify(source);
@@ -72,7 +72,7 @@ for(const rel of ['assets/css/style.css','assets/css/baucua.css','assets/css/xid
 }
 
 const productionJs=[
-  'assets/js/banbe.js','assets/js/game.js','assets/js/frontshop.js','assets/js/parity.js','assets/js/baucua.js','assets/js/xidach.js',
+  'assets/js/banbe.js','assets/js/game.js','assets/js/frontshop.js','assets/js/parity.js','assets/js/parity-advanced-core.js','assets/js/parity-advanced-staff-tax.js','assets/js/parity-advanced-ops.js','assets/js/parity-advanced-hooks.js','assets/js/baucua.js','assets/js/xidach.js',
   'account-sync.js','referral.js','bootstrap.js','sw.js'
 ];
 for(const rel of productionJs){
