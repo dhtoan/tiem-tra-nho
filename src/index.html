@@ -85,6 +85,7 @@
       <div class="h-m"><small id="hName">Tiệm Trà Nhỏ</small><span id="hMoney">0đ</span></div>
       <div class="h-r">
         <button id="hRatebox" class="h-ratebox" type="button" aria-label="Mở tab Đánh giá" title="Xem đánh giá"><span class="stars" id="hStars">★★★★☆</span><small id="hRate">4,0</small></button>
+        <button id="frontBtn" class="front-btn-megah" aria-label="Xuống Phố" title="Xuống Phố"><img src="/assets/img/ic_upmega.png" alt="" class="front-mega-img"><span class="front-btn-text">Xuống Phố</span></button>
         <button id="pauseBtn" class="pbtn" aria-label="Tạm dừng"><img class="ico" src="/assets/img/ic_pause.png" alt=""></button>
         <button id="setBtn" class="pbtn gear" aria-label="Cài đặt"><img class="ico" src="/assets/img/ic_set.png" alt=""></button>
       </div>
@@ -96,6 +97,48 @@
   <div class="toast" id="toast"></div>
   <div class="modal" id="modal" hidden><div class="card" id="card"></div></div>
   <div class="splash" id="splash" hidden></div>
+
+  <!-- Xuống Phố / Trước Tiệm -->
+  <div class="frontshop-modal" id="frontshop-modal" hidden>
+    <div class="frontshop-view" id="frontshop-view">
+      <div class="frontshop-bg"></div>
+      <div class="frontshop-door-sign" id="frontDoorSignWrap">
+        <div class="frontshop-door-plaque"><span class="frontshop-door-deco">🏮</span><span class="frontshop-door-name" id="frontDoorShopName">Tiệm Trà Nhỏ</span><span class="frontshop-door-deco">🏮</span></div>
+      </div>
+      <div class="frontshop-hud">
+        <div class="frontshop-title-card"><div class="frontshop-shop-name" id="frontShopName">Tiệm Trà Nhỏ</div><div class="frontshop-sub">🏮 Phố Trà Sữa Tấp Nập</div></div>
+        <div class="frontshop-hud-actions"><div class="frontshop-live-tag" id="frontShopLiveTag">🥤 Đang chuẩn bị</div><button class="frontshop-btn-back" id="frontShopBackBtn">🧋 Vào Quầy</button></div>
+      </div>
+      <div class="frontshop-karin-wrap" id="frontKarinWrap">
+        <div class="frontshop-karin-bubble" id="frontKarinBubble">🐾 <b>Karin:</b> Chạm vào tớ để chào mời khách và tăng kiên nhẫn nhé!</div>
+        <div class="frontshop-karin-img-box" id="frontKarinBtn"><img src="/assets/img/9517-thanmeo_karin.png" alt="Thần Mèo Karin" class="frontshop-karin-img" id="frontKarinImg"><div class="frontshop-karin-badge">🛡️ BẢO VỆ KARIN</div></div>
+      </div>
+      <div class="frontshop-pedestrians" id="frontPedestrians"></div>
+      <div class="frontshop-bot-bar">
+        <div class="frontshop-buff-info" id="frontBuffInfo"><span>🐾 <b>Thần Mèo Karin:</b> +20s kiên nhẫn &amp; lì xì tiền vía!</span></div>
+        <button class="frontshop-call-btn" id="frontCallBtn">📣 Xin Phước (+20s)</button>
+        <button class="frontshop-bot-back-btn" id="frontBotBackBtn">🧋 Vào Quầy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bản đồ Shipper -->
+  <div class="shippermap-modal" id="shippermap-modal" hidden>
+    <div class="shippermap-card" id="shippermap-card">
+      <div class="shippermap-header">
+        <button class="shippermap-back-btn" id="shipperMapBackBtn">🧋 Vào Quầy</button>
+        <div class="shippermap-title-box"><div class="shippermap-title">🗺️ Bản Đồ Giao Hàng Shipper</div><div class="shippermap-subtitle" id="shipperMapShopSub">Tiệm Trà Nhỏ · Đang xuất ca</div></div>
+        <div class="shippermap-status-badge">🛵 <span id="shipperMapCount">3</span> xe</div>
+      </div>
+      <div class="shippermap-viewport" id="shipperMapViewport">
+        <div class="shippermap-canvas" id="shipperMapCanvas">
+          <img src="/assets/img/map.jpg" class="shippermap-bg" alt="Bản đồ giao hàng Shipper">
+          <div class="center-shop-signboard" id="centerSignboard" title="Cửa hàng trung tâm"><span class="center-shop-sign-icon">🧋</span><span class="center-shop-sign-name" id="centerSignName">TIỆM TRÀ NHỎ</span></div>
+          <div id="shippersWrap"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Bầu Cua Minigame Modal -->
   <div class="baucua-modal" id="baucua-modal" hidden><div class="baucua-card" id="baucua-card"></div></div>
