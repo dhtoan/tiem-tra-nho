@@ -90,7 +90,13 @@ const baseServeOnline=serveOnline;
 serveOnline=function(i){const before=S.served||0,money=S.money||0;baseServeOnline(i);const n=Math.max(0,(S.served||0)-before);if(n){onCupServedProgress(n);const gain=Math.max(0,(S.money||0)-money),billBonus=getStaffBillBonusTotal();if(gain>0&&billBonus>0){const x=Math.round(gain*billBonus);S.money+=x;S.cur.gift=(S.cur.gift||0)+x}save();head()}};
 
 const baseAddReview=addReview;
-addReview=function(st,why,online,c,extra){baseAddReview(st,why,online,c,extra);if(isStaffActive('staffMkt')){const r=S.reviews[0];if(r&&!r.rp){r.rp=r.s<=2?'Quán đã ghi nhận và sẽ rà soát lại quy trình ngay. Cảm ơn bạn đã góp ý.':'Cảm ơn bạn đã ủng hộ Tiệm Trà Nhỏ. Hẹn gặp lại bạn sớm!';if(r.s<5&&Math.random()<.45)r.s++;save()}}};
+addReview=function(st,why,online,cust,extra){
+  baseAddReview(st,why,online,cust,extra);
+  const fresh=S.reviews&&S.reviews[0];
+  checkReset5StarRating();
+  if(st<=1&&fresh&&!(cust&&cust.isFriend)&&Math.random()<.35)setTimeout(()=>triggerFriendBadReview(fresh),150);
+  if(isStaffActive('staffMkt')){const r=S.reviews[0];if(r&&!r.rp){r.rp=r.s<=2?'Quán đã ghi nhận và sẽ rà soát lại quy trình ngay. Cảm ơn bạn đã góp ý.':'Cảm ơn bạn đã ủng hộ Tiệm Trà Nhỏ. Hẹn gặp lại bạn sớm!';if(r.s<5&&Math.random()<.45)r.s++;save()}}
+};
 
 const baseTryOpen=tryOpen;
 tryOpen=function(){checkMktAutoPayTax();checkEquipBreakdown();checkStaffExcuses(()=>baseTryOpen())};
