@@ -532,7 +532,7 @@ function traffic(){
   const friendBoost = (S.friendBuff && S.friendBuff.day === S.day) ? (1 + (S.friendBuff.boost || 0.15)) : 1.0;
   const boost=(1+(S.upg.sign?.2:0)+(S.upg.ads?.25:0)+(S.upg.mascot?.3:0)+Math.min(S.day,40)*.012)*gzBoost*traBoost*friendBoost;
   const avgIdx=BASE_KEYS.filter(k=>S.unlocked[k]).reduce((a,k)=>a+S.sell[k]/DEF_SELL[k],0)/BASE_KEYS.filter(k=>S.unlocked[k]).length;
-  const e=ev();return rf*boost*(e?EVS[e.id].mul:1)/Math.max(.85,Math.min(1,avgIdx)**2);
+  const e=ev(),taxBoost=window.getTaxTrafficBoost?window.getTaxTrafficBoost():1;return rf*boost*taxBoost*(e?EVS[e.id].mul:1)/Math.max(.85,Math.min(1,avgIdx)**2);
 }
 const RX={fast:/nhanh|chưa tới 5 phút|đúng giờ|không phải đợi/,
   wait:/chờ|đợi|lâu|chậm|mỏi chân|xếp hàng|hàng dài|quán đông|đông quá|đông khách|đông kinh|kịp tay|đuối|bận|cao điểm|trễ/,
@@ -757,7 +757,7 @@ function bindSub(id){
 }
 function renderPrep(){
   R.mode='prep';if(AU.ctx)musSync();document.body.classList.remove('selling');
-  const tabs=[['kho','box','Kho'],['nangcap','tools','Nâng cấp'],['gia','price','Giá bán'],['danhgia','star','Đánh giá'],['tongket','chart','Tổng kết'],['banbe','people','Bạn bè']];
+  const tabs=[['kho','box','Kho'],['kpi','people',(S.staffSalesDays||0)>=7?'KPI nhân viên <span class="tax-overdue-dot">⭐</span>':'KPI nhân viên'],['thue','receipt',(window.isTaxOverdue&&window.isTaxOverdue())?'Đóng thuế <span class="tax-overdue-dot">⚠️</span>':'Đóng thuế'],['nangcap','tools','Nâng cấp'],['gia','price','Giá bán'],['danhgia','star','Đánh giá'],['tongket','chart','Tổng kết'],['banbe','people','Bạn bè']];
   $('view').innerHTML=menuBoard()+
     `<div class="tabs" role="tablist">${tabs.map(([k,ic,l])=>`<button class="tab${R.tab===k?' on':''}" data-tab="${k}" role="tab"><span class="ti">${ico(ic)}</span>${l}</button>`).join('')}</div>
      <div class="pane" id="pane"></div>
@@ -765,7 +765,7 @@ function renderPrep(){
   $('view').querySelector('.tabs').onclick=e=>{const b=e.target.closest('[data-tab]');if(b&&b.dataset.tab!==R.tab)switchTab(b.dataset.tab)};
   $('rename').onclick=renameDlg;
   bindBoard();
-  const paneFns = {kho:paneKho,nangcap:paneUpg,gia:paneGia,danhgia:paneRev,tongket:paneSum,banbe:()=>window.BanBe&&window.BanBe.render()};
+  const paneFns = {kho:paneKho,kpi:window.paneKpi,thue:window.paneThue,nangcap:paneUpg,gia:paneGia,danhgia:paneRev,tongket:paneSum,banbe:()=>window.BanBe&&window.BanBe.render()};
   if(paneFns[R.tab]) paneFns[R.tab]();
   renderObar(true);head();
   if($('bcBtn')) $('bcBtn').onclick=()=>{if(window.BauCua) window.BauCua.open()};
@@ -773,7 +773,7 @@ function renderPrep(){
   setTimeout(prepChecks,300);
 }
 function refreshPrep(board){if(board){const b=document.querySelector('.board'),sg=document.querySelector('.sign');if(b&&sg){const t=document.createElement('div');t.innerHTML=menuBoard();sg.replaceWith(t.querySelector('.sign'));b.replaceWith(t.querySelector('.board'));$('rename').onclick=renameDlg;bindBoard()}}
-  const paneFns = {kho:paneKho,nangcap:paneUpg,gia:paneGia,danhgia:paneRev,tongket:paneSum,banbe:()=>window.BanBe&&window.BanBe.render()};
+  const paneFns = {kho:paneKho,kpi:window.paneKpi,thue:window.paneThue,nangcap:paneUpg,gia:paneGia,danhgia:paneRev,tongket:paneSum,banbe:()=>window.BanBe&&window.BanBe.render()};
   if(paneFns[R.tab]) paneFns[R.tab]();renderObar();head()}
 function obarHTML(){const t=planTotal();return t?`<button class="big" id="cook" ${t>S.money?'disabled':''}>${t>S.money?'Không đủ tiền · ':'Nấu & nhập · '}${fmt(t)}</button>`:(missingPrep().length?`<button class="big blocked" id="open">${ico('warn')} Chưa nấu ${missingPrep().map(m=>m[0]).join(' · ')}</button>`:`<button class="big" id="open">Mở cửa ngày ${S.day}</button>`)}
 function renderObar(force){const b=$('obar');if(!b)return;const h=obarHTML();if(!force&&b._h===h)return;
@@ -781,7 +781,7 @@ function renderObar(force){const b=$('obar');if(!b)return;const h=obarHTML();if(
   if(!force&&old&&old.id===n.id&&old.className===n.className&&!n.querySelector('img')){old.textContent=n.textContent;old.disabled=n.disabled}else{b.innerHTML=h}
   b._h=h;if($('open'))$('open').onclick=tryOpen;if($('cook'))$('cook').onclick=cook}
 function switchTab(k){R.tab=k;document.querySelectorAll('#view .tabs [data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===k));
-  const paneFns = {kho:paneKho,nangcap:paneUpg,gia:paneGia,danhgia:paneRev,tongket:paneSum,banbe:()=>window.BanBe&&window.BanBe.render()};
+  const paneFns = {kho:paneKho,kpi:window.paneKpi,thue:window.paneThue,nangcap:paneUpg,gia:paneGia,danhgia:paneRev,tongket:paneSum,banbe:()=>window.BanBe&&window.BanBe.render()};
   if(paneFns[k]) paneFns[k]();renderObar()}
 function itemIcon(k){const it=ITEMS[k];
   if(it.type==='base')return `<span class="bcup">${baseCup(k)}</span>`;
