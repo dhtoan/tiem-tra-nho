@@ -59,7 +59,7 @@ function staffSvTick(dt=.1){
   if(!R.running||!isStaffActive('staffSv'))return;
   if(R.svStealPending&&Date.now()>=R.svStealPending.until)return svStealFail();
   if(!R.isNightShift)return;
-  R.svWorkT=(R.svWorkT==null?.4:R.svWorkT)-dt;
+  R.svWorkT=(R.svWorkT==null ? .4 : R.svWorkT)-dt;
   if(R.svWorkT<=0){staffSvServeOne();R.svWorkT=Math.max(.22,.85/(1+getStaffSpeedBuff()))}
   if(!R.svStealPending&&!R.svNightRolled&&R.t<(R.nightTot||80)*.55&&Math.random()<.025){R.svNightRolled=true;svTriggerStealIntent()}
 }
