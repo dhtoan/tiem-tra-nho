@@ -9,8 +9,8 @@ function findDepletedIngredient(){
 function getBuyerBatch(k=findDepletedIngredient()){
   if(!k||!S.stock[k])return null;const q=k==='cup'?20:12,cost=Math.max(0,(CFG.cost[k]||1000)*q);return{k,q,cost};
 }
-function staffBuyerStartTrip(manual=false){
-  if(!isStaffActive('staffBuyer')||R.staffBuyerTrip)return false;const b=getBuyerBatch();if(!b){if(manual)toast('Kho chưa có món nào cần đi chợ gấp.');return false}if(S.money<b.cost){if(manual)toast('Két không đủ tiền nhập gấp '+ITEMS[b.k]?.n+'.');return false}
+function staffBuyerStartTrip(manual=false,requestedKey=null){
+  if(!isStaffActive('staffBuyer')||R.staffBuyerTrip)return false;const b=getBuyerBatch(requestedKey||findDepletedIngredient());if(!b){if(manual)toast('Kho chưa có món nào cần đi chợ gấp.');return false}if(S.money<b.cost){if(manual)toast('Két không đủ tiền nhập gấp '+ITEMS[b.k]?.n+'.');return false}
   R.staffBuyerTrip={...b,started:Date.now(),doneAt:Date.now()+5500,manual};R.buyerTrips=(R.buyerTrips||0)+1;renderBuyerWidget();toast('🛵 Nhân viên đi chợ đang mua '+(ITEMS[b.k]?.n||b.k)+'...');return true;
 }
 function staffBuyerCompleteTrip(){
@@ -18,7 +18,7 @@ function staffBuyerCompleteTrip(){
   if(S.money<cost){R.staffBuyerTrip=null;renderBuyerWidget();return toast('Nhân viên đi chợ quay về nhưng két không đủ tiền thanh toán.');}
   S.money-=cost;directAddStock(t.k,t.q);R.today.buyerSpent=(R.today.buyerSpent||0)+cost;if(extra)R.today.buyerMarkup=(R.today.buyerMarkup||0)+extra;R.staffBuyerTrip=null;save();head();renderPanel();renderBuyerWidget();toast('🛍️ Đã nhập gấp '+t.q+' '+(ITEMS[t.k]?.n||t.k)+' · -'+fmt(cost)+(extra?' (hóa đơn có chênh lệch)':''),3500,!!extra);
 }
-function staffBuyerTriggerInstant(){return staffBuyerStartTrip(true)}
+function staffBuyerTriggerInstant(k=null){return staffBuyerStartTrip(true,k)}
 function staffBuyerTick(){
   if(!R.running||!isStaffActive('staffBuyer'))return;if(R.staffBuyerTrip){if(Date.now()>=R.staffBuyerTrip.doneAt)staffBuyerCompleteTrip();return}
   if(findDepletedIngredient()&&Math.random()<.035)staffBuyerStartTrip(false);
@@ -34,12 +34,38 @@ function svTriggerStealIntent(){
 }
 function svCheer(){if(R.svStealPending){R.svStealPending=null;R.svCheered=(R.svCheered||0)+1;toast('🤝 Đã khuyên ngăn kịp thời.');renderSvWidget()}else toast('Sinh viên vẫn đang làm ca ổn định.')}
 function svStealFail(){const x=R.svStealPending;if(!x)return;S.upg[x.u.id]=false;R.svStealPending=null;save();toast('💸 Không kịp ngăn: '+x.u.n+' đã biến mất khỏi quán.',4300,1);renderSvWidget()}
-function staffSvTick(){
-  if(!R.running||!isStaffActive('staffSv'))return;if(R.svStealPending&&Date.now()>=R.svStealPending.until)return svStealFail();if(R.closing&&!R.svStealPending&&!R.svNightRolled&&Math.random()<.01){R.svNightRolled=true;svTriggerStealIntent()}
+function startSvNightShift(){
+  if(!R.running||!isStaffActive('staffSv')||R.isNightShift)return false;
+  R.isNightShift=true;R.closing=false;R.nightTot=80;R.t=R.nightTot;R.spawnT=.8;R.onT=4;R.svWorkT=.4;R.svNightRolled=false;
+  toast('🌙 Sinh viên cuối tháng vào ca: quán bán xuyên đêm 22:00 → 06:00!',5000,1);
+  renderSell();head();return true;
 }
-function staffSvStep(){staffSvTick()}
+function staffSvServeOne(){
+  if(!R.running||!R.isNightShift||!isStaffActive('staffSv'))return false;
+  let lane=-1,order=null;
+  for(let i=0;i<R.slots.length;i++){const c=R.slots[i];if(!c)continue;const j=c.cups.findIndex((o,k)=>!c.done[k]&&needs(o).every(x=>qty(x)>0));if(j>=0){lane=i;order=c.cups[j];break}}
+  let online=-1;
+  if(lane<0){for(let i=0;i<R.online.length;i++){const c=R.online[i];const j=c.cups.findIndex((o,k)=>!c.done[k]&&needs(o).every(x=>qty(x)>0));if(j>=0){online=i;order=c.cups[j];break}}}
+  if(!order)return false;
+  const mine=cup;cup=newCup();cup.size=order.size;
+  if(!useCup()){cup=mine;return false}
+  [order.base,...(order.flav?[order.flav]:[]),...(order.tops||[])].forEach(k=>{if(qty(k))consume(k)});
+  Object.assign(cup,{base:order.base,flav:order.flav||null,tops:[...(order.tops||[])],cheese:!!order.cheese,sugar:order.sugar,ice:order.ice,fill:.8,used:true,sealed:true});
+  if(Math.random()<.04){spoilCup();cup=mine;R.today.wrong=(R.today.wrong||0)+1;toast('🌙 Sinh viên lỡ làm hỏng 1 ly, đã đổ bỏ và làm lại.',2200);return true}
+  if(lane>=0){R.slots[lane].order=order;serve(lane)}else if(online>=0){R.online[online].order=order;serveOnline(online)}
+  cup=mine;renderCup();renderPanel();return true;
+}
+function staffSvTick(dt=.1){
+  if(!R.running||!isStaffActive('staffSv'))return;
+  if(R.svStealPending&&Date.now()>=R.svStealPending.until)return svStealFail();
+  if(!R.isNightShift)return;
+  R.svWorkT=(R.svWorkT==null?.4:R.svWorkT)-dt;
+  if(R.svWorkT<=0){staffSvServeOne();R.svWorkT=Math.max(.22,.85/(1+getStaffSpeedBuff()))}
+  if(!R.svStealPending&&!R.svNightRolled&&R.t<(R.nightTot||80)*.55&&Math.random()<.025){R.svNightRolled=true;svTriggerStealIntent()}
+}
+function staffSvStep(){staffSvTick(.1)}
 function renderSvWidget(){
-  const stage=$('q3stage');if(!stage)return;let w=$('svWidget');if(!isStaffActive('staffSv')){if(w)w.remove();return}if(!w){w=document.createElement('div');w.id='svWidget';w.className='sv-widget';stage.appendChild(w)}w.innerHTML=R.svStealPending?'⚠️ '+esc(R.svStealPending.u.n)+' <button id="svCheerBtn">Khuyên ngăn</button>':'🌙 Sinh viên cuối tháng · '+(R.closing?'đang trực muộn':'chờ ca muộn');const b=$('svCheerBtn');if(b)b.onclick=svCheer;
+  const stage=$('q3stage');if(!stage)return;let w=$('svWidget');if(!isStaffActive('staffSv')){if(w)w.remove();return}if(!w){w=document.createElement('div');w.id='svWidget';w.className='sv-widget';stage.appendChild(w)}w.innerHTML=R.svStealPending?'⚠️ '+esc(R.svStealPending.u.n)+' <button id="svCheerBtn">Khuyên ngăn</button>':R.isNightShift?'🌙 Sinh viên cuối tháng · <b>đang bán ca đêm</b>':'🌙 Sinh viên cuối tháng · chờ 22:00';const b=$('svCheerBtn');if(b)b.onclick=svCheer;
 }
 function onSvWidgetClick(){svCheer()}
 
