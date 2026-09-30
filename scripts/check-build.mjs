@@ -44,7 +44,8 @@ for(const marker of ['cloudAccountBtn','cloudAccountDlg','cloudSaveNudge']){
 const game=await readFile(join(root,'assets/js/game.js'),'utf8');
 const frontshop=await readFile(join(root,'assets/js/frontshop.js'),'utf8');
 const parity=await readFile(join(root,'assets/js/parity.js'),'utf8');
-for(const marker of ['paneKpi','paneThue','executePayTax','openBankDepositDlg','parityEndDay'])if(!parity.includes(marker))throw new Error('parity runtime missing '+marker);\nconst advancedFiles=['assets/js/parity-advanced-core.js','assets/js/parity-advanced-staff-tax.js','assets/js/parity-advanced-ops.js','assets/js/parity-advanced-hooks.js'];
+for(const marker of ['paneKpi','paneThue','executePayTax','openBankDepositDlg','parityEndDay'])if(!parity.includes(marker))throw new Error('parity runtime missing '+marker);
+const advancedFiles=['assets/js/parity-advanced-core.js','assets/js/parity-advanced-staff-tax.js','assets/js/parity-advanced-ops.js','assets/js/parity-advanced-hooks.js'];
 const advanced=(await Promise.all(advancedFiles.map(file=>readFile(join(root,file),'utf8')))).join('\n');
 for(const marker of ['rollPartyContract','partyContractCard','staffBuyerTick','renderBuyerWidget','staffSvTick','renderSvWidget','checkMktAutoPayTax','getStaffSpeedBuff','getStaffBillBonusTotal','openSellReviewsModal','updateKarinPatrol','Nhân viên đi chợ','Sinh viên cuối tháng','Nhân viên Me két tinh','ĐÓNG THUẾ TRỰC TUYẾN 72H'])if(!advanced.includes(marker))throw new Error('advanced parity runtime missing '+marker);
 for(const [label,re] of [['kpi',/["']kpi["'],["']people["']/],['thue',/["']thue["'],["']receipt["']/]])if(!re.test(game))throw new Error('prep menu missing '+label);
