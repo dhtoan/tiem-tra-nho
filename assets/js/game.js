@@ -1807,7 +1807,10 @@ function renderSell(){
     <div id="q3noCup">Lấy ly<br>M hoặc L</div><div id="q3cup" aria-hidden="true"></div>
     <div class="q3gauge"><div class="q3lv" id="q3gLv"></div><div class="q3ok"></div></div><div id="q3hint"></div><div id="q3coach" hidden></div>
   </div></div>`;
-  applyCosmetics();\n  if($('q3FrontBtn'))$('q3FrontBtn').onclick=openFrontShop;\n  if($('q3PhoneBtn'))$('q3PhoneBtn').onclick=openShipperMap;\n  updateShipperPhoneBadge();
+  applyCosmetics();
+  if($('q3FrontBtn'))$('q3FrontBtn').onclick=openFrontShop;
+  if($('q3PhoneBtn'))$('q3PhoneBtn').onclick=openShipperMap;
+  updateShipperPhoneBadge();
   const st=$('q3stage');
   st.onclick=e=>{
     const dx=e.target.closest('[data-decl]');if(dx){const id=+dx.dataset.decl,i=R.slots.findIndex(c=>c&&c.id===id);if(i>=0){decline(i);toast('Đã mời khách về');renderPanel()}else{const j=R.online.findIndex(c=>c.id===id);if(j>=0){declineOnline(j);toast('Đã huỷ đơn online')}}return}
