@@ -45,7 +45,7 @@ const game=await readFile(join(root,'assets/js/game.js'),'utf8');
 const frontshop=await readFile(join(root,'assets/js/frontshop.js'),'utf8');
 const parity=await readFile(join(root,'assets/js/parity.js'),'utf8');
 for(const marker of ['paneKpi','paneThue','executePayTax','openBankDepositDlg','parityEndDay'])if(!parity.includes(marker))throw new Error('parity runtime missing '+marker);
-for(const marker of ["['kpi','people'","['thue','receipt'"])if(!game.includes(marker))throw new Error('prep menu missing '+marker);
+for(const [label,re] of [['kpi',/["']kpi["'],["']people["']/],['thue',/["']thue["'],["']receipt["']/]])if(!re.test(game))throw new Error('prep menu missing '+label);
 for(const marker of ['frontshop-modal','shippermap-modal','frontKarinBtn','shipperMapCanvas'])if(!html.includes(marker))throw new Error('street/map UI missing '+marker);
 for(const marker of ['openFrontShop','karinCheer','openShipperMap','SHIPPER_ROUTES','updateShipperPhoneBadge'])if(!frontshop.includes(marker))throw new Error('street/map runtime missing '+marker);
 if(!/GAME_VERSION=["']1\.0\.0["']/.test(game))throw new Error('Aunomay runtime version 1.0.0 missing');
