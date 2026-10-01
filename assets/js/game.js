@@ -653,14 +653,14 @@ function menuBoard(){
 const levelOf=d=>{const L=CFG.levels;return d>=L.l3?3:d>=L.l2?2:1};
 const level=()=>levelOf(S.day);
 const LV_TXT={1:'Khách gọi size, loại trà và topping',2:'Khách chọn thêm mức đường và đá',3:'Khách có thể mua 2–5 ly một lần, gọi nhiều topping hoặc full topping'};
-/* app giao hàng: Soppi và Tóp Tóp, mở theo điều kiện, mỗi app cần 1 tablet */
+/* app giao hàng: mở cùng hệ online, mỗi app cần 1 tablet */
 const APPS=[
   {id:'sp',n:'Soppi',c:'#f08a4b',w:20,rows:[0,1]},
   {id:'tt',n:'Tóp Tóp',c:'#fe2c55',w:25,rows:[0,1],day:90,minProfit:50000000,rate:4.5,fee:10000000},
   {id:'bi',n:'Biiiii',c:'#7c3aed',w:24,rows:[0,1],day:90,minProfit:50000000,rate:4.5,fee:0},
   {id:'gr',n:'Gờ Ráp',c:'#16a34a',w:24,rows:[0,1],day:90,minProfit:50000000,rate:4.5,fee:0}
 ];
-const appJoined=a=>a.id==='sp'?!!S.online:!!(S.apps||{})[a.id];
+const appJoined=a=>!!S.online;
 const appMinRate=a=>a.id==='sp'?CFG.online.minRating:a.rate;
 /* app đang nhận đơn: đã mở, có tablet, đủ sao */
 function appsOn(){let tb=S.tablets||0;const r=rating();return APPS.filter(a=>{if(!appJoined(a))return false;if(tb<=0)return false;tb--;return r>=appMinRate(a)})}
