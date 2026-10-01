@@ -287,3 +287,17 @@ body{font-size:16px;line-height:1.45}
   #completeReviewsRoot .complete-review-card>p,
   #completeSellReviews .complete-review-card>p{font-size:12px}
 }
+
+
+/* Compact street button */
+.front-btn-megah{
+  width:34px!important;height:34px!important;min-width:34px!important;
+  padding:0!important;border-radius:50%!important;gap:0!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  background:var(--panel,#fffaf2)!important;border:2px solid var(--line,#ead7bd)!important;
+  box-shadow:none!important
+}
+.front-btn-megah .front-mega-img{width:21px!important;height:21px!important;filter:none!important}
+.front-btn-megah .front-btn-text{display:none!important}
+.front-btn-megah:hover{transform:none!important}
+.front-btn-megah:active{transform:scale(.94)!important}
