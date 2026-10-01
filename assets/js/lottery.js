@@ -110,6 +110,9 @@ function enhanceSettings(){
   const news=document.getElementById('sNews');if(!news||document.getElementById('sLottery'))return;
   const lottery=news.cloneNode(true);lottery.id='sLottery';lottery.innerHTML='<span>🎟️</span><b>Xổ Số Tiệm Trà</b><small>Vé 5 chữ số · tiền trong game</small>';lottery.onclick=()=>{const modal=document.getElementById('modal');if(modal)modal.hidden=true;open()};news.after(lottery);
   const change=news.cloneNode(true);change.id='sChangelog';change.innerHTML='<span>📜</span><b>Lịch sử cập nhật</b><small>Xem toàn bộ mốc phiên bản</small>';change.onclick=()=>{location.href='/changelog'};lottery.after(change);
+  if(typeof window.reportFakeMoneyPolice==='function'||typeof reportFakeMoneyPolice==='function'){
+    const police=news.cloneNode(true);police.id='sPolice';police.innerHTML='<span>🚨</span><b>Báo Công An</b><small>Kiểm tra hồ sơ tiền giả còn lưu trong ngày</small>';police.onclick=()=>{const modal=document.getElementById('modal');if(modal)modal.hidden=true;try{reportFakeMoneyPolice()}catch(_){toast('Hiện chưa có hồ sơ tiền giả cần xử lý.')}};change.after(police);
+  }
 }
 const settingsObserver=new MutationObserver(()=>enhanceSettings());
 const settingsCard=document.getElementById('card');if(settingsCard)settingsObserver.observe(settingsCard,{childList:true,subtree:true});
