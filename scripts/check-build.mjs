@@ -5,10 +5,10 @@ const root=new URL('../dist/',import.meta.url).pathname;
 const MAX_ASSET_BYTES=25*1024*1024;
 const required=[
   'index.html',
-  'assets/css/style.css','assets/css/baucua.css','assets/css/xidach.css','assets/css/banbe.css','assets/css/parity-advanced.css','assets/css/parity-complete.css',
-  'assets/js/game.js','assets/js/frontshop.js','assets/js/parity.js','assets/js/parity-advanced-core.js','assets/js/parity-advanced-staff-tax.js','assets/js/parity-advanced-ops.js','assets/js/parity-advanced-hooks.js','assets/js/parity-complete.js','assets/js/baucua.js','assets/js/xidach.js','assets/js/banbe.js',
+  'assets/css/style.css','assets/css/baucua.css','assets/css/xidach.css','assets/css/banbe.css','assets/css/parity-advanced.css','assets/css/parity-complete.css','assets/css/lottery.css',
+  'assets/js/game.js','assets/js/frontshop.js','assets/js/parity.js','assets/js/parity-advanced-core.js','assets/js/parity-advanced-staff-tax.js','assets/js/parity-advanced-ops.js','assets/js/parity-advanced-hooks.js','assets/js/parity-complete.js','assets/js/lottery.js','assets/js/baucua.js','assets/js/xidach.js','assets/js/banbe.js',
   'account-sync.css','account-sync.js','referral.css','referral.js','vendor/qrcode.min.js','bootstrap.js',
-  'manifest.webmanifest','sw.js','version.json',
+  'manifest.webmanifest','sw.js','version.json','changelog.html',
   'favicon-16x16.png','favicon-32x32.png','favicon.ico',
   'apple-touch-icon.png','apple-touch-icon-167x167.png','apple-touch-icon-152x152.png','apple-touch-icon-120x120.png',
   'android-chrome-192x192.png','android-chrome-512x512.png',
@@ -35,7 +35,7 @@ for(const file of utf8Files){
   if(mojibake.test(text))throw new Error('possible UTF-8/mojibake corruption in '+file);
   if(file.endsWith('.css')&&!text.startsWith('@charset "UTF-8";'))throw new Error('CSS missing UTF-8 charset declaration: '+file);
 }
-for(const ref of ['/assets/css/style.css','/assets/css/baucua.css','/assets/css/xidach.css','/assets/css/banbe.css','/assets/css/parity-advanced.css','/assets/css/parity-complete.css','/assets/js/banbe.js','/assets/js/game.js','/assets/js/frontshop.js','/assets/js/parity.js','/assets/js/parity-advanced-core.js','/assets/js/parity-advanced-staff-tax.js','/assets/js/parity-advanced-ops.js','/assets/js/parity-advanced-hooks.js','/assets/js/parity-complete.js','/assets/js/baucua.js','/assets/js/xidach.js','/account-sync.css','/account-sync.js','/referral.css','/vendor/qrcode.min.js','/referral.js','/bootstrap.js','/manifest.webmanifest','/favicon-32x32.png','/favicon-16x16.png','/favicon.ico','/apple-touch-icon.png','/apple-touch-icon-167x167.png','/apple-touch-icon-152x152.png','/apple-touch-icon-120x120.png']){
+for(const ref of ['/assets/css/style.css','/assets/css/baucua.css','/assets/css/xidach.css','/assets/css/banbe.css','/assets/css/parity-advanced.css','/assets/css/parity-complete.css','/assets/css/lottery.css','/assets/js/banbe.js','/assets/js/game.js','/assets/js/frontshop.js','/assets/js/parity.js','/assets/js/parity-advanced-core.js','/assets/js/parity-advanced-staff-tax.js','/assets/js/parity-advanced-ops.js','/assets/js/parity-advanced-hooks.js','/assets/js/parity-complete.js','/assets/js/lottery.js','/assets/js/baucua.js','/assets/js/xidach.js','/account-sync.css','/account-sync.js','/referral.css','/vendor/qrcode.min.js','/referral.js','/bootstrap.js','/manifest.webmanifest','/favicon-32x32.png','/favicon-16x16.png','/favicon.ico','/apple-touch-icon.png','/apple-touch-icon-167x167.png','/apple-touch-icon-152x152.png','/apple-touch-icon-120x120.png']){
   if(!html.includes(ref))throw new Error('index missing '+ref);
 }
 for(const marker of ['cloudAccountBtn','cloudAccountDlg','cloudSaveNudge']){
@@ -50,6 +50,10 @@ const advanced=(await Promise.all(advancedFiles.map(file=>readFile(join(root,fil
 for(const marker of ['rollPartyContract','partyContractCard','staffBuyerTick','renderBuyerWidget','staffSvTick','renderSvWidget','checkMktAutoPayTax','getStaffSpeedBuff','getStaffBillBonusTotal','openSellReviewsModal','updateKarinPatrol','richerTaxPane','openBankDepositAdvanced','openStaffKpiModalAdvanced','startSvNightShift','staffSvServeOne','checkReset5StarRating','triggerFriendBadReview'])if(!advanced.includes(marker))throw new Error('advanced parity runtime missing '+marker);
 const complete=await readFile(join(root,'assets/js/parity-complete.js'),'utf8');
 for(const marker of ['completePaneKpi','completePaneThue','completePaneRev','completeOpenSellModal','completeBuyerModal','completeCheckStaffExcuses','completeCheckEquipBreakdown','completeCatchGz','completeRenderSv','appendDailyAudit'])if(!complete.includes(marker))throw new Error('complete parity runtime missing '+marker);
+const lottery=await readFile(join(root,'assets/js/lottery.js'),'utf8');
+for(const marker of ['TTNLottery','drawNumber','buyTicket','lotteryStation','lotteryNumber'])if(!lottery.includes(marker))throw new Error('lottery runtime missing '+marker);
+const changelog=await readFile(join(root,'changelog.html'),'utf8');
+for(const marker of ['Lịch sử cập nhật','Tiệm Trà Nhỏ','Phiên bản 1.'])if(!changelog.includes(marker))throw new Error('changelog page missing '+marker);
 const completeCss=await readFile(join(root,'assets/css/parity-complete.css'),'utf8');
 for(const marker of ['complete-staff-card','complete-review-summary','complete-tax-overview','complete-daily-audit'])if(!completeCss.includes(marker))throw new Error('complete parity CSS missing '+marker);
 for(const [label,re] of [['kpi',/["']kpi["'],["']people["']/],['thue',/["']thue["'],["']receipt["']/]])if(!re.test(game))throw new Error('prep menu missing '+label);
