@@ -431,6 +431,33 @@ window.tryOpen=function(){
   return typeof baseTryOpenComplete==='function'?baseTryOpenComplete():undefined;
 };
 
+
+/* ---------------- LATEST ACTIVE FEATURE PARITY ---------------- */
+function ensureLatestFeatureParity(){
+  if(!UPG.some(u=>u.id==='fridge'))UPG.push({id:'fridge',n:'Tủ lạnh',d:'Bảo quản đá viên không hết hạn khi đang sở hữu trang bị.',cost:500000,i:'❄️'});
+  if(!UPG.some(u=>u.id==='floor2'))UPG.push({id:'floor2',n:'Nâng tầng',d:'Mở rộng quầy để phục vụ cùng lúc tối đa 10 khách.',cost:1000000,i:'🏢'});
+  if(!localStorage.getItem('tsAudio')){
+    try{AU.on=false;AU.mus=false;saveAu()}catch(_){}
+  }
+}
+const baseExpireStockLatest=window.expireStock;
+window.expireStock=function(){
+  if(S.upg&&S.upg.fridge&&S.stock&&S.stock.ice){
+    S.stock.ice=S.stock.ice.map(b=>({...b,exp:99999}));
+  }
+  return typeof baseExpireStockLatest==='function'?baseExpireStockLatest():[];
+};
+const baseStartDayLatest=window.startDay;
+window.startDay=function(){
+  const out=typeof baseStartDayLatest==='function'?baseStartDayLatest():undefined;
+  if(S.upg&&S.upg.floor2&&R&&Array.isArray(R.slots)&&R.slots.length<10){
+    while(R.slots.length<10)R.slots.push(null);
+    if(typeof renderLane==='function')renderLane();
+  }
+  return out;
+};
+ensureLatestFeatureParity();
+
 window.completeParity={
   version:COMPLETE_VERSION,
   paneKpi:completePaneKpi,
