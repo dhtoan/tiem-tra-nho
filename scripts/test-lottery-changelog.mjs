@@ -1,0 +1,12 @@
+import {readFile} from 'node:fs/promises';
+const root=new URL('../',import.meta.url);
+const lottery=await readFile(new URL('assets/js/lottery.js',root),'utf8');
+const html=await readFile(new URL('src/index.html',root),'utf8');
+const css=await readFile(new URL('assets/css/parity-complete.css',root),'utf8');
+const changelog=await readFile(new URL('public/changelog.html',root),'utf8');
+for(const marker of ['TTNLottery','drawNumber','buyTicket','lotteryStation','lotteryNumber'])if(!lottery.includes(marker))throw new Error('lottery missing '+marker);
+for(const ref of ['/assets/js/lottery.js','/assets/css/lottery.css'])if(!html.includes(ref))throw new Error('index missing '+ref);
+if(!html.includes('id="frontBtn"')||html.includes('class="front-btn-text"'))throw new Error('street button is not icon-only');
+for(const marker of ['#btnPayTax','#completeKpiBtn','font-family:var(--ttn-font)'])if(!css.includes(marker))throw new Error('readability/full-width CSS missing '+marker);
+for(const marker of ['Lịch sử cập nhật','Phiên bản 1.','Tiệm Trà Nhỏ'])if(!changelog.includes(marker))throw new Error('changelog missing '+marker);
+console.log('lottery/changelog/readability checks passed');
