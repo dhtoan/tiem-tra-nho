@@ -26,6 +26,11 @@ export default {
         const response=await handleApi(request,env,url);
         return withSecurity(response,url);
       }
+      if((url.pathname==='/changelog'||url.pathname==='/changelog/')){
+        const assetUrl=new URL('/changelog.html',url);
+        const response=await env.ASSETS.fetch(new Request(assetUrl.toString(),request));
+        return withSecurity(response,url);
+      }
       const response=await env.ASSETS.fetch(request);
       return withSecurity(response,url);
     }catch(error){
