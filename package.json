@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "check": "node --check src/worker.js && node --check assets/js/game.js && node --check assets/js/frontshop.js && node --check assets/js/parity.js && node --check assets/js/parity-advanced-core.js && node --check assets/js/parity-advanced-staff-tax.js && node --check assets/js/parity-advanced-ops.js && node --check assets/js/parity-advanced-hooks.js && node --check assets/js/baucua.js && node --check assets/js/xidach.js && node --check public/account-sync.js && node --check public/bootstrap.js && node --check scripts/build.mjs && npm run test:no-db-auth && npm run test:runtime-cloud && npm run test:account-ui && npm run test:settings-account-install && npm run test:wrangler-d1 && npm run test:auth-register-production && npm run test:runtime-124719 && npm run test:referral && npm run test:tax-model && npm run test:parity-advanced && npm run build && node scripts/check-build.mjs",
+    "check": "node --check src/worker.js && node --check assets/js/game.js && node --check assets/js/frontshop.js && node --check assets/js/parity.js && node --check assets/js/parity-advanced-core.js && node --check assets/js/parity-advanced-staff-tax.js && node --check assets/js/parity-advanced-ops.js && node --check assets/js/parity-advanced-hooks.js && node --check assets/js/parity-complete.js && node --check assets/js/baucua.js && node --check assets/js/xidach.js && node --check public/account-sync.js && node --check public/bootstrap.js && node --check scripts/build.mjs && npm run test:no-db-auth && npm run test:runtime-cloud && npm run test:account-ui && npm run test:settings-account-install && npm run test:wrangler-d1 && npm run test:auth-register-production && npm run test:runtime-124719 && npm run test:referral && npm run test:tax-model && npm run test:parity-advanced && npm run test:parity-complete && npm run build && node scripts/check-build.mjs",
     "dev": "npm run build && wrangler dev --local",
     "deploy": "npm run check && npm run db:remote && wrangler deploy",
     "db:local": "wrangler d1 migrations apply DB --local",
@@ -21,7 +21,8 @@
     "test:runtime-124719": "node scripts/test-runtime-124719.mjs",
     "test:referral": "node scripts/test-referral.mjs",
     "test:tax-model": "node scripts/test-tax-model.mjs",
-    "test:parity-advanced": "node scripts/test-parity-advanced.mjs"
+    "test:parity-advanced": "node scripts/test-parity-advanced.mjs",
+    "test:parity-complete": "node scripts/test-parity-complete.mjs"
   },
   "devDependencies": {
     "wrangler": "4.141.0",
