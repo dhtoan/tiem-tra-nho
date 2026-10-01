@@ -35,3 +35,67 @@
 .complete-daily-audit{margin-top:10px;padding:10px;border:1px solid #bfdbfe;border-radius:13px;background:#f8fbff}.complete-daily-audit h3{font-size:11px;margin:0 0 8px}.complete-audit-lines{margin-top:7px}.complete-audit-lines>div{display:flex;justify-content:space-between;gap:8px;border-top:1px solid #e2e8f0;padding:5px 0;font-size:9px}.complete-audit-lines .gain{color:#15803d}.complete-audit-lines .loss{color:#b91c1c}.complete-audit-lines .info{color:#475569}
 .complete-empty{text-align:center;padding:16px 8px;color:#64748b;font-size:9px}
 @media(max-width:520px){.complete-staff-card{gap:6px}.complete-staff-avatar{width:36px;height:36px;font-size:20px}.complete-staff-action{max-width:82px}.complete-policy-grid{grid-template-columns:1fr 1fr}.complete-review-summary{grid-template-columns:82px 1fr}.complete-review-summary>div:first-child b{font-size:24px}}
+
+
+/* Larger readable text for KPI and Tax tabs */
+.complete-kpi-page .complete-hero h2{font-size:18px}
+.complete-kpi-page .complete-hero p{font-size:12px}
+.complete-kpi-page .complete-badge{font-size:11px}
+.complete-kpi-page .complete-buff-row span{font-size:10.5px}
+.complete-kpi-page .complete-section h3{font-size:13px}
+.complete-kpi-page .complete-staff-title b{font-size:14px}
+.complete-kpi-page .complete-staff-title span{font-size:10px}
+.complete-kpi-page .complete-staff-role{font-size:11px}
+.complete-kpi-page .complete-staff-main p{font-size:11px;line-height:1.5}
+.complete-kpi-page .complete-staff-metrics span{font-size:10px}
+.complete-kpi-page .complete-staff-buffs{font-size:10px}
+.complete-kpi-page .complete-staff-action .sbtn{font-size:11px}
+.complete-kpi-page .complete-lock{font-size:10px}
+.complete-kpi-page .complete-kpi-policy{font-size:11px;line-height:1.55}
+.complete-kpi-page .complete-kpi-policy b{font-size:12px}
+.complete-kpi-card-head b{font-size:13px}
+.complete-kpi-card-head small{font-size:10px}
+.complete-kpi-card-head strong{font-size:11px}
+.complete-kpi-stats span{font-size:10px}
+.complete-kpi-choice button{font-size:10px}
+.complete-kpi-pay{font-size:11px}
+.complete-kpi-total{font-size:13px}
+
+.tax-pane-wrap{font-size:12px}
+.tax-pane-title h2{font-size:17px}
+.tax-pane-title small{font-size:11px}
+.tax-status-head b{font-size:13px;line-height:1.35}
+.tax-timer-badge{font-size:11px}
+.tax-status-box p{font-size:11px;line-height:1.5}
+.tax-buff-grid>div{font-size:11px;line-height:1.4}
+.tax-buff-grid b{font-size:12px}
+.tax-buff-grid small{font-size:10px}
+.tax-row{font-size:12px}
+.tax-pct-pill{font-size:10px}
+.tax-amount-row,.tax-benefit-line{font-size:12px}
+.tatua-bank-card{font-size:11px}
+.bank-head b{font-size:12px}
+.bank-head small{font-size:10px}
+.bank-head>span{font-size:10px}
+.bank-grid small{font-size:10px}
+.bank-grid b{font-size:14px}
+.bank-actions .sbtn{font-size:11px}
+.tax-policy-note{font-size:10.5px;line-height:1.6}
+.tax-pane-wrap>.note{font-size:10.5px}
+.complete-tax-overview small{font-size:10px}
+.complete-tax-overview b{font-size:13px}
+.complete-tax-guide{font-size:11px}
+.complete-tax-guide h3{font-size:13px}
+.complete-policy-grid b{font-size:11px}
+.complete-policy-grid p{font-size:10.5px;line-height:1.45}
+.complete-tax-guide .complete-note{font-size:10px;line-height:1.45}
+
+@media(max-width:520px){
+  .complete-kpi-page .complete-staff-title b{font-size:13px}
+  .complete-kpi-page .complete-staff-main p{font-size:10.5px}
+  .complete-kpi-page .complete-staff-metrics span{font-size:9.5px}
+  .tax-pane-title h2{font-size:16px}
+  .tax-status-head b{font-size:12px}
+  .tax-buff-grid>div{font-size:10.5px}
+  .tax-pct-pill{font-size:9.5px}
+}
