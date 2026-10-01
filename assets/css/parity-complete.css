@@ -197,3 +197,93 @@
   #completeReviewsRoot .complete-review-filters button,
   #completeSellReviews .complete-review-filters button{font-size:10px}
 }
+
+
+/* Unified typography + full-width primary actions v3 */
+:root{--ttn-font:"Baloo 2",system-ui,-apple-system,"Segoe UI",sans-serif}
+html,body,button,input,select,textarea,.pane,.card,.modal,.complete-page,.tax-pane-wrap{font-family:var(--ttn-font)!important}
+body{font-size:16px;line-height:1.45}
+.pane{font-size:15px;line-height:1.5}
+.complete-page{font-size:15px;line-height:1.5}
+.complete-kpi-page .complete-hero h2,.complete-page .complete-hero h2{font-size:21px}
+.complete-kpi-page .complete-hero p,.complete-page .complete-hero p{font-size:14px}
+.complete-kpi-page .complete-section h3{font-size:15px}
+.complete-kpi-page .complete-staff-title b{font-size:16px}
+.complete-kpi-page .complete-staff-title span{font-size:12px}
+.complete-kpi-page .complete-staff-role{font-size:13px}
+.complete-kpi-page .complete-staff-main p{font-size:13px}
+.complete-kpi-page .complete-staff-metrics span{font-size:12px}
+.complete-kpi-page .complete-staff-buffs{font-size:12px}
+.complete-kpi-page .complete-kpi-policy{font-size:13px}
+.complete-kpi-page .complete-kpi-policy b{font-size:14px}
+.complete-kpi-card-head b{font-size:15px}
+.complete-kpi-card-head small{font-size:12px}
+.complete-kpi-stats span{font-size:12px}
+.complete-kpi-choice button{font-size:12px}
+.complete-kpi-pay,.complete-kpi-total{font-size:13px}
+
+.tax-pane-wrap{font-size:14px;line-height:1.55}
+.tax-pane-title h2{font-size:20px}
+.tax-pane-title small{font-size:13px}
+.tax-status-head b{font-size:15px}
+.tax-timer-badge{font-size:13px}
+.tax-status-box p{font-size:13px}
+.tax-buff-grid>div{font-size:13px}
+.tax-buff-grid b{font-size:14px}
+.tax-buff-grid small{font-size:12px}
+.tax-row{font-size:14px}
+.tax-pct-pill{font-size:12px}
+.tax-amount-row,.tax-benefit-line{font-size:14px}
+.bank-head b{font-size:14px}
+.bank-head small,.bank-head>span,.bank-grid small{font-size:12px}
+.bank-grid b{font-size:16px}
+.tax-policy-note{font-size:12.5px}
+.complete-tax-overview small{font-size:12px}
+.complete-tax-overview b{font-size:15px}
+.complete-tax-guide h3{font-size:15px}
+.complete-policy-grid b{font-size:13px}
+.complete-policy-grid p{font-size:12.5px}
+
+#completeReviewsRoot .complete-review-summary>div:first-child b,
+#completeSellReviews .complete-review-summary>div:first-child b{font-size:34px}
+#completeReviewsRoot .complete-review-summary>div:first-child small,
+#completeSellReviews .complete-review-summary>div:first-child small{font-size:12px}
+#completeReviewsRoot .complete-review-bars>div,
+#completeSellReviews .complete-review-bars>div{font-size:12px}
+#completeReviewsRoot .complete-review-filters button,
+#completeSellReviews .complete-review-filters button{font-size:12px}
+#completeReviewsRoot .complete-review-head b,
+#completeSellReviews .complete-review-head b{font-size:14px}
+#completeReviewsRoot .complete-review-head small,
+#completeSellReviews .complete-review-head small{font-size:12px}
+#completeReviewsRoot .complete-review-head strong,
+#completeSellReviews .complete-review-head strong{font-size:13px}
+#completeReviewsRoot .complete-review-card>p,
+#completeSellReviews .complete-review-card>p{font-size:13px}
+#completeReviewsRoot .complete-owner-reply,
+#completeSellReviews .complete-owner-reply{font-size:12px}
+.complete-quote,.complete-textarea{font-size:13px}
+
+#btnPayTax,#completeKpiBtn,
+.tax-pane-wrap .big.pri,.complete-kpi-page .big.pri,
+.complete-page>.big.pri,.pane>.big.pri{
+  width:100%!important;max-width:none!important;display:block!important;box-sizing:border-box
+}
+@media(min-width:768px){
+  #btnPayTax,#completeKpiBtn,
+  .tax-pane-wrap .big,.complete-kpi-page .big,.complete-page>.big,.pane>.big{
+    width:100%!important;max-width:none!important;display:block!important
+  }
+}
+@media(max-width:520px){
+  body{font-size:15px}
+  .pane,.complete-page{font-size:14px}
+  .complete-kpi-page .complete-hero h2,.complete-page .complete-hero h2{font-size:19px}
+  .complete-kpi-page .complete-hero p,.complete-page .complete-hero p{font-size:13px}
+  .complete-kpi-page .complete-staff-title b{font-size:15px}
+  .complete-kpi-page .complete-staff-main p{font-size:12px}
+  .tax-pane-title h2{font-size:18px}
+  .tax-status-head b{font-size:14px}
+  #completeReviewsRoot .complete-review-card>p,
+  #completeSellReviews .complete-review-card>p{font-size:12px}
+}
