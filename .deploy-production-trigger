@@ -1,2 +1,4 @@
-deploy: 2026-09-29T01:22:00Z
-reason: referral browser-PWA bridge, mobile QR photo sharing, PWA network-first refresh, tax visibility and 2026 regression
+Deploy Production
+Requested by user after complete parity/content sync.
+Source: main
+Revision intent: feature/content parity refresh
