@@ -106,6 +106,13 @@ function bind(){
   const b=document.getElementById('lotteryBtn');if(b)b.onclick=open;
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){const m=document.getElementById('lottery-modal');if(m&&!m.hidden)close()}});
 }
-state();bind();settle();
+function enhanceSettings(){
+  const news=document.getElementById('sNews');if(!news||document.getElementById('sLottery'))return;
+  const lottery=news.cloneNode(true);lottery.id='sLottery';lottery.innerHTML='<span>🎟️</span><b>Xổ Số Tiệm Trà</b><small>Vé 5 chữ số · tiền trong game</small>';lottery.onclick=()=>{const modal=document.getElementById('modal');if(modal)modal.hidden=true;open()};news.after(lottery);
+  const change=news.cloneNode(true);change.id='sChangelog';change.innerHTML='<span>📜</span><b>Lịch sử cập nhật</b><small>Xem toàn bộ mốc phiên bản</small>';change.onclick=()=>{location.href='/changelog'};lottery.after(change);
+}
+const settingsObserver=new MutationObserver(()=>enhanceSettings());
+const settingsCard=document.getElementById('card');if(settingsCard)settingsObserver.observe(settingsCard,{childList:true,subtree:true});
+state();bind();settle();enhanceSettings();
 window.TTNLottery={open,close,settle,drawNumber};
 })();
